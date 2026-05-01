@@ -1,0 +1,80 @@
+123
+
+Hero Creation Checklist
+Focused Heroes
+1: Choose one Archetype. You get its Focused Ability.
+2: Create three Stances.
+> Each Stance must have one Style and one Form.
+> Each Style must be from your Archetype.
+> Each Form must be different.
+3: Choose a Build.
+4: You get three Skills from your Forms.
+> You may replace one of your Skills with another one.
+5: Create your final Skill by writing a two-word description of your Hero.
+
+Fused Heroes
+1: Choose two Archetypes. You get both of their Fused Abilities.
+2: Create three Stances.
+> Each Stance must have one Style and one Form.
+> Each Style must be from one of your two Archetypes.
+> You must pick at least one Style from each Archetype.
+> Each Form must be different.
+3: Choose a Build.
+4: You get three Skills from your Forms.
+> You may replace one of your Skills with another one.
+5: Create your final Skill by writing a two-word description of your Hero.
+
+Frantic Heroes
+1: Choose three Styles.
+> All three Styles must be from different Archetypes.
+2: Choose three Frantic Archetype Abilities.
+> At least two of them must match the Archetype of a Style
+you chose in step 1.
+3: Choose three Forms.
+4: Choose a Build.
+4: You get three Skills from your Forms.
+> You may replace one of your Skills with another one.
+6: Create your final Skill by writing a two-word description of your Hero.
+
+124
+
+Hero Building Advice
+When making a hero, no matter which kind, you'll want to build your
+character with two goals in mind. First is stance diversity, and second is
+character focus. These two goals are a bit at odds with each other, but
+finding the right balance is important for having a strong, useful, powerful
+character.
+Stance Diversity refers to taking advantage of the fact that each of your
+Stances completely changes how your character functions. You want to be
+able to become whatever you need, right now. Frantic Heroes should
+emphasis Stance Diversity when picking their abilities, because they have
+more flexibility than anyone else mid-combat.
+To get the most out of Stance Diversity, each of your Stances should be
+good in completely different situations. You'll want to pick three things you
+want to do, and make one stance for each: Mobility, Defense, Tank, Damage,
+Desperation, or Support.
+A mobility stance is useful for getting out of trouble and taking advantage
+of positioning. Shadow and Dance Form are the big ones, letting you get
+just where you need to throw someone out of bounds.
+Defensive stances stop the pain and discourages enemies from hitting
+you specifically. Control Form and Iron Form are the main defensive forms.
+Tanking stances are similar, but you WANT them to hit you. You want to
+Challenge your enemies, then make them attack you instead of your friends.
+Zen Form and Reversal Form are best here, but Shadow Form is
+frustratingly effective as well, letting you teleport away from enemy attacks
+while leaving smoke and traps behind you.
+There will always come a time when you need to deal a lot of damage,
+right now, and that's what a damage stance is for. Just make a Stance that
+hits things, hard. Blaster Form, Power Form and One-Two Form are ideal.
+Vigilance Form's start-of-turn heal and Wild Form's everything make
+up the core of what a Desperation stance is. This is for a Stance where you
+don't care if you go down, as long as you take them all down with you. Any
+Stance that gives you some start of turn healing makes a good Desperation
+stance, where you just go in, do work, get destroyed, then switch into it to get
+back up and keep going.
+Support stances are for keeping the team going when things get rough.
+Anything that heals, moves, or gives tokens to your allies can create a
+potential support stance. Song Form is basically THE support Form, but
+Vigilance and Iron dip their toes in here too.
+
+

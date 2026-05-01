@@ -1,0 +1,2447 @@
+{
+  "version": 1,
+  "heroTypes": [
+    {
+      "id": "focused",
+      "name": "Focused",
+      "archetypeSlots": 1,
+      "description": "Focused heroes center on one archetype and build all stances from it.",
+      "restrictions": "Pick 1 archetype. All stance styles must come from that archetype.",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "128"
+    },
+    {
+      "id": "fused",
+      "name": "Fused",
+      "archetypeSlots": 2,
+      "description": "Fused heroes blend two archetypes into one style set.",
+      "restrictions": "Pick 2 archetypes. Use two styles from one and one style from the other across your 3 stances.",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "132"
+    },
+    {
+      "id": "frantic",
+      "name": "Frantic",
+      "archetypeSlots": 3,
+      "description": "Frantic heroes spread across three archetypes.",
+      "restrictions": "Patch: Frantic heroes may ONLY choose styles from their three archetypes.",
+      "sourceBook": "Panic at the Dojo 1e + Patch'd Up",
+      "sourcePage": "136 + patch p27"
+    }
+  ],
+  "builds": [
+    {
+      "id": "agile",
+      "name": "Agile",
+      "description": "You dodge every blow. At the start of your turn, you gain 2 Speed tokens.",
+      "maxHp": 10,
+      "hpBars": 2,
+      "totalBars": 7,
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "126"
+    },
+    {
+      "id": "bumbling",
+      "name": "Bumbling",
+      "description": "You avoid hits by narrow margins. At the end of any turn you took damage, you may move 1 space.",
+      "maxHp": 12,
+      "hpBars": 3,
+      "totalBars": 6,
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "126"
+    },
+    {
+      "id": "mysterious",
+      "name": "Mysterious",
+      "description": "At the start of your turn, you may place a Copy or Fog obstacle into an empty adjacent space.",
+      "maxHp": 12,
+      "hpBars": 3,
+      "totalBars": 6,
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "126"
+    },
+    {
+      "id": "overpowering",
+      "name": "Overpowering",
+      "description": "At the start of your turn, you gain 1 Power token.",
+      "maxHp": 12,
+      "hpBars": 3,
+      "totalBars": 6,
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "126"
+    },
+    {
+      "id": "scheming",
+      "name": "Scheming",
+      "description": "At either the start or the end of your turn, you may place one Trap into an adjacent space.",
+      "maxHp": 12,
+      "hpBars": 3,
+      "totalBars": 6,
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "126"
+    },
+    {
+      "id": "tough",
+      "name": "Tough",
+      "description": "At end of your turn, gain 1 Iron token.",
+      "maxHp": 14,
+      "hpBars": 3,
+      "totalBars": 5,
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "27"
+    },
+    {
+      "id": "bulky",
+      "name": "Bulky",
+      "description": "You are bigger than most. You have +3 HP per Health Bar.",
+      "maxHp": 14,
+      "hpBars": 3,
+      "totalBars": 5,
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "27"
+    },
+    {
+      "id": "experimental",
+      "name": "Experimental",
+      "description": "At end of your turn, give 1 Burning token to an enemy you damaged this turn.",
+      "maxHp": 12,
+      "hpBars": 3,
+      "totalBars": 6,
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "27"
+    },
+    {
+      "id": "intimidating",
+      "name": "Intimidating",
+      "description": "At start or end of your turn, give 1 Weakness token to an enemy within range.",
+      "maxHp": 12,
+      "hpBars": 3,
+      "totalBars": 6,
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "27"
+    }
+  ],
+  "archetypes": [
+    {
+      "id": "angel",
+      "name": "Angel",
+      "description": "Angels are the embodiment of law, purity, and order. Their enemies\ncannot defy them. Angels will find you, hunt you, and destroy you.\nAngels are a controlling, defensive Archetype, focused on durability\nand tenacity, but its a focused tenacity. Angels pick an enemy and they\nmake their life real difficult.\nAngels don't dish out a lot of damage, but they can reliably withstand\na ton of it, and they Challenge their enemies to focus on the Angel before\nthey can deal with her friends. The Angel's Ability makes her get back up\nagain every turn, so Angels cannot be Taken Out while anyone on her\nteam is still standing.\nAngels make heavy use of Challenge tokens, using them to control\ntheir enemies, and every Style they have gives them a different means of\ndealing with having a lot of enemies who all want you dead.",
+      "abilitiesSummary": "Tags: Ruinous, Guard.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the start of your turn, Challenge an enemy you can see, then\ndeal 1 damage to them, then heal 1.\nAfter you Challenge an enemy, deal 1 damage to them and heal 1.\nThe second half of the Focused Angel Ability does trigger off of the\nfirst half. The end result is that at the start of your turn, you Challenge an\nenemy, deal 2 damage to them, and heal 2.",
+        "fused": "At the start of your turn, Challenge an enemy you can see.\nAfter you Challenge an enemy, deal 1 damage to them and heal 1.",
+        "frantic": "At the start of this turn, Challenge an enemy you can see, deal 2\ndamage to them, and heal."
+      },
+      "complexity": 2
+    },
+    {
+      "id": "cavalry",
+      "name": "Cavalry",
+      "description": "No one keeps up like the Cavalry. Your job is to get in, exactly where\nyou need to be, and keep everyone on their feet. Nobody is there for them\nlike you can be. Cavalry are protectors, heroes, and all around nice\npeople to have on your side of the battlefield.\nCavalry provide a wide variety of support abilities for their team,\ngiving Shields to anyone who fights alongside them. The Cavalry can get\nwherever they need to be and provide just the back up your team needs.\nCavalry need to watch their positioning. Many of their Abilities work\nby being within range of their allies, and being where you need to be can\nmake a huge difference in the flow of battle.\nCavalry are all about the team buffs. When you have the Cavalry\naround, you can expect to get a bunch of small bonuses every turn. When\nplaying as the Cavalry, be sure to keep track of these bonuses for your\nteam, so they can properly take advantage of them.",
+      "abilitiesSummary": "Tags: Support, Mobility.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the start and end of your turn, you and each ally adjacent to\nyou gains a 2 point Shield. When your Shield or an ally's Shield\nbreaks, you gain 1 Speed token.",
+        "fused": "At the end of your turn, you and each ally adjacent to you gains a\n2 point Shield.",
+        "frantic": "At the start and end of this turn, you and each ally adjacent to you\ngains a 2 point Shield."
+      },
+      "complexity": 1
+    },
+    {
+      "id": "cyborg",
+      "name": "Cyborg",
+      "description": "Cyborgs build power over time. They adapt to the threat in front of\nthem, growing stronger, tougher, or faster, as needed. If you let a Cyborg\nbuild up, they will destroy you.\nCyborgs is a combo-focused Archetype, using their constant flow of\nbasic tokens to trigger powerful Unique Actions. They are good at\neverything and weak to nothing. The Cyborg doesn't have much versatility,\nbut they make up for it with sheer firepower and speed.\nCyborgs need to pay close attention to their token management.\nBasic Tokens are their bread and butter, and everything they do relies on\nkeeping a stock of the tokens they need when they need them.\nWith a variety of powerful Token Actions and an Ability that gives\nyou the tokens you need, the Cyborg sets itself up for success. As long as\nyou can keep track of what you need when you need it, the Cyborg can\nhandle anything in front of them.",
+      "abilitiesSummary": "Tags: Preparation, Technical.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the start of your turn, you gain four Basic Tokens of your choice.",
+        "fused": "At the start of your turn, you gain two Basic Tokens of your choice.",
+        "frantic": "At the start of this turn, you gain four Basic Tokens of your choice.\nThe Cyborg Abilities give you two or four Basic Tokens of the same\ntype. So a Focused Cyborg chooses to gain four Iron tokens, four\nPower tokens, or four Speed tokens at the start of their turn.\nWhen you choose to gain Speed tokens while using Iron Form or\nPower Form, you will gain half of those tokens as Iron or Power tokens,\nas per the Abilities of those Forms."
+      },
+      "complexity": 2
+    },
+    {
+      "id": "demon",
+      "name": "Demon",
+      "description": "Demons are big bullies. They get their strength from making others\nweak. They drain your strength, toss you aside, and just when you think\nyou've got the upper hand, they sneak in a surprise attack.\nDemons are an aggressive Archetype, focusing on picking off their\nenemies one by one. They stay on their feet by keeping their enemies off\nbalance, and limiting their ability to counterattack effectively.\nDemons need to be wary of their enemy's capabilities, because they\nare relatively fragile. They rely on their tricks, their Fog and Weakness\ntokens and teleports, to avoid being punished for their aggressive antics.\nBut what really makes a Demon vicious is their Chaos tokens, which\nthey can spend to take Actions out of turn. They need to keep track of\nthe best time to use those tokens, because a key interruption can mean\nthe difference between defeat and domination.",
+      "abilitiesSummary": "Tags: Ruinous, Mobility.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the end of your turn, you gain 2 Chaos tokens.",
+        "fused": "At the end of your turn, you gain 1 Chaos token.",
+        "frantic": "At the end of this turn, you gain 2 Chaos tokens.\nChaos Token: This token is exclusively used by the Demon. At any\ntime, you may spend a Chaos token to immediately take a 4 Action,\ninterrupting the current turn until that Action is resolved."
+      },
+      "complexity": 3
+    },
+    {
+      "id": "flametongue",
+      "name": "Flametongue",
+      "description": "Flametongues want to watch the world burn. They specialize in fire,\nexplosions, and blasts of all sorts, destroying the terrain around them as\nthey fight.\nFlametongues are a zoning Archetype, discouraging their enemies\nfrom getting close and dealing their damage from a distance. They hand\nout a lot of Burning tokens, which deal more and more damage the more\nof them your enemies have.\nFlametongues are vulnerable to foes who can remove tokens easily.\nThe Angel's Purify, the Cyborg's Power Converter, and the Trickster\nAbility can turn your blistering heat into their own strength. Also, Burning\nTokens don't trigger until the end of their turn, and everyone can use Put\nIt Out!, so don't rely on Burning Tokens to finish your foes off.\nThe main way a Flametongue defeats their foes is by giving them\nmore to deal with than they can reasonably handle. You give out so many\nBurning tokens, and lay out so many Traps, and punish them for hitting\nyou, and just make fighting back the last thing they can afford to do.",
+      "abilitiesSummary": "Tags: Aggro, Technical.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "After you deal damage to an enemy with an Action, give that\nenemy one Burning token.",
+        "fused": "The first time you deal damage to an enemy during your turn, give\nthat enemy two Burning tokens.\nIf you damage multiple enemies at once, the Fused Flametongue\nAbility only gives Burning tokens to one of them.",
+        "frantic": "During this turn, after you deal damage to an enemy with three or\nless Burning tokens, give them one Burning token."
+      },
+      "complexity": 1
+    },
+    {
+      "id": "gunkata",
+      "name": "Gunkata",
+      "description": "Gunkata is the ancient combat art of shooting people. Usually with\nguns. Ideally in the face. Probably a lot.\nGunkata is a high-damage Archetype that hits its enemies over and\nover and over. They embody the idea of death by a thousand cuts, and\nthey do it all from fairly far away.\nBig downside: your Styles have to deal with a minimum range. You\nneed to be very wary of putting obstacles between you and your targets.\nFog completely shuts you down and Walls make life difficult, but Rubble\nand Traps make it harder for your enemies to punish your ranged pokes.\nGunkata is a simple Archetype, but simple doesn't mean weak. Play\nto your strengths and punish your enemies' weaknesses, and you'll find\nthat victory is an easy target.",
+      "abilitiesSummary": "Tags: Aggro, Zoning.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the start of your turn, push every adjacent enemy one space,\nthen move one space.\nAt the end of your turn, deal 1 damage to each enemy within range.",
+        "fused": "At the end of your turn, deal 1 damage to each enemy within range.",
+        "frantic": "At the end of this turn, you may move one space, then deal 1\ndamage to each enemy within range. Then, you may move one space."
+      },
+      "complexity": 2
+    },
+    {
+      "id": "phantom",
+      "name": "Phantom",
+      "description": "Phantoms are strange and unusual. They use their paranormal\npowers to fight their battles for them. Invisible barriers, telekinesis,\nteleportation, flight - you have all sorts of strange tricks that are tough for\nmany enemies to handle.\nPhantom is a flexible Archetype that can adapt to anything. Your\nuniversal access to your Unique Actions means that when choosing\nyour Stance, you can focus on switching to the Abilities you need.\nPhantoms are flexible, but lack power. You need to rely on your\nteam to actually defeat most foes, as the Phantom's Styles don't have\nany damage dealing Abilities or Unique Actions.\nPhantoms have an answer to every problem, and can control the\nbattlefield as you see fit. Edges are your friend, and tossing enemies out\nof bounds is child's play to a Phantom.",
+      "abilitiesSummary": "Tags: Zoning, Ruinous.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "You have access to all of your Styles' Unique Actions at all times,\nno matter what your current Stance is. All of your Unique Actions\nhave their cost reduced by 1 (to a minimum of 1+ or 2 tokens).\nThe Phantom's cost reduction Ability applies to all of your Unique\nActions, including your Phantom Style Unique Actions.\nFor example, Iron Form's Protect only requires a 5+, and Aura\nStyle's Shields Up only costs 2 Basic tokens.\nThis Ability has a minimum, so One-Two Form's Slide In doesn't\nbecome a 0+ Action, and Wild Form's Fury still costs 2 Basic tokens.",
+        "fused": "Your Unique Actions have their cost reduced by 1 (to a minimum\nof 1+ or 2 tokens).",
+        "frantic": "You have access to all of your Unique Actions this turn, no\nmatter what your current Style and Form are.\nYour Unique Actions have their cost reduced by 1 (to a minimum\nof 1+ or 2 tokens) during this turn."
+      },
+      "complexity": 3
+    },
+    {
+      "id": "punk",
+      "name": "Punk",
+      "description": "Punks are all about tearing down the world. They need to make their\nmark, stand by their convictions, and rebel against the system. You've got\nguts, and you're not afraid to show 'em. The more the Punk gets beaten\ndown, the harder they rise up and hit back.\nThe Punk is a tanking Archetype. You want to take hits, because the\nmore you bleed, the stronger you hit back on the rebound. The Punk\nknows that if you outlast your enemy, you win.\nThe Punk's greatest weakness is biting off more than they can chew.\nTheir Styles and Abilities encourage going aggro, and punishing any\nenemies who take the bait. But if you aren't careful, you'll wind up hurt.\nBait doesn’t live a long life.\nIf you can take the heat, though, nobody hits back like a Punk. Once\nthey give you a reason, nothing will hold you back.",
+      "abilitiesSummary": "Tags: Desperation, Aggro.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the start of your turn, add X to your Action Pool.\nX is equal to twice the damage on your current health bar.\nIf your health bar is full, X = 1.",
+        "fused": "At the start of your turn, add X to your Action Pool.\nX is equal to the damage on your current health bar.\nIf your health bar is full, X = 1.",
+        "frantic": "At the start of this turn, add X to your Action Pool.\nX is equal to twice the damage on your current health bar.\nIf your health bar is full, X = 1."
+      },
+      "complexity": 1
+    },
+    {
+      "id": "teacher",
+      "name": "Teacher",
+      "description": "Your age only holds you back a little\nbit. You're strong, but not as strong as\nyou used to be, and your lessons hit\nharder than your fist nowadays. But if\nthey listen to their Teacher, they can do\nanything.\nThe Teacher is a support based\nArchetype that donates Action Dice to\nthe rest of their team. You don't have\nmuch power yourself, although Elder\nStyle lets you draw on the strength you\nonce had. Your real strength is in how\nmuch more you let your team\naccomplish.\nThe Teacher is a force multiplier,\nimproving the output of everyone around\nthem. But being a force multiplier has\ntwo fatal flaws. If you go down, all your\nbonuses go with you. But on the other\nhand, if you're the last one standing, you\nhave no one to give any bonuses to!\nTo prevent either of these from\nhappening, the Teacher favors a\ndefensive play style. As long as you're\nstill standing to show them the ropes,\nyour team's power will be unparalleled.",
+      "abilitiesSummary": "Tags: Support, Preparation.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the end of your turn, you gain two Inspired tokens.\n\nInspired Token: During any ally's turn, you may spend an Inspired token to roll\nand add that number to their Action Pool.",
+        "fused": "At the end of your turn, you gain an Inspired token.",
+        "frantic": "At the end of this turn, you gain two Inspired tokens.\nInspired Token: This token is only used by the Teacher.\nDuring an ally's turn, you may spend one Inspired token to roll\nand add that number to their Action Pool."
+      },
+      "complexity": 2
+    },
+    {
+      "id": "trickster",
+      "name": "Trickster",
+      "description": "Everyone loves a good trick, unless the trick was played on them.\nTricksters revel in confusion, changing the rules as they go. As long as\nyou can stay one step ahead, nobody can handle you.\nTricksters are a zoning Archetype, keeping enemies close or\npushing them away as needed. You stay out of reach while keeping your\nenemies within your own. As long as your enemies can never catch you,\nyou cannot lose.\nTricksters are extremely powerful when they have everything they\nneed, but they rely on a lot of things to keep their tricks rolling. Illusion\nStyle, Mysterious Style, and Hidden Style all rely on certain types of\nterrain, and terrain can be cleared away by your enemies. More than any\nother Archetype, Tricksters need careful planning so you don't run out\nof tricks right when you need them most.\nTricksters are hard to pin down, hard to fight reliably, and hard to\ndeal with. You may not deal the most damage, but you'll give your\nenemies hell trying to keep up with everything you've got going on.\nNothing is easy when you're fighting a Trickster.",
+      "abilitiesSummary": "Tags: Zoning, Guard.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "You may spend any tokens you hold as if they were Iron tokens.\nWhen you spend Iron tokens to reduce the damage you take, push\nyour attacker 1 space, then you may move 1 space.",
+        "fused": "You may spend any Basic Tokens you hold as Iron tokens.\nWhen you spend Iron tokens to reduce the damage you take, you\nmay move 1 space.",
+        "frantic": "Until your next turn, you may spend any tokens you hold as if they\nwere Iron tokens.\nWhen you spend Iron tokens to reduce the damage you take, push\nyour attacker 1 space, then you may move 1 space."
+      },
+      "complexity": 3
+    },
+    {
+      "id": "underdog",
+      "name": "Underdog",
+      "description": "You're just a regular kid, and you're in way over your head. Or you\nwould be, if being an ordinary underdog didn't make you the most\ndangerous person in the room at all times.\nThe Underdog is an all-around balanced Archetype, focused on\nkeeping your enemies under control. Its Styles have a lot of flexibility,\nand most of their Actions are Choice Actions, allowing you to respond\nto any kind of situation with some kind of answer.\nThe Underdog is all about getting back up again. The longer a battle\ngoes, the more it favors the Underdog, as they turn pain into power. But\nunlike the Punk, who turns damage into powerful high-cost Actions, the\nUnderdog turns damage into basic tokens they can spend, so they\nrequire careful thinking and tenacity to make the most out of their bonus.\nThe Underdog is a middle ground between the controlling Angel, the\ntanking Punk, and the combo-heavy Cyborg. But you can leave it to an\nUnderdog to patch together a solution to every situation.",
+      "abilitiesSummary": "Tags: Desperation, Preparation.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the start of your turn, you gain one Basic token of your choice.\nAfter you take damage, you gain one Basic token of your choice.",
+        "fused": "At the start of your turn, you gain one Basic token of your choice.\nAfter you take damage, you gain one Basic token of your choice.\nYou cannot choose a Basic token you are already holding.",
+        "frantic": "At the start of this turn, you gain one Basic token of your choice.\nUntil your next turn, after you take damage, you gain one Basic\ntoken of your choice.\nThe Basic tokens are Iron, Power, and Speed tokens."
+      },
+      "complexity": 3
+    },
+    {
+      "id": "wardancer",
+      "name": "Wardancer",
+      "description": "You have mastered the art of combat. And to you, art is exactly what\nit is: temporary, ever-changing, always improving, never perfect. You fight\nto perform, and you will put on a better show than anybody.\nThe Wardancer is an aggressive Archetype, focused on high\ndamage dealing and mobility. Wardancer Styles are hyper-focused on\nspecific kinds of aggression, giving you exactly the hammer you need to\npound down any nail.\nMechanically, the Wardancer has the highest numbers. All of their\nUnique Actions are Tiered Actions, and they get stronger when you\nspend larger numbers to use them. Their Ability increases their numbers\nafter they roll, but they still favor Forms with large dice to begin with:\nControl, Dance, Power, Wild, and Zen Forms especially.\nThe Wardancer is a very simple fighter to play. But simple doesn't\nmean weak, as they are unrivaled in raw power and speed.",
+      "abilitiesSummary": "Tags: Mobility, Aggro.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "After rolling your Action Dice, either increase all of your numbers\nby 1, or increase one of your numbers by 4.",
+        "fused": "After rolling your Action Dice, increase two of your numbers by 2.",
+        "frantic": "After rolling your Action Dice this turn, either increase all of your\nnumbers by 1, or increase one of your numbers by 4."
+      },
+      "complexity": 1
+    },
+    {
+      "id": "winterblossom",
+      "name": "Winterblossom",
+      "description": "Your style is calm, controlled, precise, and icy. A Winterblossom's\nfighting style revolves around controlling and weakening your enemies,\nreducing them to a helpless mess that cannot hope to fight back.\nThe Winterblossom is a controlling Archetype that shuts down your\nfoes, similar to the Angel. But while the Angel buffs herself into being\nuntouchable, the Winterblossom weakens her foes into uselessness,\nbefore destroying them with a well-timed power blow.\nThe Winterblossom has no problems against other defensive and\ncontrolling foes, winning the war of attrition with ease. But aggressive\nenemies are a problem, as they can dish out damage faster than you can\nstop it. One-Two Form is especially bad for you, as its users can remove\ntwo Weakness tokens per attack.\nBut if you can pile on the Weakness tokens, your opponents will never\nbe able to touch you.",
+      "abilitiesSummary": "Tags: Technical, Guard.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "29",
+      "abilitiesByHeroType": {
+        "focused": "At the start of every turn, give 1 Weakness token to one enemy\nwithin range.",
+        "fused": "At the start and end of your turn, give 1 Weakness token to one\nenemy within range.",
+        "frantic": "At the start and end of this turn, give 2 Weakness tokens to one\nenemy within range."
+      },
+      "complexity": 2
+    }
+  ],
+  "styles": [
+    {
+      "id": "angel_style_1",
+      "archetypeId": "angel",
+      "name": "Halcyon Style",
+      "basicInfo": "Halcyon Style from Angel archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Halcyon Style is focused on Iron tokens and support, so it pairs well",
+      "skillId": "skill_style_angel_style_1",
+      "range": "1-2",
+      "passive": "At the start of your turn, remove one token you hold.\n\nAfter you remove tokens using an Action or Ability, you gain an equal number of Iron tokens.",
+      "actions": [
+        {
+          "heading": "1+ or 3+ or 6+: Purify",
+          "description": "Remove one token from yourself or an ally within range.\n\n3+: Remove up to two tokens from someone within range.\n\n6+: Remove up to two tokens from someone within range."
+        }
+      ]
+    },
+    {
+      "id": "angel_style_2",
+      "archetypeId": "angel",
+      "name": "Judgment Style",
+      "basicInfo": "Judgment Style from Angel archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Judgment Style is great for singling out one enemy and making it",
+      "skillId": "skill_style_angel_style_2",
+      "range": "1",
+      "passive": "When an enemy with your Challenge starts their turn, they do not roll their lowest Action Die. It is discarded and unused.",
+      "actions": [
+        {
+          "heading": "5+: Denial",
+          "description": "Teleport adjacent to an enemy you can see, and Challenge them."
+        }
+      ]
+    },
+    {
+      "id": "angel_style_3",
+      "archetypeId": "angel",
+      "name": "Shining Style",
+      "basicInfo": "Shining Style from Angel archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_angel_style_3",
+      "range": "1",
+      "passive": "At the start of your turn, all obstacles and enemies adjacent to you are pushed one space.\n\nEnemies cannot move into the spaces adjacent to you.",
+      "actions": [
+        {
+          "heading": "1+ or 4+: Beacon",
+          "description": "Pull one ally up to three spaces. You and that ally heal 1.\n\n4+: That ally heals again."
+        }
+      ]
+    },
+    {
+      "id": "angel_style_4",
+      "archetypeId": "angel",
+      "name": "Singing Style",
+      "basicInfo": "Singing Style from Angel archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Singing Style is a Shield-based style that can shed its Shield at any",
+      "skillId": "skill_style_angel_style_4",
+      "range": "2-4",
+      "passive": "At the start and end of your turn, you gain a 2-point Shield.\n\nAfter each Action you perform, if you have an active Shield, increase its value by 1.",
+      "actions": [
+        {
+          "heading": "Token Action (spend Active Shield): Symphony",
+          "description": "Choose two: Pull an ally 3 spaces • An ally within range heals • Challenge an enemy within range • Push an enemy within range 3 spaces • Destroy an obstacle within range."
+        }
+      ]
+    },
+    {
+      "id": "angel_style_5",
+      "archetypeId": "angel",
+      "name": "Winged Style",
+      "basicInfo": "Winged Style from Angel archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Winged Style is a highly mobile harassment style, able to be",
+      "skillId": "skill_style_angel_style_5",
+      "range": "1-2",
+      "passive": "Edges cannot remove you from play.\n\nAt the end of every turn, you may move two spaces.",
+      "actions": [
+        {
+          "heading": "1+: As The Crow Flies",
+          "description": "Teleport three or four spaces."
+        }
+      ]
+    },
+    {
+      "id": "cavalry_style_1",
+      "archetypeId": "cavalry",
+      "name": "Charging Style",
+      "basicInfo": "Charging Style from Cavalry archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_cavalry_style_1",
+      "range": "1",
+      "passive": "At the start of your turn, you may move 2 spaces.\n\nAt the start of each ally's turn, they may move 2 spaces.",
+      "actions": [
+        {
+          "heading": "3+: Follow My Lead",
+          "description": "You may move one space, then deal 1 damage to an enemy within range. An ally you can see may move one space, then deal 1 damage to an enemy within their range."
+        }
+      ]
+    },
+    {
+      "id": "cavalry_style_2",
+      "archetypeId": "cavalry",
+      "name": "Heroic Style",
+      "basicInfo": "Heroic Style from Cavalry archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_cavalry_style_2",
+      "range": "1-2",
+      "passive": "Whenever an ally within range takes damage, they take half (rounded down) and you take the other half (rounded up).",
+      "actions": [
+        {
+          "heading": "4+: Burning Heart",
+          "description": "You and each ally within range gains 2 Iron tokens."
+        }
+      ]
+    },
+    {
+      "id": "cavalry_style_3",
+      "archetypeId": "cavalry",
+      "name": "Jumping Style",
+      "basicInfo": "Jumping Style from Cavalry archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_cavalry_style_3",
+      "range": "1",
+      "passive": "At the start and end of your turn, you may teleport one, two, or three spaces.",
+      "actions": [
+        {
+          "heading": "4+: Leap In",
+          "description": "Teleport up to three spaces; you may deal 2 damage to an enemy within range."
+        }
+      ]
+    },
+    {
+      "id": "cavalry_style_4",
+      "archetypeId": "cavalry",
+      "name": "Rallying Style",
+      "basicInfo": "Rallying Style from Cavalry archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Rallying Style is healing focused, capable of picking your whole team",
+      "skillId": "skill_style_cavalry_style_4",
+      "range": "1",
+      "passive": "At the end of your turn, you and each ally within range heals.\n\nAt the start of each ally's turn, if they are within range of you, they may heal.",
+      "actions": [
+        {
+          "heading": "2+ or 3+ or 5+: Group Up",
+          "description": "Pull one ally up to 3 spaces.\n\n3+: Pull one ally up to 4 spaces.\n\n5+: Each pulled ally heals."
+        }
+      ]
+    },
+    {
+      "id": "cavalry_style_5",
+      "archetypeId": "cavalry",
+      "name": "Unbreakable Style",
+      "basicInfo": "Unbreakable Style from Cavalry archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_cavalry_style_5",
+      "range": "1-2",
+      "passive": "After each Action you perform, give one Iron token to an ally other than yourself within range.\n\nYour allies within range may spend your tokens.",
+      "actions": [
+        {
+          "heading": "4+: Eyes Open",
+          "description": "You gain 6 Iron tokens and 1 Weakness token."
+        }
+      ]
+    },
+    {
+      "id": "cyborg_style_1",
+      "archetypeId": "cyborg",
+      "name": "Armored Style",
+      "basicInfo": "Armored Style from Cyborg archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Armored Style is tough as nails. With each Iron token you hold",
+      "skillId": "skill_style_cyborg_style_1",
+      "range": "1-2",
+      "passive": "After you spend Iron tokens, you heal 1.",
+      "actions": [
+        {
+          "heading": "2 Iron Tokens: You, Stay",
+          "description": "Challenge an enemy within range; that enemy discards three Speed tokens."
+        }
+      ]
+    },
+    {
+      "id": "cyborg_style_2",
+      "archetypeId": "cyborg",
+      "name": "Incinerator Style",
+      "basicInfo": "Incinerator Style from Cyborg archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Incinerator Style is extremely aggressive, getting enemies out of",
+      "skillId": "skill_style_cyborg_style_2",
+      "range": "1-3",
+      "passive": "When you spend Power tokens to boost damage, give one Burning token to the target of that hit.",
+      "actions": [
+        {
+          "heading": "2 Power Tokens: Flamethrower",
+          "description": "Choose an enemy within range; they take 1 damage, gain one Burning token, and are pushed 1 space."
+        }
+      ]
+    },
+    {
+      "id": "cyborg_style_3",
+      "archetypeId": "cyborg",
+      "name": "Machine Style",
+      "basicInfo": "Machine Style from Cyborg archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Machine Style is a well-rounded Style that pairs well with any Form.",
+      "skillId": "skill_style_cyborg_style_3",
+      "range": "1-2",
+      "passive": "You may spend your Basic Tokens as if they were any other Basic Token.",
+      "actions": [
+        {
+          "heading": "1+ or 4+: High Efficiency",
+          "description": "Choose three: you heal 1; you gain one Iron token; you gain one Power token; you gain one Speed token; or you deal 1 damage to an enemy within range.\n\n4+: Choose the last two options."
+        }
+      ]
+    },
+    {
+      "id": "cyborg_style_4",
+      "archetypeId": "cyborg",
+      "name": "Rocket Style",
+      "basicInfo": "Rocket Style from Cyborg archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_cyborg_style_4",
+      "range": "1",
+      "passive": "After you push someone, you may teleport to any empty space adjacent to them.",
+      "actions": [
+        {
+          "heading": "2 Speed Tokens: Rocket Tackle",
+          "description": "Push an adjacent enemy or ally two spaces."
+        }
+      ]
+    },
+    {
+      "id": "cyborg_style_5",
+      "archetypeId": "cyborg",
+      "name": "Syphon Style",
+      "basicInfo": "Syphon Style from Cyborg archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_cyborg_style_5",
+      "range": "1-2",
+      "passive": "At the end of your turn, choose a token you hold; either replace it with a Power token, or gain another copy of it.",
+      "actions": [
+        {
+          "heading": "2+ or 6+: Power Converter",
+          "description": "Target a single token held by you or someone within range. Choose one or both: steal it from them; and/or replace it with a Power token.\n\n6+: Both effects apply to every token they hold of the targeted type."
+        }
+      ]
+    },
+    {
+      "id": "demon_style_1",
+      "archetypeId": "demon",
+      "name": "Dark Style",
+      "basicInfo": "Dark Style from Demon archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_demon_style_1",
+      "range": "2-4",
+      "passive": "You can see and target enemies through Fog.\n\nAt the end of your turn, place a Fog obstacle into your space.",
+      "actions": [
+        {
+          "heading": "4+: Darkness Dawns",
+          "description": "Place two Fog obstacles into empty spaces within range; you may teleport to one of those Fog obstacles."
+        },
+        {
+          "heading": "4+: Twilight Sorrow",
+          "description": "Each enemy standing in Fog gains one Weakness token; you gain one Speed token for each enemy affected."
+        }
+      ]
+    },
+    {
+      "id": "demon_style_2",
+      "archetypeId": "demon",
+      "name": "Ogre's Style",
+      "basicInfo": "Ogre's Style from Demon archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_demon_style_2",
+      "range": "1-2",
+      "passive": "Your Throw Actions may target any number of enemies within range.\n\nAfter you Throw an enemy, they take 1 damage.",
+      "actions": [
+        {
+          "heading": "3+: Watch Your Step",
+          "description": "Choose an enemy you can see that moved during this turn; deal 2 damage to them."
+        }
+      ]
+    },
+    {
+      "id": "demon_style_3",
+      "archetypeId": "demon",
+      "name": "Slasher Style",
+      "basicInfo": "Slasher Style from Demon archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_demon_style_3",
+      "range": "1",
+      "passive": "At the end of every turn, you deal 1 damage to an adjacent enemy.",
+      "actions": [
+        {
+          "heading": "4+: Suddenly…",
+          "description": "Teleport into an empty space adjacent to someone who is alone (nobody is adjacent to them)."
+        }
+      ]
+    },
+    {
+      "id": "demon_style_4",
+      "archetypeId": "demon",
+      "name": "Vampire Style",
+      "basicInfo": "Vampire Style from Demon archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_demon_style_4",
+      "range": "1",
+      "passive": "After you deal damage with a hit, you heal 1.\n\nAfter you give Weakness tokens to an enemy, you gain that many Power tokens.",
+      "actions": [
+        {
+          "heading": "4+: Life Steal",
+          "description": "Deal 2 damage to an enemy within range; you may give that enemy one Weakness token."
+        }
+      ]
+    },
+    {
+      "id": "demon_style_5",
+      "archetypeId": "demon",
+      "name": "Zombie Style",
+      "basicInfo": "Zombie Style from Demon archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_demon_style_5",
+      "range": "1",
+      "passive": "You have Armor.\n\nAt the start of your turn, if your HP is 3 or less, you heal.",
+      "actions": [
+        {
+          "heading": "4+: Hunger",
+          "description": "Deal 2 damage to an enemy within range; you may take one token from that enemy."
+        }
+      ]
+    },
+    {
+      "id": "flametongue_style_1",
+      "archetypeId": "flametongue",
+      "name": "Burning Style",
+      "basicInfo": "Burning Style from Flametongue archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_flametongue_style_1",
+      "range": "2-4",
+      "passive": "After you target an enemy with an Action, if they have four Burning tokens or fewer, give them 1 Burning token.",
+      "actions": [
+        {
+          "heading": "4+: Burn It All Down",
+          "description": "Target one enemy within range; give them one Burning token and place a Trap into their space."
+        }
+      ]
+    },
+    {
+      "id": "flametongue_style_2",
+      "archetypeId": "flametongue",
+      "name": "Explosion Style",
+      "basicInfo": "Explosion Style from Flametongue archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_flametongue_style_2",
+      "range": "2-4",
+      "passive": "After you deal damage to an enemy, push that enemy one space.\n\nAfter you destroy an obstacle, replace it with an Edge.",
+      "actions": [
+        {
+          "heading": "6+: Ka-Boom!",
+          "description": "Deal 2 damage to an enemy within range; then, destroy every obstacle adjacent to them."
+        }
+      ]
+    },
+    {
+      "id": "flametongue_style_3",
+      "archetypeId": "flametongue",
+      "name": "Inferno Style",
+      "basicInfo": "Inferno Style from Flametongue archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_flametongue_style_3",
+      "range": "1-2",
+      "passive": "At the end of your turn (after Burning tokens trigger), you gain three Burning tokens.\n\nAfter an enemy deals damage to you with an Action, you may give them all of your Burning tokens.",
+      "actions": [
+        {
+          "heading": "Gain 1 Burning Token: Ignition",
+          "description": "Give one Burning token to an enemy within range. Once per turn only."
+        }
+      ]
+    },
+    {
+      "id": "flametongue_style_4",
+      "archetypeId": "flametongue",
+      "name": "Phoenix Style",
+      "basicInfo": "Phoenix Style from Flametongue archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_flametongue_style_4",
+      "range": "1",
+      "passive": "Whenever you would take damage from Burning tokens or from Traps, you heal that much damage instead.",
+      "actions": [
+        {
+          "heading": "4+: Cleansing Fire",
+          "description": "Choose two: give a Burning token to someone within range; heal an ally within range; or place a Trap within range."
+        }
+      ]
+    },
+    {
+      "id": "flametongue_style_5",
+      "archetypeId": "flametongue",
+      "name": "Volcanic Style",
+      "basicInfo": "Volcanic Style from Flametongue archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_flametongue_style_5",
+      "range": "1-3",
+      "passive": "After you spend Speed tokens on Free Movement, you may place a Trap into each space you exit.\n\nYou do not take damage from entering a space with a Trap.",
+      "actions": [
+        {
+          "heading": "4+: Pyroclasm",
+          "description": "Place three Traps within range; each Trap placed must be adjacent to a Trap obstacle."
+        }
+      ]
+    },
+    {
+      "id": "gunkata_style_1",
+      "archetypeId": "gunkata",
+      "name": "Akimbo Style",
+      "basicInfo": "Akimbo Style from Gunkata archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_gunkata_style_1",
+      "range": "3-5",
+      "passive": "After you deal damage to someone, you move one space.",
+      "actions": [
+        {
+          "heading": "4+: Firing Wild",
+          "description": "Choose one: deal 1 damage to every enemy and ally adjacent to you; or deal 1 damage to every enemy and ally within range."
+        }
+      ]
+    },
+    {
+      "id": "gunkata_style_2",
+      "archetypeId": "gunkata",
+      "name": "Artillery Style",
+      "basicInfo": "Artillery Style from Gunkata archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_gunkata_style_2",
+      "range": "3-8",
+      "passive": "You can see and target enemies through Fog and Walls.",
+      "actions": [
+        {
+          "heading": "1+ or 6+: Bombardment",
+          "description": "Place a Trap into a space within range.\n\n6+: Also place a Trap into each space adjacent to the first Trap. Do not place over Edges or Walls."
+        }
+      ]
+    },
+    {
+      "id": "gunkata_style_3",
+      "archetypeId": "gunkata",
+      "name": "Crosshair Style",
+      "basicInfo": "Crosshair Style from Gunkata archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_gunkata_style_3",
+      "range": "4-8",
+      "passive": "You ignore Armor and Shields when dealing damage.\n\nWeakness tokens you hold and Iron tokens your enemies hold do not reduce the damage you deal.",
+      "actions": [
+        {
+          "heading": "1+: Take Aim",
+          "description": "Your next Action this turn has its cost and every number in its description increased by 1."
+        }
+      ]
+    },
+    {
+      "id": "gunkata_style_4",
+      "archetypeId": "gunkata",
+      "name": "Ricochet Style",
+      "basicInfo": "Ricochet Style from Gunkata archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_gunkata_style_4",
+      "range": "2-4",
+      "passive": "After you deal damage to an enemy with an Action, you may deal 1 damage to a different enemy within 3 spaces of them.",
+      "actions": [
+        {
+          "heading": "3+: Trick Shot",
+          "description": "Choose one obstacle within range; deal 2 damage to an enemy within 3 spaces of that obstacle."
+        }
+      ]
+    },
+    {
+      "id": "gunkata_style_5",
+      "archetypeId": "gunkata",
+      "name": "Ten Thousand Style",
+      "basicInfo": "Ten Thousand Style from Gunkata archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_gunkata_style_5",
+      "range": "2-3",
+      "passive": "Add two d4s to your Action Dice.",
+      "actions": [
+        {
+          "heading": "2+: Point Blank Shot",
+          "description": "Deal 1 damage to an adjacent enemy; then, push them 1 space."
+        }
+      ]
+    },
+    {
+      "id": "phantom_style_1",
+      "archetypeId": "phantom",
+      "name": "Aura Style",
+      "basicInfo": "Aura Style from Phantom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Aura Style is a shield-based support Style that punishes enemies",
+      "skillId": "skill_style_phantom_style_1",
+      "range": "1-3",
+      "passive": "At the start of your turn, you gain a 3-point Shield.\n\nWhen an enemy within range damages or breaks a Shield, you may move that enemy one space. After a Shield within range breaks, you gain 1 Iron token.",
+      "actions": [
+        {
+          "heading": "3 Basic Tokens: Shields Up",
+          "description": "An ally within range gains a 3-point Shield."
+        }
+      ]
+    },
+    {
+      "id": "phantom_style_2",
+      "archetypeId": "phantom",
+      "name": "Crying Style",
+      "basicInfo": "Crying Style from Phantom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_phantom_style_2",
+      "range": "1-4",
+      "passive": "At the start of your turn, give one Weakness token to all enemies within range.\n\nAt the end of your turn, Challenge an enemy within range and give them one Weakness token.",
+      "actions": [
+        {
+          "heading": "6+: Banshee's Wail",
+          "description": "All enemies within range gain a Weakness token; all Traps and Walls within range become Rubble."
+        }
+      ]
+    },
+    {
+      "id": "phantom_style_3",
+      "archetypeId": "phantom",
+      "name": "Puppet's Style",
+      "basicInfo": "Puppet's Style from Phantom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_phantom_style_3",
+      "range": "1-5",
+      "passive": "You may use Speed tokens to move any ally, enemy, or obstacle within range using normal Free Movement rules. Walls and Traps moved this way become Rubble. Edges cannot be moved.",
+      "actions": [
+        {
+          "heading": "3+ or 5+: Pull The Strings",
+          "description": "Choose an enemy or ally you can see; move them 3 spaces.\n\n5+: Choose another enemy or ally; move them 3 spaces."
+        }
+      ]
+    },
+    {
+      "id": "phantom_style_4",
+      "archetypeId": "phantom",
+      "name": "Spirit Style",
+      "basicInfo": "Spirit Style from Phantom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Spirit Style is a defensive style, letting your move freely while hiding",
+      "skillId": "skill_style_phantom_style_4",
+      "range": "1-3",
+      "passive": "Edges cannot remove your Copies from play. You and your Copies can move over Walls as empty space. After you use Free Movement on yourself or a Copy, you may move any number of your Copies one space.",
+      "actions": [
+        {
+          "heading": "1+ or 3+ or 5+: Now You See Me…",
+          "description": "Place a Copy into an empty space within range.\n\n3+: Place another Copy.\n\n5+: Place another Copy."
+        },
+        {
+          "heading": "Destroy 1 Copy: …Now You Don't",
+          "description": "Teleport into the space of the destroyed Copy."
+        }
+      ]
+    },
+    {
+      "id": "phantom_style_5",
+      "archetypeId": "phantom",
+      "name": "Vortex Style",
+      "basicInfo": "Vortex Style from Phantom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_phantom_style_5",
+      "range": "1-3",
+      "passive": "Edges cannot remove you from play.\n\nWhen you stand on an Edge, every other Edge counts as an adjacent space you can move to.",
+      "actions": [
+        {
+          "heading": "4+: Black Hole",
+          "description": "Place an Edge into an empty space within range."
+        }
+      ]
+    },
+    {
+      "id": "punk_style_1",
+      "archetypeId": "punk",
+      "name": "Bleeding Style",
+      "basicInfo": "Bleeding Style from Punk archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Bleeding Style is tenacity made form, and will never surrender.",
+      "skillId": "skill_style_punk_style_1",
+      "range": "1",
+      "passive": "You don't get Taken Out at zero HP — you can continue to fight as long as you remain in play. Your side still loses if everyone is at zero HP at the same time.",
+      "actions": [
+        {
+          "heading": "2 HP: Lash Out",
+          "description": "Push an adjacent enemy two spaces."
+        },
+        {
+          "heading": "12+: I'm Still Here",
+          "description": "Deal 7 damage to an enemy within range; then push that enemy 7 spaces."
+        }
+      ]
+    },
+    {
+      "id": "punk_style_2",
+      "archetypeId": "punk",
+      "name": "Brawling Style",
+      "basicInfo": "Brawling Style from Punk archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_punk_style_2",
+      "range": "1",
+      "passive": "After your Shield breaks, you gain 1 Power token.\n\nAfter you deal damage, if you didn't spend a Power token on that hit, you gain 1 Power token.",
+      "actions": [
+        {
+          "heading": "2 Power Tokens: Tough It Out",
+          "description": "You gain a 2-point Shield."
+        }
+      ]
+    },
+    {
+      "id": "punk_style_3",
+      "archetypeId": "punk",
+      "name": "Flashy Style",
+      "basicInfo": "Flashy Style from Punk archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Flashy Style is all about doing more with less. It favors Forms with",
+      "skillId": "skill_style_punk_style_3",
+      "range": "1",
+      "passive": "After you roll your Action Dice, you may combine two of your numbers into a single, larger number.",
+      "actions": [
+        {
+          "heading": "X: Show Off",
+          "description": "Choose two Basic Actions: Movement, Damage, A Challenger Approaches, Put It Out!, or Throw. Perform both as if you spent X on them. Once per turn only."
+        }
+      ]
+    },
+    {
+      "id": "punk_style_4",
+      "archetypeId": "punk",
+      "name": "Knockdown Style",
+      "basicInfo": "Knockdown Style from Punk archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_punk_style_4",
+      "range": "1",
+      "passive": "After you take damage from an enemy, you deal 1 damage back to them.",
+      "actions": [
+        {
+          "heading": "4+: Take It On The Chin",
+          "description": "Each enemy within range deals 1 damage to you; then, you deal 3 damage to one of them."
+        }
+      ]
+    },
+    {
+      "id": "punk_style_5",
+      "archetypeId": "punk",
+      "name": "Taunting Style",
+      "basicInfo": "Taunting Style from Punk archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Taunting Style is a big distraction, letting you Challenge your",
+      "skillId": "skill_style_punk_style_5",
+      "range": "1",
+      "passive": "After you take damage, you gain 1 Iron token.\n\nAfter you take damage from an enemy with your Challenge, you may move one space.",
+      "actions": [
+        {
+          "heading": "1+: Is That All You Got?",
+          "description": "Challenge an enemy you can see; you gain 1 Iron token."
+        },
+        {
+          "heading": "X: Not Good Enough",
+          "description": "Give X − 2 Weakness tokens to an enemy with your Challenge; then, they discard your Challenge."
+        }
+      ]
+    },
+    {
+      "id": "teacher_style_1",
+      "archetypeId": "teacher",
+      "name": "Patient Style",
+      "basicInfo": "Patient Style from Teacher archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_teacher_style_1",
+      "range": "1",
+      "passive": "At the end of your turn, your Speed tokens become Iron tokens. You may only take one Action per turn. Your Action Pool does not empty between Turns or Rounds.",
+      "actions": [
+        {
+          "heading": "X: Waiting Game",
+          "description": "Add X+1 to your Action Pool; then, you may move one space. Can only be used during enemy turns."
+        }
+      ]
+    },
+    {
+      "id": "teacher_style_2",
+      "archetypeId": "teacher",
+      "name": "Elder Style",
+      "basicInfo": "Elder Style from Teacher archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Elder Style is a strange beast. It pairs well with any Form, but it also",
+      "skillId": "skill_style_teacher_style_2",
+      "range": "1-2",
+      "passive": "The cost of this Stance's Unique Actions are reduced by 1 (min 1+ or 2 tokens).\n\nOnce per turn, during your turn, you may use any Unique Action you know from any of your Stances for free. Tiered Actions count as spending a 7.",
+      "actions": []
+    },
+    {
+      "id": "teacher_style_3",
+      "archetypeId": "teacher",
+      "name": "Mastermind Style",
+      "basicInfo": "Mastermind Style from Teacher archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_teacher_style_3",
+      "range": "-",
+      "passive": "You cannot perform Actions yourself. Instead, spend your numbers on allies, making them perform Actions using their location, range, and Stance bonuses.\n\nYou can only give Actions to allies you can see. After each Action an ally performs during your turn, you may move 1 space.",
+      "actions": []
+    },
+    {
+      "id": "teacher_style_4",
+      "archetypeId": "teacher",
+      "name": "Motivating Style",
+      "basicInfo": "Motivating Style from Teacher archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Motivating Style is a support based style, and lets you fill the role of",
+      "skillId": "skill_style_teacher_style_4",
+      "range": "1-2",
+      "passive": "At the end of your turn, allies within range heal, and you gain an Inspired token.",
+      "actions": [
+        {
+          "heading": "4+: You Can Do It!",
+          "description": "Choose an ally within range; they choose two: heal; move two spaces; gain a copy of a token they hold; or discard one token they hold."
+        }
+      ]
+    },
+    {
+      "id": "teacher_style_5",
+      "archetypeId": "teacher",
+      "name": "Training Style",
+      "basicInfo": "Training Style from Teacher archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Training Style is a balanced Style that does not lean in any",
+      "skillId": "skill_style_teacher_style_5",
+      "range": "1",
+      "passive": "At the end of your turn, give an ally one Training token.\n\nTraining Token: before performing an Action, spend it to increase all numbers in that Action by 1, including its cost. Max 1 per turn.",
+      "actions": [
+        {
+          "heading": "3+: Watch Closely",
+          "description": "You gain one Training token; if you spend it before end of this turn, give one Training token to an ally."
+        }
+      ]
+    },
+    {
+      "id": "trickster_style_1",
+      "archetypeId": "trickster",
+      "name": "Caged Style",
+      "basicInfo": "Caged Style from Trickster archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_trickster_style_1",
+      "range": "1",
+      "passive": "Adjacent enemies cannot gain or spend Speed tokens.",
+      "actions": [
+        {
+          "heading": "2+: Welcome To My Maze",
+          "description": "Deal 1 damage to one enemy outside of your Range; then, pull them three spaces."
+        }
+      ]
+    },
+    {
+      "id": "trickster_style_2",
+      "archetypeId": "trickster",
+      "name": "Mysterious Style",
+      "basicInfo": "Mysterious Style from Trickster archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_trickster_style_2",
+      "range": "1-2",
+      "passive": "At the start of your turn, place a Fog obstacle into your space.\n\nWhile you stand in Fog, your maximum range is doubled.",
+      "actions": [
+        {
+          "heading": "3 Speed or Iron Tokens: Ghost Walk",
+          "description": "Place a Fog obstacle into an empty space within range; then, teleport to a Fog obstacle within range."
+        }
+      ]
+    },
+    {
+      "id": "trickster_style_3",
+      "archetypeId": "trickster",
+      "name": "Illusion Style",
+      "basicInfo": "Illusion Style from Trickster archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_trickster_style_3",
+      "range": "1-3",
+      "passive": "After an enemy deals damage to you while within range of at least one Copy, you deal 1 damage to them (2 if within range of three or more Copies).\n\nYou may spend your Copies as Iron tokens.",
+      "actions": [
+        {
+          "heading": "3+ or 6+: Where Are You Looking?",
+          "description": "Place 2 Copies into empty spaces within range.\n\n6+: Place 2 more Copies into empty spaces within range."
+        }
+      ]
+    },
+    {
+      "id": "trickster_style_4",
+      "archetypeId": "trickster",
+      "name": "Hidden Style",
+      "basicInfo": "Hidden Style from Trickster archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Hidden Style is a defense oriented Style, but is generically useful",
+      "skillId": "skill_style_trickster_style_4",
+      "range": "1-3",
+      "passive": "You may move through Walls as though they were empty spaces.\n\nYou can see and target enemies through Walls.",
+      "actions": [
+        {
+          "heading": "3 Iron Tokens: Sudden Strike",
+          "description": "Deal 2 damage to an enemy within range."
+        }
+      ]
+    },
+    {
+      "id": "trickster_style_5",
+      "archetypeId": "trickster",
+      "name": "Whip Style",
+      "basicInfo": "Whip Style from Trickster archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Whip Style is a zoning Style, staying out of enemy range and",
+      "skillId": "skill_style_trickster_style_5",
+      "range": "2-5",
+      "passive": "Your Throw Actions target one person within range.\n\nWhen you Throw or Grapple an enemy, they take 2 damage.",
+      "actions": [
+        {
+          "heading": "5+: Grapple Hook",
+          "description": "Teleport to any empty space within range."
+        }
+      ]
+    },
+    {
+      "id": "underdog_style_1",
+      "archetypeId": "underdog",
+      "name": "Collateral Style",
+      "basicInfo": "Collateral Style from Underdog archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_underdog_style_1",
+      "range": "1-2",
+      "passive": "After you destroy an obstacle, you gain one Basic token of your choice.",
+      "actions": [
+        {
+          "heading": "3+: Roughhousing",
+          "description": "Destroy an obstacle within range, then choose one: teleport to that space; deal 1 damage to each enemy adjacent to it; or destroy another obstacle within range. Spend 2 Basic Tokens to choose a second option, or 3 to choose all three."
+        }
+      ]
+    },
+    {
+      "id": "underdog_style_2",
+      "archetypeId": "underdog",
+      "name": "Distracting Style",
+      "basicInfo": "Distracting Style from Underdog archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_underdog_style_2",
+      "range": "1-2",
+      "passive": "After an enemy deals damage to you, if they have no Weakness tokens, give that enemy one Weakness token.",
+      "actions": [
+        {
+          "heading": "1+ or 2 Basic Tokens: Flare",
+          "description": "Move one space, then give one Weakness token to one enemy within range."
+        }
+      ]
+    },
+    {
+      "id": "underdog_style_3",
+      "archetypeId": "underdog",
+      "name": "Eye of the Style",
+      "basicInfo": "Eye of the Style from Underdog archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Eye of the Style is a versatile Style that gives you exactly what you",
+      "skillId": "skill_style_underdog_style_3",
+      "range": "1",
+      "passive": "At the start of your turn, you gain a Bonus of your choice.",
+      "actions": [
+        {
+          "heading": "3+: Thrill of the Fight",
+          "description": "Target an adjacent enemy, then choose one: Challenge them; deal 2 damage to them; or give them 2 Burning tokens. Spend 2 Basic Tokens to choose a second option, or 3 to choose all three."
+        }
+      ]
+    },
+    {
+      "id": "underdog_style_4",
+      "archetypeId": "underdog",
+      "name": "Lucky Style",
+      "basicInfo": "Lucky Style from Underdog archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Lucky Style is basic, but extremely solid, granting you both Armor",
+      "skillId": "skill_style_underdog_style_4",
+      "range": "1",
+      "passive": "You have Armor.\n\nAdd one d4 to your Action Dice.",
+      "actions": [
+        {
+          "heading": "3+: Just What I Needed",
+          "description": "Choose one: you gain 2 Basic tokens; you teleport two or three spaces; or you heal. Spend 2 Basic Tokens to choose a second option, or 3 to choose all three."
+        }
+      ]
+    },
+    {
+      "id": "underdog_style_5",
+      "archetypeId": "underdog",
+      "name": "Misfortune's Style",
+      "basicInfo": "Misfortune's Style from Underdog archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_underdog_style_5",
+      "range": "1-3",
+      "passive": "When you would take damage from a Trap, deal that damage to an enemy within range instead. If no enemies are in range, gain one Power token instead.",
+      "actions": [
+        {
+          "heading": "1+ or 3 Basic Tokens: Bad Luck",
+          "description": "Place a Trap into a space within range."
+        }
+      ]
+    },
+    {
+      "id": "wardancer_style_1",
+      "archetypeId": "wardancer",
+      "name": "Forbidden Style",
+      "basicInfo": "Forbidden Style from Wardancer archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "This Style is attached to two Forms. You have the Abilities and",
+      "skillId": "skill_style_wardancer_style_1",
+      "range": "1-2",
+      "passive": "At the start of your turn, you take 2 damage (cannot drop below 1 HP).\n\nThis Style attaches to two Forms simultaneously. You have the Abilities and Unique Actions from both Forms. Action Dice are determined by combining both Forms (see p.105). You only gain one Skill.",
+      "actions": []
+    },
+    {
+      "id": "wardancer_style_2",
+      "archetypeId": "wardancer",
+      "name": "Lightning Style",
+      "basicInfo": "Lightning Style from Wardancer archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Lightning Style is fast. Real fast. So fast you can't see it coming.",
+      "skillId": "skill_style_wardancer_style_2",
+      "range": "1",
+      "passive": "After you deal damage, you gain 1 Speed token.",
+      "actions": [
+        {
+          "heading": "2+ or 5+ or 8+: Deadly Dance",
+          "description": "Teleport 2 spaces; deal 1 damage to an enemy within range.\n\n5+: Teleport 2 spaces; deal 2 damage to an enemy within range.\n\n8+: Teleport 2 spaces; deal 2 damage to an enemy within range."
+        }
+      ]
+    },
+    {
+      "id": "wardancer_style_3",
+      "archetypeId": "wardancer",
+      "name": "Overwhelming Style",
+      "basicInfo": "Overwhelming Style from Wardancer archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_wardancer_style_3",
+      "range": "1",
+      "passive": "You ignore Armor when dealing damage.\n\nWhen an enemy hits you with an Action, you may spend a Power token to deal 1 damage to them and push them 1 space.",
+      "actions": [
+        {
+          "heading": "4+ or 8+: Power Strike",
+          "description": "Deal 2 damage to an enemy within range; you gain 2 Power tokens.\n\n8+: Deal 4 damage and gain 4 Power tokens instead."
+        }
+      ]
+    },
+    {
+      "id": "wardancer_style_4",
+      "archetypeId": "wardancer",
+      "name": "Relentless Style",
+      "basicInfo": "Relentless Style from Wardancer archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_wardancer_style_4",
+      "range": "1",
+      "passive": "When you deal damage to an enemy, immediately push them one space and move into the empty space they left.",
+      "actions": [
+        {
+          "heading": "3+ or 5+ or 7+: Rush Down",
+          "description": "Deal 1 damage to an enemy within range; then deal 1 damage to an enemy within range.\n\n5+: Deal 1 more damage to an enemy within range.\n\n7+: Deal 1 more damage to an enemy within range."
+        }
+      ]
+    },
+    {
+      "id": "wardancer_style_5",
+      "archetypeId": "wardancer",
+      "name": "Weightless Style",
+      "basicInfo": "Weightless Style from Wardancer archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_wardancer_style_5",
+      "range": "1",
+      "passive": "All spaces are Empty spaces to you. Edges cannot remove you from play. Rubble does not make you discard Speed tokens. Traps deal no damage to you.",
+      "actions": [
+        {
+          "heading": "4+ or 7+: Effortless",
+          "description": "Teleport to any space you can see.\n\n7+: Choose an ally; they may also teleport to any space they can see."
+        }
+      ]
+    },
+    {
+      "id": "winterblossom_style_1",
+      "archetypeId": "winterblossom",
+      "name": "Crystal Style",
+      "basicInfo": "Crystal Style from Winterblossom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "skillId": "skill_style_winterblossom_style_1",
+      "range": "1-2",
+      "passive": "When one of your Copies is destroyed, it deals 1 damage to every enemy adjacent to it.",
+      "actions": [
+        {
+          "heading": "3+ or 6+: Splinter",
+          "description": "Place a Copy into any space within range; deal 1 damage to every enemy adjacent to that Copy.\n\n6+: Place another Copy; deal 1 damage to every enemy adjacent to it."
+        },
+        {
+          "heading": "Free (Token Action): Shatter",
+          "description": "Destroy one of your Copies; give one Weakness token to an enemy that was within range of that Copy."
+        }
+      ]
+    },
+    {
+      "id": "winterblossom_style_2",
+      "archetypeId": "winterblossom",
+      "name": "Frozen Style",
+      "basicInfo": "Frozen Style from Winterblossom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "range": "1",
+      "passive": "After an enemy moves into an empty space adjacent to you, you may give them one Weakness token.",
+      "actions": [
+        {
+          "heading": "3+: Exploit Weakness",
+          "description": "Choose one enemy within range; give them one Weakness token and deal 2 damage to them."
+        }
+      ]
+    },
+    {
+      "id": "winterblossom_style_3",
+      "archetypeId": "winterblossom",
+      "name": "Precision Style",
+      "basicInfo": "Precision Style from Winterblossom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "range": "1-2",
+      "passive": "Your Actions deal +1 damage to enemies with Armor or Shields.\n\nWhen you target an enemy with an Action, they must discard 1 Iron token.",
+      "actions": [
+        {
+          "heading": "3+ and 3+: Perfect Strike",
+          "description": "Deal 4 damage to an enemy within range. This damage cannot be reduced by Armor, ignores Shields, and cannot be responded to with tokens or Abilities."
+        }
+      ]
+    },
+    {
+      "id": "winterblossom_style_4",
+      "archetypeId": "winterblossom",
+      "name": "Pressure Style",
+      "basicInfo": "Pressure Style from Winterblossom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Pressure Style is your big finisher. Once your enemies are drowning",
+      "range": "1-2",
+      "passive": "At the start of your turn, give one Weakness token to every enemy within range.",
+      "actions": [
+        {
+          "heading": "5+: Apply Pressure",
+          "description": "Choose one enemy within range; deal damage to them equal to the number of tokens they hold. Once per turn only."
+        }
+      ]
+    },
+    {
+      "id": "winterblossom_style_5",
+      "archetypeId": "winterblossom",
+      "name": "Reflected Style",
+      "basicInfo": "Reflected Style from Winterblossom archetype.",
+      "marginNotes": "",
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 5",
+      "description": "Reflected Style is the ultimate defensive combat style, building a",
+      "range": "2-3",
+      "passive": "At the start of your turn, you may place up to three Walls into empty adjacent spaces.\n\nYou can see and target enemies through Walls.",
+      "actions": [
+        {
+          "heading": "3+: Walled In",
+          "description": "Place 3 Walls into empty spaces within Range 1–3."
+        },
+        {
+          "heading": "3+: Icicle Fall",
+          "description": "Deal 1 damage to each enemy adjacent to any Walls."
+        }
+      ]
+    }
+  ],
+  "forms": [
+    {
+      "id": "form_blaster",
+      "name": "Blaster Form",
+      "altNames": [
+        "Dragon",
+        "Dynamo",
+        "Gold",
+        "Star"
+      ],
+      "skillIds": [
+        "skill_form_blaster"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "Your Actions may apply to one extra target within range.\n\nWhen you add Blaster Form to a Style, increase that Style's maximum range by 1.",
+      "passive": "Your Actions may apply to one extra target within range.\n\nWhen you add Blaster Form to a Style, increase that Style's maximum range by 1.",
+      "dice": [
+        8,
+        8,
+        8
+      ],
+      "actions": [
+        {
+          "heading": "3+: Amplify",
+          "description": "Your next Action this turn has its range increased by 2 and may apply to up to three extra targets."
+        },
+        {
+          "heading": "3+ or 6+: Shockwave",
+          "description": "Deal 1 damage to every enemy within range.\n6+: Deal 2 damage to one enemy within range."
+        }
+      ]
+    },
+    {
+      "id": "form_control",
+      "name": "Control Form",
+      "altNames": [
+        "Blizzard",
+        "Gravity",
+        "Owl",
+        "Watcher"
+      ],
+      "skillIds": [
+        "skill_form_control"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "When you add Control Form to a Style, choose one: increase max range by 3; or set min range to 1.\n\nControl Token: When an enemy within range takes an Action, spend 1 to negate it or 2 to redirect it. Once per turn.",
+      "passive": "When you add Control Form to a Style, choose one: increase max range by 3; or set min range to 1.\n\nControl Token: When an enemy within range takes an Action, spend 1 to negate it or 2 to redirect it. Once per turn.",
+      "dice": [
+        10,
+        8,
+        6,
+        4
+      ],
+      "actions": [
+        {
+          "heading": "3+ or 6+ or 9+: Suppression",
+          "description": "You gain 1 Control token and may move one space.\n6+: You gain 1 Control token.\n9+: You gain 1 Control token and may move one space."
+        }
+      ]
+    },
+    {
+      "id": "form_dance",
+      "name": "Dance Form",
+      "altNames": [
+        "Circle",
+        "Crab",
+        "Hurricane",
+        "Shuffle"
+      ],
+      "skillIds": [
+        "skill_form_dance"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "After you Throw or Grapple someone, you gain X Speed tokens (X = spaces moved).\n\nAfter each space you move using Free Movement, you may pull someone within range 1 space.",
+      "passive": "After you Throw or Grapple someone, you gain X Speed tokens (X = spaces moved).\n\nAfter each space you move using Free Movement, you may pull someone within range 1 space.",
+      "dice": [
+        10,
+        8,
+        6
+      ],
+      "actions": [
+        {
+          "heading": "3 Speed Tokens: Try And Keep Up",
+          "description": "Move two spaces, then heal 2."
+        }
+      ]
+    },
+    {
+      "id": "form_iron",
+      "name": "Iron Form",
+      "altNames": [
+        "Fortress",
+        "Mountain",
+        "Turtle",
+        "Void"
+      ],
+      "skillIds": [
+        "skill_form_iron"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "You have Armor.\n\nWhen you gain Speed tokens, replace half (rounded up) with Iron tokens.",
+      "passive": "You have Armor.\n\nWhen you gain Speed tokens, replace half (rounded up) with Iron tokens.",
+      "dice": [
+        8,
+        6,
+        6
+      ],
+      "actions": [
+        {
+          "heading": "3+: Secure",
+          "description": "Choose two: gain 3 Iron tokens; an ally within range gains 2 Iron tokens; or heal someone within range."
+        },
+        {
+          "heading": "3+: Contain",
+          "description": "Choose two: pull an enemy 2 spaces; Challenge an enemy you can see; or place a Trap within range."
+        },
+        {
+          "heading": "6+: Protect",
+          "description": "Choose four options from the Secure and/or Contain lists."
+        }
+      ]
+    },
+    {
+      "id": "form_one_two",
+      "name": "One-Two Form",
+      "altNames": [
+        "Chaos",
+        "Drill",
+        "Hound",
+        "Sky"
+      ],
+      "skillIds": [
+        "skill_form_one_two"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "After you deal damage to an enemy with an Action, you hit them again for 1 damage.",
+      "passive": "After you deal damage to an enemy with an Action, you hit them again for 1 damage.",
+      "dice": [
+        6,
+        6,
+        4,
+        4
+      ],
+      "actions": [
+        {
+          "heading": "1+: Slide In",
+          "description": "Teleport two spaces."
+        },
+        {
+          "heading": "4+: Whirlwind",
+          "description": "Deal 1 damage to up to three enemies within range."
+        }
+      ]
+    },
+    {
+      "id": "form_power",
+      "name": "Power Form",
+      "altNames": [
+        "Blade",
+        "Rage",
+        "Sun",
+        "Tiger"
+      ],
+      "skillIds": [
+        "skill_form_power"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "When you gain Speed tokens, replace half (rounded up) with Power tokens.\n\nYou may spend up to 3 Power tokens per hit.",
+      "passive": "When you gain Speed tokens, replace half (rounded up) with Power tokens.\n\nYou may spend up to 3 Power tokens per hit.",
+      "dice": [
+        10,
+        10,
+        4
+      ],
+      "actions": [
+        {
+          "heading": "3+: Yell",
+          "description": "You gain 3 Power tokens."
+        },
+        {
+          "heading": "6+ or 9+: Crush",
+          "description": "Deal 3 damage to an enemy within range. Cannot be reduced by Armor; ignores Shields; no tokens or Abilities may respond.\n9+: Spend any number of Power tokens on this hit."
+        }
+      ]
+    },
+    {
+      "id": "form_reversal",
+      "name": "Reversal Form",
+      "altNames": [
+        "Panic",
+        "Scorpion",
+        "Time",
+        "Tornado"
+      ],
+      "skillIds": [
+        "skill_form_reversal"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "You have Armor. You do not discard Speed tokens at the end of a turn. You may only take one Action per turn. Your Action Pool does not empty between Turns or Rounds.",
+      "passive": "You have Armor. You do not discard Speed tokens at the end of a turn. You may only take one Action per turn. Your Action Pool does not empty between Turns or Rounds.",
+      "dice": [
+        8,
+        8,
+        6,
+        4
+      ],
+      "actions": [
+        {
+          "heading": "1+: Counter Attack",
+          "description": "Teleport within range of an enemy that dealt damage to you this turn, then spend this number on another Action targeting that enemy."
+        }
+      ]
+    },
+    {
+      "id": "form_shadow",
+      "name": "Shadow Form",
+      "altNames": [
+        "Moon",
+        "Silence",
+        "Silver",
+        "Snake"
+      ],
+      "skillIds": [
+        "skill_form_shadow"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "At the start and end of your turn, you gain 2 Speed tokens.\n\nYou do not discard your Speed tokens at the end of a turn.",
+      "passive": "At the start and end of your turn, you gain 2 Speed tokens.\n\nYou do not discard your Speed tokens at the end of a turn.",
+      "dice": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "actions": [
+        {
+          "heading": "3 Speed Tokens: Stunt",
+          "description": "Place one Fog, Copy, or Trap obstacle into an adjacent space, then teleport two spaces."
+        }
+      ]
+    },
+    {
+      "id": "form_song",
+      "name": "Song Form",
+      "altNames": [
+        "Melody",
+        "Remix",
+        "Symphony",
+        "Wave"
+      ],
+      "skillIds": [
+        "skill_form_song"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "At the start of your turn, choose your song: Iron, Power, or Speed. You gain 3 tokens of the chosen type, and each ally gains 1 token of the chosen type.",
+      "passive": "At the start of your turn, choose your song: Iron, Power, or Speed. You gain 3 tokens of the chosen type, and each ally gains 1 token of the chosen type.",
+      "dice": [
+        8,
+        6,
+        6,
+        4
+      ],
+      "actions": [
+        {
+          "heading": "1+ or 4+ or 6+: Sing Along",
+          "description": "Choose one ally you can see. Choose one: they remove a token; they heal; or they gain 2 song tokens.\n4+: They also choose one from the list.\n6+: Add 4 to their Action Pool; they must spend it immediately."
+        }
+      ]
+    },
+    {
+      "id": "form_vigilance",
+      "name": "Vigilance Form",
+      "altNames": [
+        "Bear",
+        "Eternity",
+        "Heart",
+        "Moment"
+      ],
+      "skillIds": [
+        "skill_form_vigilance"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "At the start of your turn, either heal or discard one token you hold.\n\nAt the end of your turn, choose an enemy in range and give them one Weakness token.",
+      "passive": "At the start of your turn, either heal or discard one token you hold.\n\nAt the end of your turn, choose an enemy in range and give them one Weakness token.",
+      "dice": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "actions": [
+        {
+          "heading": "1+ or 4+: Bow Down",
+          "description": "Give one Weakness token to an enemy within range.\n4+: Give two Weakness tokens instead."
+        },
+        {
+          "heading": "1+ or 4+: Stand Strong",
+          "description": "Heal yourself or an ally you can see.\n4+: Heal yourself or a different ally you can see."
+        }
+      ]
+    },
+    {
+      "id": "form_wild",
+      "name": "Wild Form",
+      "altNames": [
+        "Beast",
+        "Platinum",
+        "Soul",
+        "Storm"
+      ],
+      "skillIds": [
+        "skill_form_wild"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "At the start of your turn, for each of these that is true, add a d6 to your Action Dice: your current health bar is at half HP or less; someone on your team is Taken Out; you are holding a non-Basic token.",
+      "passive": "At the start of your turn, for each of these that is true, add a d6 to your Action Dice: your current health bar is at half HP or less; someone on your team is Taken Out; you are holding a non-Basic token.",
+      "dice": [
+        10,
+        6,
+        6
+      ],
+      "actions": [
+        {
+          "heading": "2 Basic Tokens: Fury",
+          "description": "Deal 1 damage to an enemy within range; at the end of this turn, push that enemy 1 space. Fury can be used only 3 times per turn."
+        }
+      ]
+    },
+    {
+      "id": "form_zen",
+      "name": "Zen Form",
+      "altNames": [
+        "Lotus",
+        "Mantis",
+        "Spiral",
+        "World"
+      ],
+      "skillIds": [
+        "skill_form_zen"
+      ],
+      "sourceBook": "Panic at the Dojo 1e",
+      "sourcePage": "Chapter 4",
+      "description": "Your Action Pool is predetermined: 7, 5, 3, 1 — not rolled. You may hold multiple Shields at once (only one active). When your active Shield breaks, the next doesn't activate until end of current turn. When an enemy damages or breaks your Shield, deal 1 damage to them.",
+      "passive": "Your Action Pool is predetermined: 7, 5, 3, 1 — not rolled. You may hold multiple Shields at once (only one active). When your active Shield breaks, the next doesn't activate until end of current turn. When an enemy damages or breaks your Shield, deal 1 damage to them.",
+      "dice": [
+        7,
+        5,
+        3,
+        1
+      ],
+      "actions": [
+        {
+          "heading": "3+ or 7+: Focus",
+          "description": "You gain a 2-point Shield; you may move one space.\n7+: You gain a 4-point Shield; you may move two spaces."
+        }
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill_form_blaster",
+      "name": "Basically Magic",
+      "description": "You have an ability that's beyond normal, like lycanthrope, telekinesis, fire magic, or a collection of gadgets. When you take this skill, write down what kind of power you have.",
+      "associatedForm": "form_blaster"
+    },
+    {
+      "id": "skill_form_control",
+      "name": "Professional",
+      "description": "You always look stylish, cool, and in control. People listen when you make demands of them, and you have some lackeys or followers who will do what you say.",
+      "associatedForm": "form_control"
+    },
+    {
+      "id": "skill_form_dance",
+      "name": "Put On A Show",
+      "description": "You can draw as much attention as you want, whenever you want it, away from anything else, for any reason.",
+      "associatedForm": "form_dance"
+    },
+    {
+      "id": "skill_form_iron",
+      "name": "Unmovable",
+      "description": "When you plant your feet and stand your ground, nothing can get past you or hurt you, not even vehicles or gunfire.",
+      "associatedForm": "form_iron"
+    },
+    {
+      "id": "skill_form_one_two",
+      "name": "Think Fast",
+      "description": "You can come up with plans and act on them in an instant. You never lose in games of skill, and you can fast talk anyone into seeing things your way.",
+      "associatedForm": "form_one_two"
+    },
+    {
+      "id": "skill_form_power",
+      "name": "Unstoppable",
+      "description": "You can smash through any door, wall, or vehicle.",
+      "associatedForm": "form_power"
+    },
+    {
+      "id": "skill_form_reversal",
+      "name": "Perfect Timing",
+      "description": "You are always in the right place at the right time. You can perfectly catch or stop anything coming directly at you with a single, well-placed motion.",
+      "associatedForm": "form_reversal"
+    },
+    {
+      "id": "skill_form_shadow",
+      "name": "Shadow Walker",
+      "description": "If you don't want to draw attention to yourself, no one will ever notice you sneaking around, even in plain sight.",
+      "associatedForm": "form_shadow"
+    },
+    {
+      "id": "skill_form_song",
+      "name": "Natural Charisma",
+      "description": "People naturally like you. Anyone who is not your enemy is your friend, even if you've just met them.",
+      "associatedForm": "form_song"
+    },
+    {
+      "id": "skill_form_vigilance",
+      "name": "Eyes Wide Open",
+      "description": "Your senses are unusually strong. You cannot be surprised by anything, and always have a chance to react first.",
+      "associatedForm": "form_vigilance"
+    },
+    {
+      "id": "skill_form_wild",
+      "name": "Wind Runner",
+      "description": "You can leap to anywhere you can see, run along walls, run as fast as a car, and, if you have an explanation, fly.",
+      "associatedForm": "form_wild"
+    },
+    {
+      "id": "skill_form_zen",
+      "name": "Peaceful Heart",
+      "description": "You can redirect others' anger to more productive ends. Your soothing voice and gentle touch can calm rampaging beasts, unruly mobs, and anyone else acting out of hurt or anger.",
+      "associatedForm": "form_zen"
+    },
+    {
+      "id": "skill_style_angel_style_1",
+      "name": "Purify",
+      "description": "Range: 1-2\n\nAt the start of your turn, remove one token you hold.\nAfter you remove tokens using an Action or Ability, you gain an\nequal number of Iron tokens.\n\n1+ or 3+ or 6+: Purify\nRemove one token from yourself or an ally within range.\n3+: Remove up to two tokens from someone within range.\n6+: Remove up to two tokens from someone within range.\nHalcyon Style is focused on Iron tokens and support, so it pairs well\nwith defensive and support Forms. Paying for Token Actions does not\ncount as removing tokens for Halcyon's Ability.\nHalcyon Vigilance and Halcyon Song are the only Forms that can\nremove tokens without Purify, triggering Halcyon's Ability.\nHalcyon Blaster allows for very wide-reaching Purifies. Your extra\ntargets can apply to any part of the Action, so an Amplified 6+ Purify\ncould remove as many as 13 tokens!\nHalcyon Wild lets you turn all those Iron tokens into Fury. Purified\nrage is the strongest kind of rage.\nHalcyon Zen guarantees you can use a 6+ Purify every turn."
+    },
+    {
+      "id": "skill_style_angel_style_2",
+      "name": "Denial",
+      "description": "Range: 1\n\nWhen an enemy with your Challenge starts their turn, they do not\nroll their lowest Action Die. It is discarded and unused.\n\n5+: Denial\nTeleport adjacent to an enemy you can see, and Challenge them.\nJudgment Style is great for singling out one enemy and making it\nhard for them to do anything.\nReminder: Abilities do not work while you are Taken Out, so once\nyou go down, Challenged enemies will get their Action Dice back.\nJudgment Power can reliably use Denial, which covers for Power\nForm's mobility problem.\nJudgment Iron and Judgment Reversal give you Armor, letting you\nChallenge many enemies and survive the attention.\nJudgment Control is the hardest lock-down Stance in the game,\nletting you remove two of an enemy's Actions per turn at the cost of one\nChallenge and Control token per enemy.\nJudgment Zen helps your Shields survive through your Challenged\nenemies' turns by limiting their actions, guarantees access to a Denial,\nand Zen's Ability makes Challenged enemies defeat themselves for you."
+    },
+    {
+      "id": "skill_style_angel_style_3",
+      "name": "Beacon",
+      "description": "Range: 1\n\nAt the start of your turn, all obstacles and enemies adjacent to you\nare pushed one space.\nEnemies cannot move into the spaces adjacent to you.\n\n1+ or 4+: Beacon\nPull one ally up to three spaces. You and that ally heal 1.\n4+: That ally heals.\nShining Style lets you act as a living wall, completely shutting down\nenemies with Range: 1, especially after you Challenge them.\nShining Dance, Shining Vigilance, and Shining Song generate a\nlot of breathing room, providing both healing and safety.\nShining Control and Shining Blaster increase your range, allowing\nyou to attack from behind the safety of the Shining Ability. Without this\nrange boost, you have to move close enough to where enemies can hit\nyou to attack them."
+    },
+    {
+      "id": "skill_style_angel_style_4",
+      "name": "Symphony",
+      "description": "Range: 2-4\n\nAt the start and end of your turn, you gain a 2 point Shield.\nAfter each Action you perform, if you have an active Shield,\nincrease its value by 1.\nDestroy Your Active Shield: Symphony\nSymphony is a Token Action, but the cost is your Active Shield.\n\nChoose two: Pull an ally 3 spaces; an ally within range heals;\nChallenge an enemy within range; an enemy within range is\npushed 3 spaces; or destroy an obstacle within range.\nSinging Style is a Shield-based style that can shed its Shield at any\ntime to surprise your enemies. You can pull out a surprise Symphony\nbetween any Action, as long as you have a Shield.\nSinging Zen is the obvious stance to take, as it allows you to hold\nmultiple Shields so you can perform multiple Symphonies. After you\nperform a Symphony, your next Shield does not become active until next\nturn, so you can not immediately perform a second Symphony.\nSinging Dance is a powerful recovery Stance. Movement is an\nAction, and Try And Keep Up is also an Action, so this Stance can build\nup a huge Shield while also healing you.\nSinging Shadow and Singing Wild both have many Action Dice\nand a Token Action, so these stances allow you to build up a beefy\nShield while doing normal Shadow or Wild things."
+    },
+    {
+      "id": "skill_style_angel_style_5",
+      "name": "As The Crow Flies",
+      "description": "Range: 1-2\n\nEdges cannot remove you from play.\nAt the end of every turn, you may move two spaces.\n\n1+: As The Crow Flies\nTeleport three or four spaces.\nWinged Style is a highly mobile harassment style, able to be\nanywhere it needs to be to best cause trouble. The Winged Ability\ntriggers on every turn, not just your own, letting you stay out of reach.\nWinged Power and Winged One-Two let you put that speed to good\nuse, getting wherever you need to be to hurt things.\nWinged Reversal takes advantage of both parts' strengths, with\nWinged Style's free movement at the end of every turn putting you in\nposition for Reversal Form's out of turn Actions.\nWinged Shadow is one of the fastest stances in the game, letting you\nconstantly move around while creating obstacles as you go."
+    },
+    {
+      "id": "skill_style_cavalry_style_1",
+      "name": "Follow My Lead",
+      "description": "Range: 1\n\nAt the start of your turn, you may move 2 spaces.\nAt the start of each ally's turn, they may move 2 spaces.\n\n3+: Follow My Lead\nYou may move one space, then deal 1 damage to an enemy\nwithin range. An ally you can see may move one space, then deal\n1 damage to an enemy within their range.\nCharging Style provides team support regardless of your own\npositioning, so its ideal for getting where you need to be.\nOne-Two Form is a natural pair with Charging Style, even when it\nisn't your One-Two Form. An ally using One-Two will trigger the OneTwo Ability when they Follow Your Lead. Be on the lookout for allies\nwith other Abilities that trigger when they deal damage with an Action.\nCharging Blaster is a powerful combination. Each extra target for\nFollow My Lead can be an extra ally moving and attacking, letting the\nwhole team strike in unison.\nCharging Shadow puts its six Action Dice to use, letting you use\nFollow My Lead many times.\nCharging Reversal can use Follow My Lead during your allies' turns,\nif they need just a little more movement to get where they need to be. You\ncan use this Stance to correct minor positioning issues as they pop up."
+    },
+    {
+      "id": "skill_style_cavalry_style_2",
+      "name": "Burning Heart",
+      "description": "Range: 1-2\n\nWhenever an ally within range takes damage, they take half that\ndamage (rounded down) and you take the other half (rounded up).\n\n4+: Burning Heart\nYou and each ally within range gains 2 Iron tokens.\nHeroic Style keeps everyone else safe, no matter what. As long as\nyou're in the middle of the squad, they won't get hurt at all.\nHeroic Iron and Heroic Reversal are obvious choices, as Armor\ndrastically increases the Heroic Ability's benefits.\nHeroic Reversal and Heroic Shadow can keep their Speed tokens\nbetween turns, so you can move to where you need to be to take damage,\nor get out of there if you start taking too much damage.\nHeroic Zen is a punishing stance. If you're positioned right, the Zen\nAbility will deal damage to your enemies every time they attack anyone\non your team, as long as you can keep your Shields up.\nHeroic Control is less obvious than other choices, but Range 1-5\nwith Burning Heart is a powerful combo. The Control tokens also help\nyou deal with those attacks that you can't afford to take head on."
+    },
+    {
+      "id": "skill_style_cavalry_style_3",
+      "name": "Leap In",
+      "description": "Range: 1\n\nAt the start and end of your turn, you may teleport one, two, or\nthree spaces.\n\n4+: Leap In\nTeleport up to three spaces.\nYou may deal 2 damage to an enemy within range.\nJumping Style lets you dive onto threats that need to go down\nquickly. Sometimes the best team support is to take out the problem.\nJumping Power and Jumping One-Two are obvious choices, as\nthese Forms give you the damage you want to dive on a threat.\nJumping Blaster is also an option, as the Jumping Ability and Leap\nIn let you easily get into position for Shockwave.\nJumping Wild works pretty well as a panic stance, for when things\nget bad and you don't know what else to do.\nJumping Vigilance lets you easily get in position to heal or hand out\nWeakness tokens, then jump away to safety. You can trigger your\nAbilities in any order, so at the end of your turn, you can either use the\nVigilance Ability before jumping away, or after jumping to an enemy."
+    },
+    {
+      "id": "skill_style_cavalry_style_4",
+      "name": "Group Up",
+      "description": "Range: 1\n\nAt the end of your turn, you and each ally within range heals.\nAt the start of each ally's turn, if they are within range of you, they\nmay heal.\n\n2+ or 3+ or 5+: Group Up\nPull one ally up to 3 spaces.\n3+: Pull one ally up to 4 spaces.\n5+: Each pulled ally heals.\nRallying Style is healing focused, capable of picking your whole team\nback up off the ground.\nRallying Song and Rallying Vigilance are obvious, as the primary\ntwo healing Forms. Rallying Vigilance is especially good, as this Stance\nprevents your team from losing its healer in a pinch.\nRallying Iron gives you Armor and access to Secure, which combos\nwell with Group Up.\nRallying Shadow lets you get into position to pull your allies\nwherever they need to be.\nRallying Blaster and Rallying Control increase your Range, greatly\nimproving the Rallying Ability's flexibility."
+    },
+    {
+      "id": "skill_style_cavalry_style_5",
+      "name": "Eyes Open",
+      "description": "Range: 1-2\n\nAfter each Action you perform, give one Iron token to an ally\nother than yourself within range.\nYour allies within range may spend your tokens.\n\n4+: Eyes Open\nYou gain 6 Iron tokens and 1 Weakness token.\nUnbreakable Style lets you buff your team by proxy. Any token you\nhold becomes a token your friends hold.\nUnbreakable Control is the obvious choice, increasing your range to\nmake sharing tokens easier. The Unbreakable Ability also lets your allies\nuse your Control tokens, letting you use them as a range boost.\nUnbreakable Power and Unbreakable Iron let you build up a lot of\nPower or Iron tokens, to use with the Unbreakable Ability.\nUnbreakable Shadow and Unbreakable Reversal keep their Speed\ntokens outside of your turn, letting your allies borrow movement as they\nneed it."
+    },
+    {
+      "id": "skill_style_cyborg_style_1",
+      "name": "Armored",
+      "description": "Range: 1-2\n\nAfter you spend Iron tokens, you heal 1.\n\n2 Iron Tokens: You, Stay\nChallenge an enemy within range.\nThat enemy discards three Speed tokens.\nWith the Armored Ability, you want to spend only 1 Iron token per hit\nyou take, if possible. If you spend 4 Iron tokens to block a single hit, the\nArmored Ability still only heals 1.\nSpending Iron tokens to use You, Stay or Fury will heal you 1.\nArmored Style is tough as nails. With each Iron token you hold\nnegating two damage instead of one, you are very difficult to take down.\nArmored Iron is the obvious pair, giving you Armor and the Iron\ntokens to spend on You, Stay.\nArmored Shadow and Armored Reversal let you move into position\nto use You, Stay on enemies you want to slow down during their turn.\nArmored Vigilance is a powerful recovery Stance. With the\nVigilance Ability picking you up, the Cyborg Ability giving Iron tokens,\nand the Armored Ability making each Iron token count, this combination\nall but guarantees you'll survive to your next turn to try something else.\nLike all Cyborg Stances, Armored Song is a valid option entirely\nbecause Song Form can give you whatever Basic Token you need."
+    },
+    {
+      "id": "skill_style_cyborg_style_2",
+      "name": "Incinerator",
+      "description": "Range: 1-3\n\nWhen you spend Power tokens to boost the damage a hit deals,\ngive one Burning token to the target of that hit.\n\n2 Power Tokens: Flamethrower\nChoose an enemy within range. They take 1 damage, gain one\nBurning token, and are pushed 1 space.\nIf you have 3 Power tokens and spend them all on Flamethrower, it\ndeals 2 damage, pushes 2 spaces, and gives 2 Burning tokens.\nIncinerator Style is extremely aggressive, getting enemies out of\nyour face and setting them on fire.\nIncinerator Power is the obvious stance to take, as it gives you more\nPower to spend on the Flamethrower. Incinerator's Ability only gives\none Burning token to a Power-boosted hit, no matter how many Power\ntokens you spend. Spending 5 Power tokens on one Flamethrower deals\n4 damage, pushes 4 spaces, and gives 2 Burning tokens.\nIncinerator One-Two and Incinerator Blaster give you more hits\nwith each Action, giving you more opportunities to hand out Burning\ntokens with Incinerator's Ability.\nLike all Cyborg Stances, Incinerator Song is a valid option entirely\nbecause Song Form can give you whatever Basic Token you need."
+    },
+    {
+      "id": "skill_style_cyborg_style_3",
+      "name": "High Efficiency",
+      "description": "Range: 1-2\n\nYou may spend your Basic Tokens as if they were any other Basic\nTokens. The Basic Tokens are Iron, Power, and Speed tokens.\n\n1+ or 4+: High Efficiency\nChoose three: You heal 1; you gain one Iron token; you gain\none Power token; you gain one Speed token; or you deal 1\ndamage to an enemy within range.\n4+: Choose the last two options.\nA 4+ High Efficiency performs all five choices, in the order listed.\nMachine Style is a well-rounded Style that pairs well with any Form.\nMachine Shadow and Machine Reversal keep their Speed tokens\nbetween turns, allowing you to use them with Machine's Ability.\nHigh Efficiency does a lot at low cost, so Machine Shadow and\nMachine Wild make the best use of this with their many Action Dice.\nLike all Cyborg Stances, Machine Song is a valid option entirely\nbecause Song Form can give you whatever Basic Token you need."
+    },
+    {
+      "id": "skill_style_cyborg_style_4",
+      "name": "Rocket",
+      "description": "Range: 1\n\nAfter you push someone, you may teleport to any empty space\nadjacent to them.\n\n2 Speed Tokens: Rocket Tackle\nPush an adjacent enemy or ally two spaces.\nRocket Style carries your allies to where they should be, and pushes\nenemies away from where they want to be.\nRocket Dance is incredibly mobile, letting you Throw someone,\nteleport to them, and take home a bunch of Speed tokens for your trouble.\nRocket Shadow and Rocket Reversal can keep hold of your Speed\nTokens for impromptu Rocket Tackle interrupts.\nLike all Cyborg Stances, Rocket Song is a valid option entirely\nbecause Song Form can give you whatever Basic Token you need."
+    },
+    {
+      "id": "skill_style_cyborg_style_5",
+      "name": "Power Converter",
+      "description": "Range: 1-2\n\nAt the end of your turn, choose a token you hold. Either replace it\nwith a Power token, or gain another copy of it.\n\n2+ or 6+: Power Converter\nTarget a single token held by you or someone within range.\nChoose one or both: You steal the targeted token(s) from them;\nand/or replace the targeted token(s) with Power tokens.\n6+: The Choice Effect applies to every token they hold of the\ntargeted token's type.\nSyphon Style filters out excess tokens into more Power, letting you\nturn weakness into strength. A 6+ Power Converter will steal and/or\nreplace every token of a single type held by your target. So if an ally has 3\nWeakness tokens, you may turn them into 3 Power tokens.\nSyphon Power and Syphon Wild can efficiently use all the Power\nTokens you gain from Power Converter.\nSyphon Blaster lets you remove more tokens at once. An Amplified\n6+ Power Converter can remove 5 types of tokens from anyone with\nrange, giving all of them back to you as Power tokens. Extra targets don't\ngive you more choices - you must make the same choice for every target.\nSyphon Reversal can steal your opponent's tokens the moment they\ngain them, before they even get to use them.\nSyphon Zen guarantees you get a 6+ Power Converter each turn.\nLike all Cyborg Stances, Syphon Song is a valid option entirely\nbecause Song Form can give you whatever Basic Token you need."
+    },
+    {
+      "id": "skill_style_demon_style_1",
+      "name": "Darkness Dawns",
+      "description": "Range: 2-4\n\nYou can see and target enemies through Fog.\nAt the end of your turn, place a Fog obstacle into your space.\n\n4+: Darkness Dawns\nPlace two Fog obstacles into empty spaces within range.\nYou may teleport to one of those Fog obstacles.\n\n4+: Twilight Sorrow\nEach enemy standing in Fog gains one Weakness token.\nYou gain one Speed token for each enemy affected.\nFor Twilight Sorrow, enemies standing adjacent to Fog still count as\nbeing in Fog. Twilight Sorrow gives you the same number of Speed\ntokens as the number of Weakness tokens it hands out.\nThe Dark Ability replaces any obstacle in your space with Fog.\nDark Style lets you set up a lot of Fog to hide in, and punish any\nenemies who try to use it by handing them Weakness tokens.\nDark Shadow can use Stunt to create more Fog. The Shadow\nAbility lets you keep your Speed tokens when you use Twilight Sorrow\nout of turn with a Chaos Token.\nDark Blaster lets you place more fog with Darkness Dawns, as well\nas taking advantage of its Ability to target through Fog for unavoidable,\nlong-range Shockwaves or Amplified Damage Actions.\nDark Control increases your Range, so Darkness Dawns can take\nyou farther, and you can use your Control tokens through the Fog."
+    },
+    {
+      "id": "skill_style_demon_style_2",
+      "name": "Watch Your Step",
+      "description": "Range: 1-2\n\nYour Throw Actions may target any number of enemies within\nrange. After you Throw an enemy, they take 1 damage.\n\n3+: Watch Your Step\nChoose an enemy you can see that moved during this turn. You\ndeal 2 damage to them.\nOgre's Style relies on Throws to trigger Watch Your Step, and its\nAbility makes those Throws better and easier to use.\nOgre's Dance is a powerful mobility stance, turning your Throws into\na exponential amount of Speed tokens. If you Throw three enemies three\nspaces, you gain 9 Speed tokens!\nOgre's One-Two deals 2 damage with each Throw you perform.\nOgre's Reversal can use Watch Your Step to snipe enemies from\nacross the map during their own turn, so long as they move at all.\nOgre's Blaster can Throw a bunch of enemies, then use an\nAmplified Watch Your Step to hit all of them at once.\nOgre's Control has Range: 1-5, letting you use one Throw Action\non as many enemies as possible."
+    },
+    {
+      "id": "skill_style_demon_style_3",
+      "name": "Suddenly…",
+      "description": "Range: 1\n\nAt the end of every turn, you deal 1 damage to an adjacent enemy.\n\n4+: Suddenly…\nTeleport into an empty space adjacent to someone who is alone.\nSomeone is alone if nobody is adjacent to them.\nThe Slasher Ability deals damage every turn, not just your turn.\nSlasher Style wants to be in the thick of things. By sticking close to\nan enemy who already took their turn, you can slowly tear them apart until\none of their friends pushes you out of the way. Then, you can use your\nChaos tokens to Suddenly… be back in position.\nSlasher Reversal and Slasher Shadow can move out of turn, letting\nyou stick close to enemies you want to focus on with the Slasher Ability.\nSlasher Power and Slasher Song give you Power tokens, so you\ncan deal more damage with the Slasher Ability.\nSlasher Iron gives you the survivability you'll need to stand next to\nyour enemies for several turns, and Contain can pull them close and\nplace Traps for them to fall in while escaping from you."
+    },
+    {
+      "id": "skill_style_demon_style_4",
+      "name": "Life Steal",
+      "description": "Range: 1\n\nAfter you deal damage with a hit, you heal 1.\nAfter you give Weakness tokens to an enemy, you gain that many\nPower tokens.\n\n4+: Life Steal\nDeal 2 damage to an enemy within range.\nYou may give that enemy one Weakness token.\nVampire Style drains power with every blow, growing stronger as\nyour enemies grow weaker.\nVampire One-Two and Vampire Blaster give each of your attacks\nanother hit, letting the Vampire Ability heal you more.\nVampire Vigilance has many ways to give out Weakness tokens,\nwhich all turn into extra Power later.\nVampire Zen deals 1 damage each time an enemy hits your shield,\nwhich triggers the Vampire Ability's heal. If you put up your shields while\ndamaged, enemies trying to break you will only help pick you back up."
+    },
+    {
+      "id": "skill_style_demon_style_5",
+      "name": "Hunger",
+      "description": "Range: 1\n\nYou have Armor.\nAt the start of your turn, if your HP is 3 or less, you heal.\n\n4+: Hunger\nDeal 2 damage to an enemy within range.\nYou may take one token from that enemy.\nThe target of Hunger loses the token you take from them, and you\ngain that token.\nZombie Style gets back up and stays on its feet. It is a well-rounded\nStyle that pairs well with any Form.\nZombie Vigilance is a double dose of recovery, healing you twice at\nthe start of your turn. This Stance can go from zero HP to a full health bar\nwith a single 4+ Stand Strong.\nZombie Wild lets you easily set up your extra Action Dice from\nWild's Ability, since Hunger can steal tokens and the Zombie Ability\ncan pick you up from death. The tokens you steal with Hunger can also be\nused to pay for Fury."
+    },
+    {
+      "id": "skill_style_flametongue_style_1",
+      "name": "Burn It All Down",
+      "description": "Range: 2-4\n\nAfter you target an enemy with an Action, if they have four\nBurning tokens or less, give them 1 Burning token.\n\n4+: Burn It All Down\nTarget one enemy within range. Give them one Burning token\nand put a Trap into their space.\nBurning Style hands out Burning tokens very aggressively, using\ntraps and fire to overwhelm their foes.\nBurning Shadow, Burning One-Two, and Burning Dance\nappreciate the free extra burning tokens while doing what they want to\ndo anyway, and have reliable access to Burn It All Down.\nBurning Blaster is your best option for handing out a lot of fire, and\nBurn It All Down is extremely good with extra targets.\nBurning Iron protects you from the traps you lay, while also letting\nyou pull enemies through your traps."
+    },
+    {
+      "id": "skill_style_flametongue_style_2",
+      "name": "Ka-Boom!",
+      "description": "Range: 2-4\n\nAfter you deal damage to an enemy, push that enemy one space.\nAfter you destroy an obstacle, replace it with an Edge.\n\n6+: Ka-Boom!\nDeal 2 damage to an enemy within range.\nThen, destroy every obstacle adjacent to them.\nWhen you use Ka-Boom!, the Explosion Ability will push them\nbefore the second part of Ka-Boom! This means it will destroy obstacles\nadjacent to the space they were pushed into.\nExplosion Style makes craters. It tears the map apart and makes\nall your attacks high-impact, pushing your enemies all over the place.\nExplosion Blaster can use an Amplified Ka-Boom! to destroy a\nhuge portion of the battlefield.\nExplosion Power and Explosion One-Two allow you to push\nenemies farther, using either power tokens or the followup hit.\nExplosion Dance can use Dance's mobility, along with the Edges\nyou make with Ka-Boom!, to easily ring out your foes."
+    },
+    {
+      "id": "skill_style_flametongue_style_3",
+      "name": "Inferno",
+      "description": "Range: 1-2\n\nAt the end of your turn, after your Burning tokens have already\ntriggered, you gain three Burning tokens.\nAfter an enemy deals damages to you with an Action, you may\ngive them all of your Burning tokens.\n\nGain 1 Burning Token: Ignition\nGive one Burning token to an enemy within range.\nYou can only use Ignition once per turn.\nThe three Burning tokens you gain from Inferno's Ability do not hurt\nyou the turn you gain them.\nLike all Token Actions, Ignition can be used during enemy turns.\nInferno Style involves setting yourself on fire to discourage enemies\nfrom attacking you. That's just smart.\nInferno Blaster is a strong choice, turning Ignition from a zero sum\ngame into a game stacked heavily in your favor.\nInferno Shadow lets you stay within range of your enemies, so you\ncan keep using Ignition every turn.\nInferno Wild gets extra Action Dice from being on fire.\nInferno Zen will heavily punish enemies who attack you. Be sure to\nChallenge someone so they have to."
+    },
+    {
+      "id": "skill_style_flametongue_style_4",
+      "name": "Cleansing Fire",
+      "description": "Range: 1\n\nWhenever you would take damage from Burning tokens or from\nTraps, you heal that much damage instead.\n\n4+: Cleansing Fire\nChoose two: Give a Burning token to someone within range;\nheal an ally within range; or place a Trap within range.\nPhoenix Style pairs well with Inferno Style and Volcanic Style,\npreventing their downsides from destroying you. It functions as an\nexcellent follow-up Style to other Flametongue shenanigans.\nPhoenix Vigilance is a powerful self-healing Stance, allowing you to\nrapidly get back in the fight.\nPhoenix Song and Phoenix Iron provide reliable support, so you\ncan keep the rest of your team in the fight while your enemies burn.\nPhoenix Shadow has the most chances to use Cleansing Fire, can\nrun away during enemy turns, and use Stunt to place a Trap for you to\nstand in and heal up with."
+    },
+    {
+      "id": "skill_style_flametongue_style_5",
+      "name": "Pyroclasm",
+      "description": "Range: 1-3\n\nAfter you spend Speed tokens on Free Movement, you may place\na Trap into each space you exit.\nYou do not take damage from entering a space with a Trap.\n\n4+: Pyroclasm\nPlace three Traps within range. Each Trap placed by this Action\nmust be adjacent to a Trap obstacle.\nThe Volcanic Ability lets you move through Traps safely, but\ndoesn't protect you from damage if you end your turn on one.\nVolcanic Style covers the world around you with fire.\nVolcanic Shadow is the obvious choice. Moving out of turn lets you\nplace your Traps reactively, and lets you get out of them if someone tries\nto use them against you by pushing you into one.\nVolcanic Dance is good for similar reasons, as a stance that gains a\nlot of Speed tokens. Throwing enemies through a line of Traps is also\nextremely deadly, if they do not have the Armor to take it.\nVolcanic Song lets you run and hide while you provide support to\nyour team, putting a wall of traps between you and your enemies.\nVolcanic Iron and Volcanic Reversal are immune to damage from\nTraps, thanks to their Armor, so you can place Traps recklessly."
+    },
+    {
+      "id": "skill_style_gunkata_style_1",
+      "name": "Firing Wild",
+      "description": "Range: 3-5\n\nAfter you deal damage to someone, you move one space.\n\n4+: Firing Wild\nChoose one: Deal 1 damage to every enemy and ally adjacent\nto you; or deal 1 damage to every enemy and ally within range.\nAkimbo's Ability does not give you a choice - if you deal damage,\nyou must move one space. Firing Wild makes you move one space per\nenemy or ally damaged by it.\nCount up all the damage dealt before you move anywhere. Each\nspace of movement is separate, so you may move back and forth over\nand over if you don't want to leave your spot.\nAkimbo One-Two doubles the damage of Firing Wild, and makes\neach of your Damage Actions move you one additional space.\nAkimbo Control can either have a large Range of 3-8, letting you hit\neveryone on the map, or close off your weakness to close range combat\nby making your Range 1-5.\nAkimbo Reversal takes advantage of Akimbo's Ability to give you\nmid-turn movement after your damage-dealing Actions, letting you\nescape from enemies mid-combo."
+    },
+    {
+      "id": "skill_style_gunkata_style_2",
+      "name": "Bombardment",
+      "description": "Range: 3-8\n\nYou can see and target enemies through Fog and Walls.\n\n1+ or 6+: Bombardment\nPlace a Trap into a space within range.\n6+: Place a Trap into each space adjacent to the first Trap.\nDo not place these Traps over Edges or Walls.\nArtillery Style bombards your enemies with an endless rain of fire.\nArtillery Control can either have a massive Range of 3-11, letting\nyou hit everyone on the map, or close off your weakness to close range\ncombat by making your Range 1-8.\nArtillery Power can Crush enemies at long range.\nArtillery Blaster can Bombard two spaces at once.\nArtillery Shadow can fill the field with Fog for you to hide behind,\nwhile keeping your long range advantage anyway.\nArtillery Zen can guarantee a 6+ Bombardment every turn."
+    },
+    {
+      "id": "skill_style_gunkata_style_3",
+      "name": "Take Aim",
+      "description": "Range: 4-8\n\nYou ignore Armor and Shields when dealing damage.\nWeakness tokens you hold and Iron tokens your enemies hold do\nnot reduce the damage you deal.\n\n1+: Take Aim\nYour next Action this turn has its cost and every number listed\nin its description increased by 1.\nTake Aim is especially powerful with Choice Actions and Tiered\nActions, as it gives you much more from those Actions than normal.\nCrosshair Style keeps your enemies in your sights, ignoring their\ndefenses and hitting them where it hurts, as long as you can keep away.\nCrosshair Blaster can use Take Aim to improve Amplify, then\nAmplify a Damage Action to have 4-12 Range and 6 total targets.\nCrosshair One-Two and Crosshair Power take advantage of the\nCrosshair Ability to ignore enemy defenses by dealing high damage.\nCrosshair Control can Take Aim to gain twice as many Control\nTokens from Suppression, while also removing your weakness to close\nrange combat by making your Range 1-8.\nCrosshair Iron, Crosshair Song, and Crosshair Vigilance take\nadvantage of Take Aim's wording to pick extra choices or hand out\nmultiple extra tokens with their various Unique Actions."
+    },
+    {
+      "id": "skill_style_gunkata_style_4",
+      "name": "Trick Shot",
+      "description": "Range: 2-4\n\nAfter you deal damage to an enemy with an Action, you may deal\n1 damage to a different enemy within 3 spaces of them.\n\n3+: Trick Shot\nChoose one obstacle within range.\nDeal 2 damage to an enemy within 3 spaces of that obstacle.\nBoth the Ricochet Ability and Trick Shot draw line of sight from the\nenemy that triggers the Ricochet, or the obstacle you chose with Trick\nShot, instead of drawing from you.\nTrick Shot can shoot through Walls and Fog. If you choose a Wall or\nFog as the targeted obstacle, any enemy within 3 spaces of the Wall or\nFog is a legal target, even if you couldn't hit them normally.\nRicochet Style spreads your damage around rapidly, letting you poke\nenemies around corners and soften up many enemies at once.\nRicochet One-Two is the most machine-gun Stance in the game,\nhitting your enemies two extra times with each attack you make.\nRicochet Wild and Ricochet Shadow take advantage of Ricochet's\nAbility with their many many Action Dice, and especially with Fury.\nRicochet Blaster can trigger multiple Ricochets per Action, since\nRicochet triggers once for each enemy damaged by each Action you\nperform. This makes your Shockwaves especially dangerous."
+    },
+    {
+      "id": "skill_style_gunkata_style_5",
+      "name": "Point Blank Shot",
+      "description": "Add\n\nRange: 2-3\n\nto your Action Dice.\n\n2+: Point Blank Shot\nDeal 1 damage to an adjacent enemy. Then, push them 1 space.\nTen Thousand Style lets you do just a little bit more with any Form,\nmaking it a universally solid Style.\nTen Thousand Power can use the extra dice to get into position, or\nto use more Point Blank Shots with all your Power Tokens.\nTen Thousand Blaster, Ten Thousand One-Two, and Ten\nThousand Dance all gain bonuses with certain kinds of Actions, so\nhaving more Actions each turn lets you gain those bonuses more often.\nTen Thousand Shadow gets an unparalleled eight Action Dice.\nTen Thousand Vigilance and Ten Thousand Song are the only\nForms with 1+ Unique Actions for your extra dice to use."
+    },
+    {
+      "id": "skill_style_phantom_style_1",
+      "name": "Aura",
+      "description": "Range: 1-3\n\nAt the start of your turn, you gain a 3 point Shield.\nWhen an enemy within range damages or breaks a Shield, you\nmay move that enemy one space.\nAfter a Shield within range breaks, you gain 1 Iron token.\n\n3 Basic Tokens: Shields Up\nAn ally within range gains a 3 point Shield.\nYou always count as an ally within range of your own Actions, so\nShields Up can give yourself a Shield.\nAura Style is a shield-based support Style that punishes enemies\nwho try to attack your team.\nAura Zen lets you stack Shields, making it ideal for Aura's benefits.\nAura Song and Aura Iron are both support-based Stances that can\ngenerate the tokens you need to use Shields Up.\nAura Dance and Aura Shadow can generate many Speed Tokens\nto spend on Shields Up."
+    },
+    {
+      "id": "skill_style_phantom_style_2",
+      "name": "Banshee's Wail",
+      "description": "Range: 1-4\n\nAt the start of your turn, give one Weakness token to all enemies\nwithin range.\nAt the end of your turn, Challenge an enemy within range and give\nthem one Weakness token.\n\n6+: Banshee's Wail\nAll enemies within range gain a Weakness token.\nAll Traps and Walls within range become Rubble.\nCrying Style weakens all of your enemies at once.\nCrying Control has Range: 1-7, making the Crying Ability and\nBanshee's Wail extra effective.\nCrying Blaster also increases your range, and adds some offensive\npower to the Phantom by giving you access to large Shockwaves.\nCrying Vigilance doubles up on the Weakness-granting Abilities\nand Actions, allowing you to significantly hamper dangerous enemies.\nCrying Zen guarantees you'll have a Banshee's Wail each turn."
+    },
+    {
+      "id": "skill_style_phantom_style_3",
+      "name": "Pull The Strings",
+      "description": "Range: 1-5\n\nYou may use Speed tokens to move any ally, enemy, or obstacle\nwithin range, using the normal Free Movement rules.\nWalls and Traps you move with this Ability become Rubble.\nEdges cannot be moved with this Ability.\n\n3+ or 5+: Pull The Strings\nChoose an enemy or ally you can see. Move them 3 spaces.\n5+: Choose an enemy or ally you can see. Move them 3 spaces.\nPuppet's Style can re-arrange the battlefield however you see fit.\nPuppet's Dance is the obvious Stance, letting you turn Throws and\nGrapples into Speed Tokens that can move anything within range.\nPuppet's Control gives you more Range, letting you puppeteer from\nfarther away, and control your enemy's Actions, too.\nPuppet's Shadow and Puppet's Reversal keep your Speed tokens\nbetween turns, letting you manipulate your enemies throughout the round.\nBut remember, if it is not your turn, you can only use Free Movement at\nthe start or end of the turn. If you move an enemy over an Edge at the start\nof their turn, they can use Basic Movement Actions to save themselves."
+    },
+    {
+      "id": "skill_style_phantom_style_4",
+      "name": "Now You See Me…",
+      "description": "Range: 1-3\n\nEdges cannot remove your Copies from play. You and your\nCopies can move over Walls as though they were empty space.\nAfter you use Free Movement on yourself or your Copy, you may\nmove any number of your Copies one space.\n\n1+ or 3+ or 5+: Now You See Me…\nPlace a Copy into an empty space within range.\n3+: Place a Copy into an empty space within range.\n5+: Place a Copy into an empty space within range.\n\nDestroy 1 Copy: …Now You Don't\n…Now You Don't is a Token Action, but the Cost is one of your Copies.\n\nTeleport into the space of the destroyed Copy.\n\nSpirit Style is a defensive style, letting your move freely while hiding\nyourself behind a wall of Copies.\nSpirit Shadow is one of the slipperiest Stances in the game, turning\nboth Speed tokens and Copies into escape mechanisms in the middle of\nenemy turns, and Stunt can make even more Copies to escape with.\nSpirit Dance can cover the battlefield with dancing partners to trigger\nthe Dance Ability with, letting you manipulate the battlefield at will.\nSpirit Iron and Spirit Power can use …Now You Don't to get around\ntheir mobility penalty."
+    },
+    {
+      "id": "skill_style_phantom_style_5",
+      "name": "Black Hole",
+      "description": "Range: 1-3\n\nEdges cannot remove you from play. When you stand on an Edge,\nevery other Edge counts as an adjacent space you can move to.\n\n4+: Black Hole\nPlace an Edge into an empty space within range.\nThe Vortex Ability only counts for movement, not Range. You\ncannot stand over any Edge and attack any enemy within Range 1-2 of\nevery other Edge. You must move to them.\nVortex Style opens portals you can use to your advantage, both\nfor mobility and to remove your enemies from play.\nVortex Dance, Vortex Shadow, and Vortex Reversal give you\nthe speed to consistently take advantage of your portals.\nVortex One-Two, Vortex Power, and Vortex Fury can use your\nportals to surprise your foes, suddenly attacking from out of nowhere."
+    },
+    {
+      "id": "skill_style_punk_style_1",
+      "name": "I'm Still Here",
+      "description": "Range: 1\n\nYou don't get Taken Out at zero HP. You can continue to fight as\nlong as you remain in play. Your side still loses if everyone in play is\nat zero HP at the same time.\n\n2 HP: Lash Out\nLash Out is a Token Action that spends your HP.\nYou can't spend HP you do not have.\n\nPush an adjacent enemy two spaces.\n\n12+: I'm Still Here\nDeal 7 damage to an enemy within range.\nThen, push that enemy 7 spaces.\nI'm Still Here is nearly impossible to trigger without the Punk Ability.\nSwitch to Bleeding Style after you get Taken Out and you can guarantee\nI'm Still Here will do some damage.\nBleeding Style is tenacity made form, and will never surrender.\nBleeding Wild is a good desperation Stance, as switching to it while\nyou are Taken Out triggers two of Wild's bonus dice.\nBleeding Blaster can make I'm Still Here hit multiple enemies.\nBleeding Song can heal your allies even if you die."
+    },
+    {
+      "id": "skill_style_punk_style_2",
+      "name": "Brawling",
+      "description": "Range: 1\n\nAfter your Shield breaks, you gain 1 Power token.\nAfter you deal damage, if you didn't spend a Power token on that\nhit, you gain 1 Power token.\n\n2 Power Tokens: Tough It Out\nYou gain a 2 point Shield.\nBrawling Style can keep up with the most vicious of foes, building up\npower and then spending it on defense or damage as you need it.\nBrawling One-Two builds up Power tokens very quickly, letting you\nspend them on Power Form's Crush or Wild Form's Fury later.\nBrawling Zen can rebuild its Shields as they break. While inactive\nShields don't normally become active until the end of the turn, you can use\nTough It Out after your active Shield breaks to immediately have a new\nactive Shield.\nBrawling Wild can unleash devastating Fury. As long as you don't\nspend a Power token to use Fury, you'll get a Power token back, letting\nyour Iron and Speed tokens effectively buy Fury at half price."
+    },
+    {
+      "id": "skill_style_punk_style_3",
+      "name": "Flashy",
+      "description": "Range: 1\n\nAfter you roll your Action Dice, you may combine two of your\nnumbers into a single, larger number.\n\nX: Show Off\nChoose two of these Basic Actions: Movement, Damage,\nA Challenger Approaches, Put It Out!, or Throw.\nPerform both of those Actions as if you had spent X on them.\nYou can only use Show Off once per turn.\nThe Flashy Ability combines two numbers into one, effectively\nremoving one from your Action Pool. For example, if you combine a 3\nand a 4, you gain a 7, but lose both the 3 and the 4.\nFlashy Style is all about doing more with less. It favors Forms with\nmany dice to add together with the Flashy Ability.\nFlashy Reversal loves Show Off. The once per turn limit is not a\ndrawback when paired with Reversal's Ability.\nFlashy Shadow and Flashy Wild have many Action Dice for you to\ncombine with the Flashy Ability.\nFlashy Power is the most statistically likely Stance in the game to get\na 9+ Crush whenever you need it.\nFlashy Dance can use the Flashy Ability for an incredible Throw."
+    },
+    {
+      "id": "skill_style_punk_style_4",
+      "name": "Take It On The Chin",
+      "description": "Range: 1\n\nAfter you take damage from an enemy, you deal 1 damage back to\nthem.\n\n4+: Take It On The Chin\nEach enemy within range deals 1 damage to you.\nThen, you deal 3 damage to one of them.\nIf you use Armor or Iron Tokens to reduce the damage you take to\nzero, the Knockdown Ability does not trigger. If an enemy hits you twice\nwith One-Two's Ability, Knockdown's Ability will also hit them twice.\nKnockdown Style loves a good fight, and gives it out as good as it\ngets. Enemies who rely on hitting you multiple times will regret it.\nKnockdown Zen does some very silly things. If you Take It On The\nChin while you have a Shield up, you will deal 2 damage to every enemy\nwithin range, until your Shield breaks.\nKnockdown Blaster and Knockdown Control increase your range,\nmaking Take It On The Chin more dangerous."
+    },
+    {
+      "id": "skill_style_punk_style_5",
+      "name": "Is That All You Got?",
+      "description": "Range: 1\n\nAfter you take damage, you gain 1 Iron token.\nAfter you take damage from an enemy with your Challenge, you\nmay move one space.\n\n1+: Is That All You Got?\nChallenge an enemy you can see. You gain 1 Iron token.\n\nX: Not Good Enough\nGive X - 2 Weakness tokens to an enemy with your Challenge.\nThen, they discard your Challenge.\nNot Good Enough gives out two less Weakness tokens than the\nnumber you spent on it. For example, if you spend a 9 to use Not Good\nEnough, you give them seven Weakness tokens. Spending a 1 or a 2\nwill give them zero Weakness tokens.\nTaunting Style is a big distraction, letting you Challenge your\nenemies while keeping enough Iron tokens to survive anything.\nTaunting Iron and Taunting Vigilance pair their Iron/Weakness\ntoken affinity with Taunting Style's use of both.\nTaunting Reversal and Taunting Shadow can move out of turn,\nmaking you even harder to pin down."
+    },
+    {
+      "id": "skill_style_teacher_style_1",
+      "name": "Patient",
+      "description": "Range: 1\n\nAt the end of your turn, your Speed tokens become Iron tokens.\nYou may only take one Action per turn.\nYour Action Pool does not empty between Turns or Rounds.\n\nX: Waiting Game\nAdd X+1 to your Action Pool. Then, you may move one space.\nYou can only use Waiting Game during enemy turns.\nWaiting Game gives you a number one higher than the number you\nspent to use Waiting Game.\nPatient Style likes to wait. While Reversal Form holds your\nnumbers to interrupt your enemies' turns, Patient Style holds them to\nmake your next turn ridiculous, using two turns' worth of numbers all at\nonce, while tailoring your numbers to the Actions you want to use.\nPatient Reversal Stance may use two Actions per turn, one from\nthe Patient Ability and one from the Reversal Ability. As a result, this\nStance can use Waiting Game twice as often as other Patient Stances.\nPatient Song and Patient Dance can gain a lot of Speed tokens,\ngiving you a lot of Iron tokens while you wait to build up a big turn next.\nIf you want to add a lot of little numbers to your next turn, you want to\nuse Patient Shadow or Patient Wild.\nIf you want to add some big numbers to your next turn, you want to\nuse Patient Control or Patient Power."
+    },
+    {
+      "id": "skill_style_teacher_style_2",
+      "name": "Elder",
+      "description": "Range: 1-2\n\nThe cost of this Stance's Unique Actions are reduced by 1 (to a\nminimum of 1+ or 2 tokens).\nOnce per turn, during your turn, you may use any Unique Action\nyou know, from among all of your Stances, for free. It does not cost\nany tokens or numbers to use. If your free Action is a Tiered Action,\nyou perform it as if you spent a 7.\nElder Style is a strange beast. It pairs well with any Form, but it also\npairs with every other Form and Style you have, due to its Ability.\nElder Style likes Forms with good Unique Actions it can use for free.\nSome of the best are Blaster Form's Amplify, Iron Form's Protect,\nPower Form's Crush, and Song Form's Sing Along.\nYou do not need to pair Elder Style with these Forms to use these\nActions. You just need to have these Forms among your Stances.\nElder Shadow only needs 2 Speed tokens to use Stunt, letting you\nteleport all over while leaving obstacles everywhere. An Amplified Stunt\nwill place four obstacles into adjacent spaces.\nElder Reversal is so ineffective I have to warn against it. Elder's cost\nreduction does nothing for Counter Attack, and the Elder Ability to use a\nsurprise Unique Action once during your turn is heavily limited by the\nReversal Ability's once per turn Action limit."
+    },
+    {
+      "id": "skill_style_teacher_style_3",
+      "name": "Mastermind",
+      "description": "Range: No\n\nYou cannot perform Actions. Instead, you spend your numbers\non your allies, making them perform Actions for you.\nEach Action you take uses an ally's current location, range, and\nStance bonuses as if they'd taken that Action themselves. You can\nonly give Actions to allies you can see.\nAfter each Action an ally performs during your turn, you may\nmove 1 space.\nMastermind Style directs your allies, deciding what they do for them.\nBe wary of Mastermind One-Two, Mastermind Power, and\nMastermind Zen. Their Abilities do nothing when you can't take Actions.\nMastermind Vigilance can do its job much easier when you can\nmake your allies Weaken enemies themselves, without putting yourself in\nharm's way.\nMastermind Reversal can donate Actions to your allies exactly\nwhen they need them most, making a full-team Reversal Form.\nMastermind Iron has Armor and a downside that doesn't matter if\nyou don't need to go anywhere."
+    },
+    {
+      "id": "skill_style_teacher_style_4",
+      "name": "You Can Do It!",
+      "description": "Range: 1-2\n\nAt the end of your turn, allies within range heal, and you gain an\nInspired token.\n\n4+: You Can Do It!\nChoose an ally within range. They choose two: They heal; they\nmove two spaces; they gain a copy of a token they hold; or they\ndiscard one token they hold.\nThe Inspired token you gain from the Motivating Ability is the same\nas the one used for the Teacher Ability.\nMotivating Style is a support based style, and lets you fill the role of\nthe Cavalry, encouraging you to group up with your team mates.\nMotivating Dance and Motivating Shadow can easily put you in\nposition to use You Can Do It! and the Motivating Ability.\nMotivating Iron doubles up on your defenses and support options."
+    },
+    {
+      "id": "skill_style_teacher_style_5",
+      "name": "Watch Closely",
+      "description": "Range: 1\n\nAt the end of your turn, give an ally one Training token.\nTraining Token: Before performing an Action, you may spend a Training\ntoken to increase all numbers listed in that Action by 1, including its cost.\nYou may only spend 1 Training token per turn.\n\n3+: Watch Closely\nYou gain one Training Token. If you spend it before the end of\nthis turn, give one Training Token to an ally.\nWhen you use a Training Token, pay close attention to the wording of\nthe modified Action. Actions that say \"target one enemy\" will now say\n\"target two enemies,\" while Actions that say \"an enemy\" or \"an ally\" will\nstill have only one target.\nFor example, the basic Damage Action deals damage to two targets,\nand deals one more damage to both of them. The basic Grapple or\nThrow Actions, however, are unchanged by Training Tokens.\nTraining Style is a balanced Style that does not lean in any\nparticular direction. Its primary benefit, the Training Tokens, are best\nused with one Watch Closely per turn, so any Form with four or more\nAction Dice makes a good pair with Training Style."
+    },
+    {
+      "id": "skill_style_trickster_style_1",
+      "name": "Welcome To My Maze",
+      "description": "Range: 1\n\nAdjacent enemies cannot gain or spend Speed tokens.\n\n2+: Welcome To My Maze\nDeal 1 damage to one enemy outside of your Range.\nThen, pull them three spaces.\nCaged Style traps your enemies until you're ready to let them go.\nCaged Zen forces your enemies to stay with you, giving them no\nchoice but to eat counter-attack damage from the Zen Ability.\nCaged Iron and Caged Reversal make good use of their Armor, so\nyou can survive caging any enemy you want.\nCaged Vigilance can use Welcome To My Maze to guarantee an\nenemy is within range for the Vigilance Ability.\nCaged Blaster is a suicidal strategy - you can pull every enemy to\nyou, and force them to Take You Out if they want to escape your Ability. If\nyour team has a strategy that requires every enemy to be in one spot,\nCaged Blaster can guarantee they will be."
+    },
+    {
+      "id": "skill_style_trickster_style_2",
+      "name": "Mysterious",
+      "description": "Range: 1-2\n\nAt the start of your turn, place a Fog obstacle into your space.\nWhile you stand in Fog, your maximum range is doubled.\n\n3 Speed or Iron Tokens: Ghost Walk\nPlace a Fog obstacle into an empty space within range.\nThen, teleport to a Fog obstacle within range.\nThe Mysterious Ability replaces an obstacle in your space with Fog.\nYou can pay for Ghost Walk with any quantity of each token, as long\nas you spend a total of 3 tokens. 3 Speed, 2 Speed and 1 Iron, 2 Iron and\n1 Speed, and 3 Iron tokens are all legal costs to pay for Ghost Walk.\nMysterious Style strikes from hiding, using Fog to be untouchable.\nMysterious Control increases your range, letting you attack, control,\nand Ghost Walk across the whole map.\nMysterious Blaster also increases your range, while also letting\nGhost Walk place additional Fog and giving you access to Shockwave.\nWhile standing in Fog, an Amplified Shockwave has Range: 1-10.\nMysterious Shadow and Mysterious Reversal keep their Speed\ntokens between turns, letting you Ghost Walk to escape harm.\nMysterious Iron can Ghost Walk to make up for Iron Form's lack of\nmaneuverability, while also gaining Iron tokens for Trickster Abilities."
+    },
+    {
+      "id": "skill_style_trickster_style_3",
+      "name": "Where Are You Looking?",
+      "description": "Range: 1-3\n\nAfter an enemy deals damage to you while within range of at least\none of your Copies, you deal 1 damage to them. If they are within\nrange of three or more Copies, you deal 2 damage to them instead.\nYou may spend your Copies as Iron tokens.\n\n3+ or 6+: Where Are You Looking?\nPlace 2 Copies into empty spaces within range.\n6+: Place 2 more Copies into empty spaces within range.\nIllusion Style punishes enemies who try to hurt you without clearing\nout your Copies. Once you set up, it takes a lot of effort to set you back.\nIllusion Control and Illusion Blaster have increased Range,\nmaking your Copies more dangerous. Illusion Blaster also places extra\nCopies with Where Are You Looking?\nIllusion Shadow can place additional Copies using Stunt in the\nmiddle of the enemy's turn, for a sudden surprise.\nIllusion Zen increases the punishment for attacking you."
+    },
+    {
+      "id": "skill_style_trickster_style_4",
+      "name": "Hidden",
+      "description": "Range: 1-3\n\nYou may move through Walls as though they were empty spaces.\nYou can see and target enemies through Walls.\n\n3 Iron tokens: Sudden Strike\nDeal 2 damage to an enemy within range.\nThe Hidden Ability lets you stand in Walls. A Wall you are standing in\ndoes not block line of sight to you.\nHidden Style is a defense oriented Style, but is generically useful\nwith any Form you want to pair it with.\nHidden Iron and Hidden Song have the Iron tokens you need for\nSudden Strike.\nHidden Reversal and Hidden Shadow can escape from enemies by\ngoing through the walls."
+    },
+    {
+      "id": "skill_style_trickster_style_5",
+      "name": "Grapple Hook",
+      "description": "Range: 2-5\n\nYour Throw Actions target one person within range.\nWhen you Throw or Grapple an enemy, they take 2 damage.\n\n5+: Grapple Hook\nTeleport to any empty space within range.\nThe Whip Ability prevents you from Throwing adjacent enemies.\nWhip Style is a zoning Style, staying out of enemy range and\nkeeping your enemies from getting close.\nWhip Dance adds a lot of value to your Throws and Grapples, to the\npoint that every Action you take in this Stance should be a Throw, a\nGrapple, or Try And Keep Up.\nWhip Reversal is incredibly good at interrupting enemy combos. You\ncan Throw your enemies away from your allies, or Grapple Hook yourself\naway if they come after you.\nThe Whip Ability gets around Shadow Form's low, inconsistent\ndamage output. When even the 1's in your pool deal 2 damage, Whip\nShadow can deal 12 damage every single turn, divided up in 2 damage\npackages however you see fit. The only requirement is keeping your\nenemies within range as you ping pong them back and forth, and\nShadow's free Speed tokens help you maintain that distance."
+    },
+    {
+      "id": "skill_style_underdog_style_1",
+      "name": "Roughhousing",
+      "description": "Range: 1-2\n\nAfter you destroy an obstacle, you gain one Basic token of your\nchoice.\n\n3+: Roughhousing\nDestroy an obstacle within range, then choose one: Teleport to\nthat obstacle's space; deal 1 damage to each enemy adjacent to\nthe destroyed obstacle; or destroy another obstacle within range.\nYou can spend 2 Basic Tokens to choose a second option from\nthe list, or 3 Basic Tokens to choose all three.\nCollateral Style tears the arena apart. If your enemies were relying\non walls and traps to protect themselves, Collateral will put a stop to that.\nCollateral Blaster is interesting, because extra targets give\nRoughhousing some unique properties. If you choose \"Deal 1 damage\nto each enemy adjacent to the destroyed obstacle,\" and destroyed four\nobstacles, you'll deal 1 damage to each enemy adjacent to any of those\nobstacles!\nCollateral Control increases your range, making Roughhousing's\nteleport choice more useful."
+    },
+    {
+      "id": "skill_style_underdog_style_2",
+      "name": "Flare",
+      "description": "Range: 1-2\n\nAfter an enemy deals damage to you, if they have no Weakness\ntokens, give that enemy one Weakness token.\n\n1+ or 2 Basic Tokens: Flare\nFlare can be used as either a Simple or Token Action.\nMove one space, then give one Weakness token to one enemy\nwithin range.\nDistracting Style makes you the perfect distraction. Hard to catch\nand hard to hit, you can outlast all but the most aggressive assaults. Be\nsure to Challenge your enemies, so the distraction works!\nDistracting Shadow is an incredibly elusive Stance, able to move\nconstantly with Flares and Stunts during your enemies' turns.\nDistracting Iron and Distracting Zen let you survive the attention,\ngiving your Armor or Shields to block some damage.\nDistracting Reversal is the halfway point between Iron and Shadow,\ngiving you the reactions of Shadow and the Armor of Iron.\nDistracting Vigilance is a solid recovery Stance. Rather than\nChallenge your enemies and force them to take Weakness tokens, this\nStance uses its Ability as a threat, a way to punish attackers who come\nafter you while you try to heal."
+    },
+    {
+      "id": "skill_style_underdog_style_3",
+      "name": "Thrill of the Fight",
+      "description": "Range: 1\n\nAt the start of your turn, you gain a Bonus of your choice.\n\n3+: Thrill of the Fight\nTarget an adjacent enemy, then choose one: Challenge them;\nyou deal 2 damage to them; or give them 2 Burning tokens.\nYou can spend 2 Basic Tokens to choose a second option from\nthe list, or 3 Basic Tokens to choose all three.\nThe Bonuses are on page 20.\nEye of the Style is a versatile Style that gives you exactly what you\nneed right when you need it. It pairs well with any Form you wish to use.\nEye of the Shadow can use the Freedom Bonus to gain even more\nSpeed tokens, letting you Stunt with impunity.\nEye of the Wild can use Freedom or Power Up to build up your Fury."
+    },
+    {
+      "id": "skill_style_underdog_style_4",
+      "name": "Just What I Needed",
+      "description": "Range: 1\n\nYou have Armor.\nAdd\n\nto your Action Dice.\n\n3+: Just What I Needed\nChoose one: You gain 2 Basic tokens; you teleport two or three\nspaces; or you heal.\nYou can spend 2 Basic Token to choose a second option from\nthe list, or 3 Basic Tokens to choose all three.\nLucky Style is basic, but extremely solid, granting you both Armor\nand an extra Action each turn. It combines well with any Form, but Armor\ndoesn't stack, so don't pair it with Reversal or Iron Form.\nLucky One-Two, Lucky Song, and Lucky Vigilance make best use\nout of Lucky Style's bonus die, as these Forms each have very cheap\nActions they want to perform as often as possible.\nLucky Blaster has two solid 3+ Actions, so half of the time Lucky\nStyle's bonus die will give this Stance a free Amplify or Shockwave."
+    },
+    {
+      "id": "skill_style_underdog_style_5",
+      "name": "Bad Luck",
+      "description": "Range: 1-3\n\nWhen you would take damage from a Trap, deal that damage to\nan enemy within range instead. If no enemies are within range, gain\none Power token instead.\n\n1+ or 3 Basic Tokens: Bad Luck\nBad Luck can be used as either a Simple or Token Action.\nPlace a Trap into a space within range.\nMisfortune's Style turns your bad luck around, filling the terrain with\nTraps while becoming immune to them yourself.\nMisfortune's Shadow lets you keep your enemies close, while also\ngiving you Stunt as another means of placing Traps.\nMisfortune's Zen combines both Abilities to pile on the 1 damage\nreactions. Death by a thousand cuts.\nMisfortune's Control increases your range, making Bad Luck even\neasier to spread around. In addition, Control Tokens extend your ability to\nshare misfortune and stop your enemies from doing as they please."
+    },
+    {
+      "id": "skill_style_wardancer_style_1",
+      "name": "Forbidden",
+      "description": "Range: 1-2\n\nAt the start of your turn, you take 2 damage. This damage cannot\ndrop you below 1 HP on your current Health Bar.\nThis Style is attached to two Forms. You have the Abilities and\nUnique Actions from each Form. Do not use the Action Dice listed\nin those Forms. This Stance's Action Dice are determined by\ncombining the results of the following chart:\nBlaster:\n\nReversal:\n\nControl:\n\nShadow:\n\nDance:\nIron:\n\nSong:\nVigilance:\n\nOne-Two:\n\nWild:\n\nPower:\n\nZen:\n\nForbidden Style lets you combine two Forms into a single Stance.\nThis makes it the most open-ended Style in the game.\nYou only get one Skill from a Forbidden Stance. You can choose\nwhich Form you take that Skill from.\nIf you want damage, Forbidden Power Blaster or Forbidden\nBlaster One-Two double down on damage increasing Abilities.\nCombining Shadow or Dance with any other Form makes that Form\nhighly mobile, so Iron, Power, Wild, and Zen appreciate these pairs.\nIf you want maximum defense, combine Iron, Reversal, Vigilance,\nand Zen Forms in any way you please.\nForbidden One-Two Wild turns every 2 Basic tokens you hold into 2\ndamage. Spend everything on Movement, and destroy them with\nOne-Two Fury."
+    },
+    {
+      "id": "skill_style_wardancer_style_2",
+      "name": "Deadly Dance",
+      "description": "Range: 1\n\nAfter you deal damage, you gain 1 Speed token.\n\n2+ or 5+ or 8+: Deadly Dance\nTeleport 2 spaces. Deal 1 damage to an enemy within range.\n5+: Teleport 2 spaces. Deal 2 damage to an enemy within range.\n8+: Teleport 2 spaces. Deal 2 damage to an enemy within range.\nLightning Style is fast. Real fast. So fast you can't see it coming.\nLightning One-Two makes great use of Whirlwind and Deadly\nDance with the Lightning Ability, giving you tons of Speed tokens while\nyou hit multiple times per Action.\nLightning Shadow and Lightning Dance are obvious Stances, as\nthey can put those extra Speed tokens to use on their Unique Actions.\nLightning Wild is a monstrous Stance that refunds half of your Fury,\nletting you keep the chain going 50% longer than normal.\nWith the Wardancer Ability, Lightning Zen can perform an 8+\nDeadly Dance and a 5+ Deadly Dance every single turn."
+    },
+    {
+      "id": "skill_style_wardancer_style_3",
+      "name": "Power Strike",
+      "description": "Range: 1\n\nYou ignore Armor when dealing damage.\nWhen an enemy hits you with an Action, you may spend a Power\ntoken to deal 1 damage to them and push them 1 space.\n\n4+ or 8+: Power Strike\nDeal 2 damage to an enemy within range.\nYou gain 2 Power tokens.\n8+: Deal 4 damage and gain 4 Power tokens instead.\nOverwhelming Style can break through the mightiest defenses,\nleaving your enemies reeling from your mere presence.\nOverwhelming Power is the obvious choice, letting you immediately\nspend as many of those Power tokens as possible on damage.\nOverwhelming Blaster, Wild, and One-Two each appreciate the\nOverwhelming Ability to ignore Armor, for Shockwave, Fury, and the\nOne-Two Ability.\nWith the Wardancer Ability, Overwhelming Zen can perform an 8+\nPower Strike and two 4+ Power Strikes every single turn."
+    },
+    {
+      "id": "skill_style_wardancer_style_4",
+      "name": "Rush Down",
+      "description": "Range: 1\n\nWhen you deal damage to an enemy, immediately push them one\nspace and then move into the empty space they left.\nIf you damage multiple enemies at the same time, push all of them\none space, then move into one of the empty spaces they left.\n\n3+ or 5+ or 7+: Rush Down\nDeal 1 damage to an enemy within range.\nThen, deal 1 damage to an enemy within range.\n5+: Then, deal 1 damage to an enemy within range.\n7+: Then, deal 1 damage to an enemy within range.\nThe Relentless Ability requires you to move into their space if you\ncan, even if you do not want to. If they are standing in a full space (such as\na Wall) due to an Ability, you do not move into that space.\nRelentless Style lets you smash your foes across the battlefield.\nRelentless One-Two and Relentless Blaster hit additional times, so\nyou can move farther and push farther.\nRelentless Blaster and Relentless Control have additional range,\nso you don't accidentally send opponent's flying out of your reach.\nRelentless Zen can Rush Down very efficiently, as their numbers\nperfectly line up with Rush Down's cost."
+    },
+    {
+      "id": "skill_style_wardancer_style_5",
+      "name": "Effortless",
+      "description": "Range: 1\n\nAll spaces are Empty spaces to you.\nEdges cannot remove you from play.\nRubble does not make you discard Speed tokens.\nTraps deal no damage to you.\n\n4+ or 7+: Effortless\nTeleport to any space you can see.\n7+: Choose an ally. They may teleport to any space they can see.\nWeightless Style ignores trouble in a way no other Style can. You\nhave no way of stopping their tricks, so why not just ignore them?\nWeightless Power and Weightless Iron can use Effortless to make\nup for their lack of mobility.\nWeightless Blaster can re-position your entire team with Effortless.\nWeightless Song and Weightless Vigilance are excellent recovery\nStances, able to escape any trap or foe."
+    },
+    {
+      "id": "skill_style_winterblossom_style_1",
+      "name": "Splinter",
+      "description": "Range: 1-2\n\nWhen one of your Copies is destroyed, it deals 1 damage to every\nenemy adjacent to it.\n3+ or 6+: Splinter\nPlace a Copy of you into any space within range. Then, deal 1\ndamage to every enemy adjacent to that Copy.\n6+: Place a Copy of you into any space within range. Then, deal\n1 damage to every enemy adjacent to that Copy.\nFree: Shatter\nShatter is a Token Action that costs nothing.\n\nDestroy one of your Copies. Give one Weakness token to an\nenemy that was within range of that Copy.\nCrystal Style litters the field with bombs for you to detonate at will.\nCrystal Blaster lets you place more Copies per Splinter, and give\nout Weakness tokens to multiple enemies with Shatter.\nCrystal Shadow can use Stunt to place Copies in the middle of\nyour enemies' turns, surprising them with an instant Shatter.\nCrystal Control gives you tons of range, letting you place Copies\nfrom afar and use them as a network for your Control tokens and\nWinterblossom Ability.\nCrystal Zen can reliably Splinter 2-3 times a turn."
+    }
+  ],
+  "supers": [
+    {
+      "id": "super_angel_heavens_piledriver",
+      "name": "Heaven's Piledriver",
+      "description": "Deal 6 to an adjacent enemy; they cannot use Free Movement until after end of their next turn.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "30"
+    },
+    {
+      "id": "super_angel_sirens_scream",
+      "name": "Siren's Scream",
+      "description": "Challenge and deal 2 to all enemies, then gain a 10-point Shield.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "30"
+    },
+    {
+      "id": "super_cavalry_call_in_the_cavalry",
+      "name": "Call In The Cavalry",
+      "description": "Deal 2 to all enemies, then deal 2 to all enemies again.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "31"
+    },
+    {
+      "id": "super_cavalry_inspire_perfection",
+      "name": "Inspire Perfection",
+      "description": "Remove Common tokens from allies in sight, grant Power and Iron tokens, then heal.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "31"
+    },
+    {
+      "id": "super_cyborg_draining_knuckle",
+      "name": "Draining Knuckle",
+      "description": "Deal 3 adjacent, strip Basic tokens, gain Power/Iron/Speed.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "32"
+    },
+    {
+      "id": "super_cyborg_drive_install",
+      "name": "Drive Install",
+      "description": "Gain large token bundle and improved token spending for the fight.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "32"
+    },
+    {
+      "id": "super_demon_unending_despair",
+      "name": "Unending Despair",
+      "description": "Inflict Burning and Weakness; gain basic and Chaos tokens.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "33"
+    },
+    {
+      "id": "super_demon_dancing_mad",
+      "name": "Dancing Mad",
+      "description": "Repeat teleport + strike sequence until same target is hit twice.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "33"
+    },
+    {
+      "id": "super_flametongue_erupting_burning_fist",
+      "name": "Erupting Burning Fist",
+      "description": "Deal 4, push 4, and set Burning to 6.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "34"
+    },
+    {
+      "id": "super_flametongue_watch_the_world_burn",
+      "name": "Watch The World Burn",
+      "description": "Place trap under each visible enemy and give each 4 Burning.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "34"
+    },
+    {
+      "id": "super_gunkata_sniping_point",
+      "name": "Sniping Point",
+      "description": "Gain infinite range this round and fire for 7 damage.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "35"
+    },
+    {
+      "id": "super_gunkata_lead_rain",
+      "name": "Lead Rain",
+      "description": "Five waves of 1 damage to target and adjacent enemies.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "35"
+    },
+    {
+      "id": "super_phantom_poltergeist_panic",
+      "name": "Poltergeist Panic",
+      "description": "Reposition rubble/traps then damage enemies on obstacles.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "36"
+    },
+    {
+      "id": "super_phantom_arcana_install",
+      "name": "Arcana Install",
+      "description": "Gain Poltergeist tokens and boosted action-mod effects.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "36"
+    },
+    {
+      "id": "super_punk_knuckle_sandwich",
+      "name": "Knuckle Sandwich",
+      "description": "Deal 5, apply Weakness/Challenge, then push up to 3.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "38"
+    },
+    {
+      "id": "super_punk_everybody_get_em",
+      "name": "Everybody, Get 'Em!",
+      "description": "Deal 3, then each ally may deal 3 to one enemy in range.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "38"
+    },
+    {
+      "id": "super_teacher_my_final_technique",
+      "name": "My Final Technique",
+      "description": "Deal 99 to one enemy; remove yourself from play for the fight.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "39"
+    },
+    {
+      "id": "super_teacher_remember_my_teachings",
+      "name": "Remember My Teachings",
+      "description": "Special Heroic Spirit super that maximizes donated turn output.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "39"
+    },
+    {
+      "id": "super_trickster_funny_little_box_of_pain",
+      "name": "Funny Little Box Of Pain",
+      "description": "Box target with walls and a Deadly Trap.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "40"
+    },
+    {
+      "id": "super_trickster_steal_strength",
+      "name": "Steal Strength",
+      "description": "Target discards all tokens; you gain Iron equal to discarded amount.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "40"
+    },
+    {
+      "id": "super_underdog_lucky_hit",
+      "name": "Lucky Hit",
+      "description": "Deal 4, strip basic tokens/shields, disable armor+shields this round.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "41"
+    },
+    {
+      "id": "super_underdog_hyper_install",
+      "name": "Hyper Install",
+      "description": "Gain shield/heal and recurring per-turn token/heal benefits.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "41"
+    },
+    {
+      "id": "super_wardancer_become_my_canvas",
+      "name": "Become My Canvas",
+      "description": "Three strikes (2/2/3) that ignore Armor and Shields.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "42"
+    },
+    {
+      "id": "super_wardancer_lightning_drop",
+      "name": "Lightning Drop",
+      "description": "Teleport anywhere; deal 4 adjacent then 2 in range 1-4.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "42"
+    },
+    {
+      "id": "super_winterblossom_you_are_nothing",
+      "name": "You Are Nothing.",
+      "description": "Deal 4, pull up to 3, then set target Weakness to 6.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "43"
+    },
+    {
+      "id": "super_winterblossom_blizzard",
+      "name": "Blizzard",
+      "description": "Until round end: +2 range and end-of-turn burn+weakness pulse.",
+      "sourceBook": "Patch'd Up",
+      "sourcePage": "43"
+    }
+  ],
+  "sheetPresentation": {
+    "franticHeroStanceRules": "When you would choose your Stance, instead choose one Frantic Ability, one Style, and one Form you know to create your Stance for the turn. You cannot choose an Ability, Style, or Form you used on your previous turn.",
+    "franticAbilityIntroTemplate": "{name}'s Frantic Abilities are:"
+  }
+}

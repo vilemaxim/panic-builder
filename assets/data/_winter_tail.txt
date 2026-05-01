@@ -1,0 +1,577 @@
+105
+
+Focused Wardancer
+After rolling your Action Dice, either increase all of your numbers
+by 1, or increase one of your numbers by 4.
+
+Fused Wardancer
+After rolling your Action Dice, increase two of your numbers by 2.
+
+Frantic Wardancer
+After rolling your Action Dice this turn, either increase all of your
+numbers by 1, or increase one of your numbers by 4.
+
+Forbidden Style
+
+Range: 1-2
+
+At the start of your turn, you take 2 damage. This damage cannot
+drop you below 1 HP on your current Health Bar.
+This Style is attached to two Forms. You have the Abilities and
+Unique Actions from each Form. Do not use the Action Dice listed
+in those Forms. This Stance's Action Dice are determined by
+combining the results of the following chart:
+Blaster:
+
+Reversal:
+
+Control:
+
+Shadow:
+
+Dance:
+Iron:
+
+Song:
+Vigilance:
+
+One-Two:
+
+Wild:
+
+Power:
+
+Zen:
+
+Forbidden Style lets you combine two Forms into a single Stance.
+This makes it the most open-ended Style in the game.
+You only get one Skill from a Forbidden Stance. You can choose
+which Form you take that Skill from.
+If you want damage, Forbidden Power Blaster or Forbidden
+Blaster One-Two double down on damage increasing Abilities.
+Combining Shadow or Dance with any other Form makes that Form
+highly mobile, so Iron, Power, Wild, and Zen appreciate these pairs.
+If you want maximum defense, combine Iron, Reversal, Vigilance,
+and Zen Forms in any way you please.
+Forbidden One-Two Wild turns every 2 Basic tokens you hold into 2
+damage. Spend everything on Movement, and destroy them with
+One-Two Fury.
+
+106
+
+Lightning Style
+
+Range: 1
+
+After you deal damage, you gain 1 Speed token.
+
+2+ or 5+ or 8+: Deadly Dance
+Teleport 2 spaces. Deal 1 damage to an enemy within range.
+5+: Teleport 2 spaces. Deal 2 damage to an enemy within range.
+8+: Teleport 2 spaces. Deal 2 damage to an enemy within range.
+Lightning Style is fast. Real fast. So fast you can't see it coming.
+Lightning One-Two makes great use of Whirlwind and Deadly
+Dance with the Lightning Ability, giving you tons of Speed tokens while
+you hit multiple times per Action.
+Lightning Shadow and Lightning Dance are obvious Stances, as
+they can put those extra Speed tokens to use on their Unique Actions.
+Lightning Wild is a monstrous Stance that refunds half of your Fury,
+letting you keep the chain going 50% longer than normal.
+With the Wardancer Ability, Lightning Zen can perform an 8+
+Deadly Dance and a 5+ Deadly Dance every single turn.
+
+Overwhelming Style
+
+Range: 1
+
+You ignore Armor when dealing damage.
+When an enemy hits you with an Action, you may spend a Power
+token to deal 1 damage to them and push them 1 space.
+
+4+ or 8+: Power Strike
+Deal 2 damage to an enemy within range.
+You gain 2 Power tokens.
+8+: Deal 4 damage and gain 4 Power tokens instead.
+Overwhelming Style can break through the mightiest defenses,
+leaving your enemies reeling from your mere presence.
+Overwhelming Power is the obvious choice, letting you immediately
+spend as many of those Power tokens as possible on damage.
+Overwhelming Blaster, Wild, and One-Two each appreciate the
+Overwhelming Ability to ignore Armor, for Shockwave, Fury, and the
+One-Two Ability.
+With the Wardancer Ability, Overwhelming Zen can perform an 8+
+Power Strike and two 4+ Power Strikes every single turn.
+
+107
+
+Relentless Style
+
+Range: 1
+
+When you deal damage to an enemy, immediately push them one
+space and then move into the empty space they left.
+If you damage multiple enemies at the same time, push all of them
+one space, then move into one of the empty spaces they left.
+
+3+ or 5+ or 7+: Rush Down
+Deal 1 damage to an enemy within range.
+Then, deal 1 damage to an enemy within range.
+5+: Then, deal 1 damage to an enemy within range.
+7+: Then, deal 1 damage to an enemy within range.
+The Relentless Ability requires you to move into their space if you
+can, even if you do not want to. If they are standing in a full space (such as
+a Wall) due to an Ability, you do not move into that space.
+Relentless Style lets you smash your foes across the battlefield.
+Relentless One-Two and Relentless Blaster hit additional times, so
+you can move farther and push farther.
+Relentless Blaster and Relentless Control have additional range,
+so you don't accidentally send opponent's flying out of your reach.
+Relentless Zen can Rush Down very efficiently, as their numbers
+perfectly line up with Rush Down's cost.
+
+Weightless Style
+
+Range: 1
+
+All spaces are Empty spaces to you.
+Edges cannot remove you from play.
+Rubble does not make you discard Speed tokens.
+Traps deal no damage to you.
+
+4+ or 7+: Effortless
+Teleport to any space you can see.
+7+: Choose an ally. They may teleport to any space they can see.
+Weightless Style ignores trouble in a way no other Style can. You
+have no way of stopping their tricks, so why not just ignore them?
+Weightless Power and Weightless Iron can use Effortless to make
+up for their lack of mobility.
+Weightless Blaster can re-position your entire team with Effortless.
+Weightless Song and Weightless Vigilance are excellent recovery
+Stances, able to escape any trap or foe.
+
+108
+
+Archetype: Winterblossom
+Your style is calm, controlled, precise, and icy. A Winterblossom's
+fighting style revolves around controlling and weakening your enemies,
+reducing them to a helpless mess that cannot hope to fight back.
+The Winterblossom is a controlling Archetype that shuts down your
+foes, similar to the Angel. But while the Angel buffs herself into being
+untouchable, the Winterblossom weakens her foes into uselessness,
+before destroying them with a well-timed power blow.
+The Winterblossom has no problems against other defensive and
+controlling foes, winning the war of attrition with ease. But aggressive
+enemies are a problem, as they can dish out damage faster than you can
+stop it. One-Two Form is especially bad for you, as its users can remove
+two Weakness tokens per attack.
+But if you can pile on the Weakness tokens, your opponents will never
+be able to touch you.
+
+109
+
+Focused Winterblossom
+At the start of every turn, give 1 Weakness token to one enemy
+within range.
+
+Fused Winterblossom
+At the start and end of your turn, give 1 Weakness token to one
+enemy within range.
+
+Frantic Winterblossom
+At the start and end of this turn, give 2 Weakness tokens to one
+enemy within range.
+Focused Winterblossoms give out a Weakness token at the start of
+every turn, not just yours. Each ally's turn, each enemy's turn, if an enemy
+is within your range, you may hand them a Weakness token.
+
+Crystal Style
+
+Range: 1-2
+
+When one of your Copies is destroyed, it deals 1 damage to every
+enemy adjacent to it.
+3+ or 6+: Splinter
+Place a Copy of you into any space within range. Then, deal 1
+damage to every enemy adjacent to that Copy.
+6+: Place a Copy of you into any space within range. Then, deal
+1 damage to every enemy adjacent to that Copy.
+Free: Shatter
+Shatter is a Token Action that costs nothing.
+
+Destroy one of your Copies. Give one Weakness token to an
+enemy that was within range of that Copy.
+Crystal Style litters the field with bombs for you to detonate at will.
+Crystal Blaster lets you place more Copies per Splinter, and give
+out Weakness tokens to multiple enemies with Shatter.
+Crystal Shadow can use Stunt to place Copies in the middle of
+your enemies' turns, surprising them with an instant Shatter.
+Crystal Control gives you tons of range, letting you place Copies
+from afar and use them as a network for your Control tokens and
+Winterblossom Ability.
+Crystal Zen can reliably Splinter 2-3 times a turn.
+
+110
+
+Frozen Style
+
+Range: 1
+
+After an enemy moves into an empty space adjacent to you, you
+may give them one Weakness token.
+
+3+: Exploit Weakness
+Choose one enemy within range. Give them one Weakness
+token and deal 2 damage to them.
+The Frozen Ability triggers each time an enemy moves into a space
+adjacent to you, even if they are moving around you or passing through.
+Frozen Style makes it difficult to approach you, as anyone doing so
+has their strength stolen away from them.
+Frozen Dance can Grapple enemies to you, giving them Weakness
+tokens and giving you Speed tokens simultaneously.
+Frozen Shadow can Stunt away after your enemies trigger the
+Frozen Ability, forcing them to move in again if they want to hit you.
+Frozen Iron can Contain foes to force them to come to you, while
+keeping you flush with Armor and Iron tokens to survive the attention.
+
+Precision Style
+
+Range: 1-2
+
+Your Actions deal +1 damage to enemies with Armor or Shields.
+When you target an enemy with an Action, they must discard 1
+Iron token.
+
+3+ and 3+: Perfect Strike
+This Action costs two numbers to perform.
+
+Deal 4 damage to an enemy within range. This damage cannot
+be reduced by Armor and ignores Shields. Tokens and Abilities
+cannot be used in response to Perfect Strike.
+The Precision Ability adds only +1 damage, even against an enemy
+with both Armor and a Shield.
+Precision Style punishes defensive strategies, crashing straight
+through their Shields and Armor.
+Precision Blaster lets Perfect Strike hit multiple foes, making up for
+its multiple-number cost.
+Precision Shadow and Precision Wild both have the most Action
+Dice, giving you more opportunities for Perfect Strikes.
+Precision Zen can Perfect Strike and 7+ Focus every turn.
+Precision Power combines their Abilities to deal massive damage
+regardless of your opponent's defenses.
+
+111
+
+Pressure Style
+
+Range: 1-2
+
+At the start of your turn, give one Weakness token to every enemy
+within range.
+
+5+: Apply Pressure
+Choose one enemy within range. Deal damage to them equal to
+the number of tokens they hold.
+You can only use Apply Pressure once per turn.
+Pressure Style is your big finisher. Once your enemies are drowning
+in tokens, Apply Pressure will destroy them.
+Pressure Vigilance combines Pressure Style with the only Form
+that can give tokens to enemies the same turn you Apply Pressure.
+Pressure Blaster and Pressure Reversal let you get around Apply
+Pressure's once per turn limitation.
+Pressure Zen guarantees you can Apply Pressure, while spending
+the rest of your numbers to Focus so you aren't vulnerable to retaliation.
+
+Reflected Style
+
+Range: 2-3
+
+At the start of your turn, you may place up to three Walls into
+empty adjacent spaces.
+You can see and target enemies through Walls.
+
+3+: Walled In
+Place 3 Walls into empty spaces within Range 1-3.
+
+3+: Icicle Fall
+Deal 1 damage to each enemy adjacent to any Walls.
+Reflected Style is the ultimate defensive combat style, building a
+wall to hide behind while you continue to strike out at your foes.
+Reflected One-Two doubles the damage of Icicle Fall.
+Reflected Blaster and Reflected Control increase your Range, so
+you can stay behind your wall without moving.
+Reflected Shadow can teleport away if your wall is broken.
+
+112
+
+Chapter 6
+Between Combat
+
+113
+
+What Is A Skill?
+In Panic at the Dojo, people are larger than life. They aren't like you
+and me. They aren't mostly well rounded and focused on all the general
+things that help you survive day to day life. They're focused on doing a
+few things extremely well, at the exclusion of all other things.
+This is what your Skills are all about. If you do something related to
+one of your Skills, you are hyper-competent, only able to fail against
+incredible odds or equally skilled opponents. Someone who is
+Unstoppable can just charge right through a series of walls, rip off a bank
+vault door, or even punch a car out of their way. They could do all of that
+in a row, if they wanted to. There's no stopping the Unstoppable.
+If you attempt to do something outside of your Skills, you are
+comically inept and guaranteed to be embarrassed, hurt, or put in a bad
+spot. A Professional should be able to drive a car, for example, and most
+unique skills will also give you that ability, but Truth can't drive. She's a
+vampire, she never learned. If she got behind the wheel, the scene would
+cut to three minutes later when Truth is walking out of a 4 way collision
+and it's somehow on fire.
+When you attempt something you just do not know how to do, you fail.
+You fail miserably and catastrophically and there's not much you can do
+about it. But don't worry - failure here has no real consequences beyond
+how you get to what happens next. Whether they drive to their destination
+or Truth crashes the car into their destination, the heroes will always get
+where they need to go. It's just a matter of how cool or irresponsible they
+are doing it.
+
+114
+
+Your Big Debut
+Skills are used during three different parts of gameplay: During a
+Debut, to get past some Trouble, or to resolve a Contest.
+A Debut is a character's first scene. The Heroes can debut at the
+start of the game in any order they want. The goal of this scene is to show
+off. You want to look cool and sell everyone on who your character is.
+Begin your debut by setting the scene for us. Tell us where you are,
+what's happening around you, and what terrible thing is about to happen
+to you. It should sound like something that happens regularly in your
+hero's life. Then, describe how you use at least two of your Skills to get
+out of the situation.
+For an example of someone's Debut, let's use one of the first scenes
+in The Incredibles. Mr. Incredible is sitting in his too-tiny desk, an old lady
+wailing across from him about how her insurance just has to cover this or
+she doesn't know what she's going to do. So how does he handle this?
+Well, he uses his Professional skill to tell her how to get through all the
+loopholes and make sure she gets coverage. When his boss gets mad at
+him about this, he gets angry and uses Unstoppable to throw his boss
+through the wall, getting himself fired and setting up the rest of his plot arc
+for the film.
+Once each Hero has made their Debut, the Director will set up a
+combat scenario for them. This scenario should kick off the plot for the
+session, with villains who are after something specific the Heroes must
+protect or also want.
+Some of the Heroes may be on different sides in this first fight, only
+teaming up after kicking some sense into each other. See Switched Sides
+(page 18) for more information on how to play out such a fight.
+
+115
+
+A Spot Of Trouble
+Trouble is when there's a problem, but it isn't one you can just fight
+your way through. For example, a car swerves out of their lane straight at
+you, or you need to get a message out but the phones are jammed.
+Trouble often has multiple ways to be solved, and whoever jumps in to
+solve the Trouble is the one who gets it.
+Between fights, there should be one Trouble to resolve per Hero.
+Some Trouble might be complicated, and require two Heroes to work
+together - that counts as two Troubles. Present the Heroes with problems
+one after another, and let each Hero step up to solve one of them.
+Once every Hero has stepped up to a Trouble, they make it to
+whatever the next Fight is planned to be. Troubles are basically the route
+they take to get there, and may modify the fight depending on how well
+they did.
+How well they resolve the Trouble depends on what skills they have
+to use. If a Skill applies to the solution they want to use, they succeed!
+The Hero tells us how cool they look while they handle the problem, how
+easily they help everyone through, and how they nip any complications in
+the bud.
+If they do not have an appropriate Skill, they fail! Miserably. The Hero
+tells us how they make a big mess, cause problems for themselves and
+the rest of you, and how they bumble on ahead in spite of their mistakes.
+Failure never gets in the way of progress. Failure just makes
+progress a bumpy, painful road, instead of an easy one.
+The first Trouble or two will almost definitely be successful. Its the
+last couple where the problem comes in. Once you've solved a Trouble,
+you can't solve any more Troubles. You're done. Someone else must
+stand in the spotlight, and they might not have what it takes.
+If everyone successfully resolves their Trouble, the next fight
+happens with their advantage. The Heroes place themselves on the map
+after the enemies are already on the battlefield. Each Hero may start the
+fight wherever they want to be.
+If there is one failure, then the fight proceeds as normal. The Heroes
+and enemies are placed on opposite ends of the arena and the fight
+proceeds as planned.
+If there are two or more failed Troubles, then the enemies get an
+Ambush! The Heroes place themselves in the arena first, and the villains
+place themselves around the heroes, surrounding them entirely.
+
+116
+
+Contests of Skill
+A Contest is like a Trouble, but against an enemy instead of an
+obstacle. Instead of racing through town to get there on time, you're
+racing against someone on a motorbike to get there ahead of them.
+A Contest can replace a Trouble, or it can replace / delay a Fight. The
+main difference between Contests and Troubles are the consequences.
+Contests have a lot more impact on the game around them.
+A failed or successful Trouble has little real impact. A failed Contest
+leads directly to a fight or a loss. Either you must give up on what you
+were Contesting, or you need to fight over it, right here, right now. In
+addition, a lost Contest always makes the fight into an Ambush, as above.
+A tied Contest has only one result: You must fight over it. You are
+evenly matched, no one can get a clear advantage, and the whole contest
+breaks down after someone throws a punch.
+A successful Contest can have any of three results, chosen by the
+winning Hero. You can get what you want, skip the next fight, or pick a
+fight with an advantage.
+If you get what you want, you succeed in the contest! You get exactly
+what you're contesting over. If this was your last Trouble between combat,
+this leads directly into a fight over what you got. Otherwise, continue with
+the Troubles.
+If you skip the next fight, reset your current Troubles entirely. You
+managed to avoid this fight, and you've moved on to the next one. You
+can only choose this option if you tried to use a Contest to avoid a fight in
+the first place, by running away or sneaking past or some other plan.
+If you create an advantage, you get to start the next fight with a
+Bonus, or give your enemies a Penalty. The Bonuses and Penalties are
+found on page 20.
+So how do you win or lose a Contest? They're a little more
+complicated than a Trouble, and have three variables: Whether or not you
+have an appropriate Skill, who you're up against, and Teamwork.
+
+117
+
+Heroes Vs. Stooges
+Stooges do not have Skills. If you have an appropriate Skill, you will
+always defeat them in a contest. Defeated Stooges will likely run off to get
+a Warrior or Boss to face you properly.
+If you have an appropriate Skill, you win the Contest.
+If you do not have an appropriate Skill, you Tie the Contest, and
+must fight them.
+
+Heroes Vs. Warriors
+Warriors have a single skill! If both of you have a Skill that applies, or
+if neither of you have a Skill that applies, then the contest is a Tie, and
+you must fight them.
+If you have a Skill and they do not, you win the Contest.
+If they have a Skill and you do not, you lose the Contest.
+If both of you are Skilled, the Contest is a Tie.
+
+Heroes Vs. Bosses
+Bosses are much stronger than individual heroes, and cannot be
+beaten in a fair Contest. They have multiple Skills, with stronger Bosses
+having more Skills than even Heroes do.
+A Skilled Hero against a Boss with no applicable Skills is a Tie.
+A Skilled Boss always wins against a single Hero, whether the Hero
+has an appropriate Skill or not. A Skilled Boss can only be defeated by
+Teamwork.
+
+118
+
+Teamwork
+A Skilled Boss is unbeatable, and a Skilled Warrior will tie with you
+even if you are also Skilled. But you don't have to play fair. There are
+more Heroes than enemies (usually).
+If two Skilled Heroes work together, they can improve the results
+of a Contest by one step, turning a loss into a Tie and a Tie into a Win.
+If three Skilled Heroes all work together, they will always Win
+against any single opponent. Each Skilled Hero beyond the first who all
+work together increases the result of the contest by one degree.
+The enemies can also use teamwork.
+When Heroes and enemies each use Teamwork in a big opposed
+Contest, give each side a point value to determine who wins. The side
+with more points Wins the Contest, as you might expect. If both sides
+have an equal number of points, the Contest is a Tie, and you must fight.
+Stooges are worth no points. They only get in the way.
+Unskilled Heroes and Warriors are also worth no points. They cannot
+help a Contest of Teamwork.
+A Skilled Hero or Warrior is worth one point.
+An Unskilled Boss is worth one point.
+A Skilled Boss is worth two points.
+For example, if you are competing against two skilled Bosses with
+four skilled Heroes, the end result is a Tie. 4 points vs 4 points.
+One Skilled Hero vs. one Skilled Boss is a Loss. 1 point vs 2 points.
+One Skilled Hero vs. ten Stooges is a Win. 1 point vs 0 points.
+Three Skilled Heroes vs an Unskilled Boss, a Skilled Warrior, and
+three Stooges is a Win. 3 points vs 2 points.
+
+119
+
+120
+
+Chapter 7
+Meeting Heroes
+.
+
+121
+
+If you're playing Panic at the Dojo for the first time, as a Hero
+character, this chapter is right where you should be! This chapter will go
+over everything you need to know to create your Hero and their Stances.
+
+Color Coding
+Some of the most important terms in Panic at the Dojo come up
+extremely often. In order to more easily differentiate them from one
+another, they have been color coded, as follows.
+Forms are Blue.
+Styles are Red.
+Stances are Gold.
+
+Actions are Green.
+Character Options are Purple.
+Skills are Orange.
+
+Making Heroes
+There are three ways to build a Hero: Focused, Fused, or Frantic.
+Focused Heroes fall entirely within a single Archetype. They are
+very powerful and excel in the area they focus on, but lack flexibility or
+versatility compared to other types of Heroes.
+Fused Heroes are made by combining two Archetypes. You get
+Stances and an Archetype ability from both, allowing you to create a
+blended fighting style unique to you.
+Frantic Heroes are made by picking three Archetypes, and taking
+one Style from each. You only get one Archetype, Style, and Form each
+turn, but you pick one of each every single turn, giving you unparalleled
+flexibility at the cost of unreliability.
+
+Optional Rule: Niche Protection
+If you want each hero to be completely unique, you can make it a rule
+that nobody can pick a Style someone else has. Under this rule, Focused
+and Fused heroes can never pick the same Archetype as one another, and
+Frantic heroes need to check with everyone else about what Styles they
+have.
+This rule is optional. Use it if you think it'd make the game more fun, or
+ignore it if you think it wouldn't.
+
+122
+
+Hero Creation Overview
+No matter which kind of Hero you build, they will be operating under
+similar rules. You will have three Stances, an Archetype Ability, and a
+Build. These elements combine to create your character's fighting style.
+A Stance is made by combining a Style with a Form. The Forms are
+found in Chapter 4, and the Styles are found in Chapter 5.
+Focused Heroes and Fused Heroes make Stances as normal, but
+Frantic Heroes do not. They pick 3 Styles and 3 Forms, and make
+Stances on the fly mid-combat.
+You may use any Form you like for any Stance, but each of your
+Stances must have a different Form. You cannot 'double up' on Forms.
+Which Styles you have access to depends on which type of Hero you
+are making.
+Focused Heroes must pick all of their Styles from one Archetype.
+Fused Heroes must pick their Styles from two Archetypes, with one
+Style from each and the third Style from either one.
+Frantic Heroes may pick Styles from any Archetype, but only one
+Style per Archetype. They cannot pick two Styles from the same
+Archetype.
+Your Archetype Ability comes from the Archetypes you picked
+your Styles from.
+Focused Heroes have a single powerful Archetype Ability.
+Fused Heroes have two weak Archetype Abilities.
+Frantic Heroes have three powerful Archetype Abilities, but can
+only use one at a time, and cannot use the same one two turns in a row.
+Your Build is chosen separately from everything else. The Builds
+are found on page 126. You can choose any Build you'd like, regardless
+of your other choices.
+
+

@@ -1,0 +1,36 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:panic_at_the_dojo/app/providers.dart';
+import 'package:panic_at_the_dojo/app/router.dart';
+
+import 'test_rules.dart';
+
+void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets(
+    'pressing Create new character navigates to the builder without throwing',
+    (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            mergedRulesProvider.overrideWith(
+              (ref) async => minimalMergedRulesForTests(),
+            ),
+            charactersListProvider.overrideWith((ref) async => const []),
+          ],
+          child: const RoutedApp(),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.textContaining('Create new character'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Character Sheet Builder'), findsOneWidget);
+    },
+  );
+}

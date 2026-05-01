@@ -1,0 +1,63 @@
+{
+  "id": "76f959ae-d0aa-4eef-8294-27c43f54df77",
+  "schemaVersion": 1,
+  "createdAt": "2026-04-30T23:28:50.752",
+  "updatedAt": "2026-04-30T23:33:48.760",
+  "playerName": "",
+  "characterName": "",
+  "gender": "",
+  "description": "",
+  "heroType": "focused",
+  "buildId": "agile",
+  "archetypeIds": [
+    "angel"
+  ],
+  "stances": [
+    {
+      "styleId": "angel_style_1",
+      "formId": "form_blaster",
+      "formDisplayName": "Blaster Form"
+    },
+    {
+      "styleId": "angel_style_2",
+      "formId": "form_zen",
+      "formDisplayName": "Zen Form"
+    },
+    {
+      "styleId": "angel_style_3",
+      "formId": "form_vigilance",
+      "formDisplayName": "Eternity"
+    }
+  ],
+  "skills": {
+    "skillsByStance": [
+      [
+        "skill_form_blaster",
+        "skill_placeholder",
+        "skill_placeholder"
+      ],
+      [
+        "skill_form_song",
+        "skill_placeholder",
+        "skill_placeholder"
+      ],
+      [
+        "skill_form_vigilance",
+        "skill_placeholder",
+        "skill_placeholder"
+      ]
+    ],
+    "swappedStanceIndex": 1,
+    "swappedSlotIndex": 0,
+    "replacementSkillId": "skill_form_song",
+    "twoWordSkill": "asf we"
+  },
+  "computed": {
+    "maxHp": 10,
+    "hpBars": 2,
+    "totalBars": 7
+  },
+  "xpEarned": 0,
+  "xpSpent": 0,
+  "advancements": []
+}

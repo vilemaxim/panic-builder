@@ -1,0 +1,16 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    avoid_print: true
+    prefer_const_constructors: true
+    prefer_final_fields: true
+    unawaited_futures: true
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+  errors:
+    # Web-only download helper; keep dart:html until migrating to package:web.
+    avoid_web_libraries_in_flutter: ignore
+    deprecated_member_use: ignore

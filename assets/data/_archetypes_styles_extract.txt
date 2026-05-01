@@ -1,0 +1,2112 @@
+# Offline source only — not read by the Flutter app at runtime.
+# Used by: dart run tool/generate_style_skills.dart (full stance text → merged into rules.json)
+#       and dart run tool/sync_rules_from_sources.dart (style summaries → rules.json;
+#       also merges assets/data/_winter_tail.txt when present).
+# Bundled app data is assets/data/rules.json only.
+
+55
+
+Vigilance Form
+
+Alt: Bear / Eternity / Heart / Moment Form
+
+Action Dice
+
+At the start of your turn, either heal or discard one token you hold.
+At the end of your turn, choose an enemy in range and give them
+one Weakness token.
+
+1+ or 4+: Bow Down
+Give one Weakness token to an enemy within range.
+4+: Give two Weakness tokens to an enemy within range.
+
+1+ or 4+: Stand Strong
+Heal yourself or an ally you can see.
+4+: Heal yourself or a different ally you can see.
+
+Eyes Wide Open
+Your senses are unusually strong. You cannot be surprised by
+anything, and always have a chance to react first.
+Weakness Tokens: Whenever you deal damage, if you are holding any
+Weakness tokens, reduce that damage by 2, to a minimum of 0. Then, discard 1
+Weakness token.
+Tiered Actions get stronger the larger a number you spend on them. These
+Actions have multiple costs listed, like Stand Strong. These Actions also list
+these higher costs in the text box - if you do not spend a large enough number,
+you stop performing the Action at those points.
+So if you spend a 2 to Stand Strong, you can heal yourself or an ally. But if
+you spend a 4, you can heal yourself and an ally, heal two allies, or heal twice.
+If you heal someone at zero HP, they return to play immediately, and may
+take turns and be attacked by enemies again.
+When healing does not list a number, it heals equal to the Heal Value, which
+is set by the Cinematic Weight of the fight.
+If your Stance heals you at the start of your turn, such as with Vigilance
+Form's Ability, you heal before rolling Action Dice. If you were Taken Out at the
+start of your turn, this healing allows you to take your turn as normal.
+
+56
+
+Wild Form
+
+Alt: Beast / Platinum / Soul / Storm Form
+
+Action Dice
+
+At the start of your turn, for each of these that is true, add
+your Action Dice:
+> Your current health bar is at half HP or less.
+> Someone on your team is Taken Out.
+> You are holding a non-Basic token.
+
+to
+
+2 Basic Tokens: Fury
+The Basic tokens are Iron, Power, and Speed tokens.
+
+Deal 1 damage to an enemy within range.
+At the end of this turn, push that enemy 1 space.
+Fury can be used only 3 times per turn.
+
+Wind Runner
+You can leap to anywhere you can see, run along walls, run as
+fast as a car, and, if you have an explanation, fly.
+Token Actions, like Fury, do not cost a number to perform. You can
+perform them at any time, even outside of your own turn, as long as you have the
+tokens to pay for them.
+Actions cannot interrupt Actions. If you use Fury during an enemy's turn,
+you must use it before or after one of their Actions. You cannot unleash your
+Fury in the middle of their Action. If you use Fury during an enemy's turn, you
+may continue to keep using Fury until you are done or run out of tokens. They do
+not get to continue their turn until you're done.
+For maximum Fury damage, you will want to spend your Speed and Iron
+tokens first, and use your Power tokens to amplify Fury's damage on each hit.
+
+57
+
+Zen Form
+
+Alt: Lotus / Mantis / Spiral / World Form
+
+Action Dice
+
+Your Action Pool is predetermined: 7, 5, 3, 1.
+You may hold multiple Shields at a time. Only one Shield is active
+at a time. When your active Shield breaks, your next Shield doesn't
+become active until the end of the current turn.
+When an enemy damages or breaks your Shield, you deal 1
+damage to them.
+
+3+ or 7+: Focus
+You gain a 2 point Shield. You may move one space.
+7+: You gain a 4 point Shield. You may move two spaces.
+
+Peaceful Heart
+You can redirect others' anger to more productive ends. Your
+soothing voice and gentle touch can calm rampaging beasts,
+unruly mobs, and anyone else acting out of hurt or anger.
+Shields are an extra health bar, on top of your current one. You can only
+hold one Shield at a time, except in Zen Form. When you take damage, reduce
+your Shield by that amount instead. When your Shield drops to 0, it breaks.
+Unlike normal health bars, Shields cannot be healed, and damage carries
+over when they break. If you take 5 damage while holding a 3 point Shield, the
+Shield will break and you will take 2 damage.
+If you gain a Shield while you already have one, you decide whether to take
+the new Shield or keep the old one.
+If you leave Zen Form while holding multiple Shields, choose one to keep
+and discard the rest.
+If you use an Action or Ability that spends your HP, like Bleeding Style's
+Lash Out, you must spend that HP from your health bar. You cannot pay for
+Lash Out with your Shield.
+Tiered Actions get stronger the larger a number you spend on them. These
+Actions have multiple costs listed, like Focus. These Actions also list these
+higher costs in the text box - if you do not spend a large enough number, you
+stop performing the Action at those points.
+So if you spend a 3 or 5 to Focus, you gain a 2 point Shield and may move
+one space. But if you spend a 7, you gain a 2 point Shield and a 4 point Shield,
+and you may move one, two, or three spaces.
+
+58
+
+Chapter 5
+Archetypes and Styles
+
+59
+
+Styles are the main way you make your fighting style yours. While the
+Forms are the building blocks of fighting, your Styles take that
+fundamental form and twist it into something special.
+Styles are organized by the Archetype they come from. An
+Archetype consists of a set of three Abilities and five Styles. The Ability
+you get depends on if your Hero is Focused, Fused, or Frantic.
+Focused Heroes get a single Archetype, and must pick all three of
+their Styles from that Archetype. In return, they get a strong, dependable
+Focused Ability that they can always rely on.
+Fused Heroes get two Archetypes. They pick two of their Styles
+from one of those Archetypes, and their third Style from the other
+Archetype. They get the Fused Ability of each of their Archetypes,
+which are each half as powerful as a Focused Ability is.
+Frantic Heroes get three Archetype Abilities, two Styles that are
+found within two of those Archetypes, and a third Style from any other
+Archetype they want. They have ultimate flexibility, but trade it for
+inconsistency. Every turn, they cannot use the Form, Style, or Frantic
+Ability they used in the previous turn.
+The Archetypes are:
+
+Angel: A controlling tank focused on Challenge tokens.
+Cavalry: A team support leader focused on Shields.
+Cyborg: A versatile combo warrior focused on Basic tokens of all types.
+Demon: An aggressive monster focused on combo breaking.
+Flametongue: A zoning combo fighter focused on Burning tokens.
+Gunkata: A defensive zoning fighter focused on keeping their distance.
+Phantom: A defensive, supporting zoner focused on versatility.
+Punk: An aggressive tank focused on revenge.
+Teacher: A mentor focused on letting their allies do all the work.
+Trickster: A defensive tank focused on never being pinned down.
+Underdog: A defensive warrior focused on Basic tokens of all types.
+Wardancer: A rush-down brawler focused on high numbers.
+Winterblossom: A controlling bastion focused on Weakness tokens.
+
+60
+
+.
+
+Archetype: Angel
+
+Angels are the embodiment of law, purity, and order. Their enemies
+cannot defy them. Angels will find you, hunt you, and destroy you.
+Angels are a controlling, defensive Archetype, focused on durability
+and tenacity, but its a focused tenacity. Angels pick an enemy and they
+make their life real difficult.
+Angels don't dish out a lot of damage, but they can reliably withstand
+a ton of it, and they Challenge their enemies to focus on the Angel before
+they can deal with her friends. The Angel's Ability makes her get back up
+again every turn, so Angels cannot be Taken Out while anyone on her
+team is still standing.
+Angels make heavy use of Challenge tokens, using them to control
+their enemies, and every Style they have gives them a different means of
+dealing with having a lot of enemies who all want you dead.
+
+61
+
+Focused Angel
+At the start of your turn, Challenge an enemy you can see, then
+deal 1 damage to them, then heal 1.
+After you Challenge an enemy, deal 1 damage to them and heal 1.
+The second half of the Focused Angel Ability does trigger off of the
+first half. The end result is that at the start of your turn, you Challenge an
+enemy, deal 2 damage to them, and heal 2.
+
+Fused Angel
+At the start of your turn, Challenge an enemy you can see.
+After you Challenge an enemy, deal 1 damage to them and heal 1.
+
+Frantic Angel
+At the start of this turn, Challenge an enemy you can see, deal 2
+damage to them, and heal.
+
+Halcyon Style
+
+Range: 1-2
+
+At the start of your turn, remove one token you hold.
+After you remove tokens using an Action or Ability, you gain an
+equal number of Iron tokens.
+
+1+ or 3+ or 6+: Purify
+Remove one token from yourself or an ally within range.
+3+: Remove up to two tokens from someone within range.
+6+: Remove up to two tokens from someone within range.
+Halcyon Style is focused on Iron tokens and support, so it pairs well
+with defensive and support Forms. Paying for Token Actions does not
+count as removing tokens for Halcyon's Ability.
+Halcyon Vigilance and Halcyon Song are the only Forms that can
+remove tokens without Purify, triggering Halcyon's Ability.
+Halcyon Blaster allows for very wide-reaching Purifies. Your extra
+targets can apply to any part of the Action, so an Amplified 6+ Purify
+could remove as many as 13 tokens!
+Halcyon Wild lets you turn all those Iron tokens into Fury. Purified
+rage is the strongest kind of rage.
+Halcyon Zen guarantees you can use a 6+ Purify every turn.
+
+62
+
+Judgment Style
+
+Range: 1
+
+When an enemy with your Challenge starts their turn, they do not
+roll their lowest Action Die. It is discarded and unused.
+
+5+: Denial
+Teleport adjacent to an enemy you can see, and Challenge them.
+Judgment Style is great for singling out one enemy and making it
+hard for them to do anything.
+Reminder: Abilities do not work while you are Taken Out, so once
+you go down, Challenged enemies will get their Action Dice back.
+Judgment Power can reliably use Denial, which covers for Power
+Form's mobility problem.
+Judgment Iron and Judgment Reversal give you Armor, letting you
+Challenge many enemies and survive the attention.
+Judgment Control is the hardest lock-down Stance in the game,
+letting you remove two of an enemy's Actions per turn at the cost of one
+Challenge and Control token per enemy.
+Judgment Zen helps your Shields survive through your Challenged
+enemies' turns by limiting their actions, guarantees access to a Denial,
+and Zen's Ability makes Challenged enemies defeat themselves for you.
+
+Shining Style
+
+Range: 1
+
+At the start of your turn, all obstacles and enemies adjacent to you
+are pushed one space.
+Enemies cannot move into the spaces adjacent to you.
+
+1+ or 4+: Beacon
+Pull one ally up to three spaces. You and that ally heal 1.
+4+: That ally heals.
+Shining Style lets you act as a living wall, completely shutting down
+enemies with Range: 1, especially after you Challenge them.
+Shining Dance, Shining Vigilance, and Shining Song generate a
+lot of breathing room, providing both healing and safety.
+Shining Control and Shining Blaster increase your range, allowing
+you to attack from behind the safety of the Shining Ability. Without this
+range boost, you have to move close enough to where enemies can hit
+you to attack them.
+
+63
+
+Singing Style
+
+Range: 2-4
+
+At the start and end of your turn, you gain a 2 point Shield.
+After each Action you perform, if you have an active Shield,
+increase its value by 1.
+Destroy Your Active Shield: Symphony
+Symphony is a Token Action, but the cost is your Active Shield.
+
+Choose two: Pull an ally 3 spaces; an ally within range heals;
+Challenge an enemy within range; an enemy within range is
+pushed 3 spaces; or destroy an obstacle within range.
+Singing Style is a Shield-based style that can shed its Shield at any
+time to surprise your enemies. You can pull out a surprise Symphony
+between any Action, as long as you have a Shield.
+Singing Zen is the obvious stance to take, as it allows you to hold
+multiple Shields so you can perform multiple Symphonies. After you
+perform a Symphony, your next Shield does not become active until next
+turn, so you can not immediately perform a second Symphony.
+Singing Dance is a powerful recovery Stance. Movement is an
+Action, and Try And Keep Up is also an Action, so this Stance can build
+up a huge Shield while also healing you.
+Singing Shadow and Singing Wild both have many Action Dice
+and a Token Action, so these stances allow you to build up a beefy
+Shield while doing normal Shadow or Wild things.
+
+Winged Style
+
+Range: 1-2
+
+Edges cannot remove you from play.
+At the end of every turn, you may move two spaces.
+
+1+: As The Crow Flies
+Teleport three or four spaces.
+Winged Style is a highly mobile harassment style, able to be
+anywhere it needs to be to best cause trouble. The Winged Ability
+triggers on every turn, not just your own, letting you stay out of reach.
+Winged Power and Winged One-Two let you put that speed to good
+use, getting wherever you need to be to hurt things.
+Winged Reversal takes advantage of both parts' strengths, with
+Winged Style's free movement at the end of every turn putting you in
+position for Reversal Form's out of turn Actions.
+Winged Shadow is one of the fastest stances in the game, letting you
+constantly move around while creating obstacles as you go.
+
+64
+
+Archetype: Cavalry
+No one keeps up like the Cavalry. Your job is to get in, exactly where
+you need to be, and keep everyone on their feet. Nobody is there for them
+like you can be. Cavalry are protectors, heroes, and all around nice
+people to have on your side of the battlefield.
+Cavalry provide a wide variety of support abilities for their team,
+giving Shields to anyone who fights alongside them. The Cavalry can get
+wherever they need to be and provide just the back up your team needs.
+Cavalry need to watch their positioning. Many of their Abilities work
+by being within range of their allies, and being where you need to be can
+make a huge difference in the flow of battle.
+Cavalry are all about the team buffs. When you have the Cavalry
+around, you can expect to get a bunch of small bonuses every turn. When
+playing as the Cavalry, be sure to keep track of these bonuses for your
+team, so they can properly take advantage of them.
+
+65
+
+Focused Cavalry
+At the start and end of your turn, you and each ally adjacent to
+you gains a 2 point Shield. When your Shield or an ally's Shield
+breaks, you gain 1 Speed token.
+
+Fused Cavalry
+At the end of your turn, you and each ally adjacent to you gains a
+2 point Shield.
+
+Frantic Cavalry
+At the start and end of this turn, you and each ally adjacent to you
+gains a 2 point Shield.
+
+Charging Style
+
+Range: 1
+
+At the start of your turn, you may move 2 spaces.
+At the start of each ally's turn, they may move 2 spaces.
+
+3+: Follow My Lead
+You may move one space, then deal 1 damage to an enemy
+within range. An ally you can see may move one space, then deal
+1 damage to an enemy within their range.
+Charging Style provides team support regardless of your own
+positioning, so its ideal for getting where you need to be.
+One-Two Form is a natural pair with Charging Style, even when it
+isn't your One-Two Form. An ally using One-Two will trigger the OneTwo Ability when they Follow Your Lead. Be on the lookout for allies
+with other Abilities that trigger when they deal damage with an Action.
+Charging Blaster is a powerful combination. Each extra target for
+Follow My Lead can be an extra ally moving and attacking, letting the
+whole team strike in unison.
+Charging Shadow puts its six Action Dice to use, letting you use
+Follow My Lead many times.
+Charging Reversal can use Follow My Lead during your allies' turns,
+if they need just a little more movement to get where they need to be. You
+can use this Stance to correct minor positioning issues as they pop up.
+
+66
+
+Heroic Style
+
+Range: 1-2
+
+Whenever an ally within range takes damage, they take half that
+damage (rounded down) and you take the other half (rounded up).
+
+4+: Burning Heart
+You and each ally within range gains 2 Iron tokens.
+Heroic Style keeps everyone else safe, no matter what. As long as
+you're in the middle of the squad, they won't get hurt at all.
+Heroic Iron and Heroic Reversal are obvious choices, as Armor
+drastically increases the Heroic Ability's benefits.
+Heroic Reversal and Heroic Shadow can keep their Speed tokens
+between turns, so you can move to where you need to be to take damage,
+or get out of there if you start taking too much damage.
+Heroic Zen is a punishing stance. If you're positioned right, the Zen
+Ability will deal damage to your enemies every time they attack anyone
+on your team, as long as you can keep your Shields up.
+Heroic Control is less obvious than other choices, but Range 1-5
+with Burning Heart is a powerful combo. The Control tokens also help
+you deal with those attacks that you can't afford to take head on.
+
+Jumping Style
+
+Range: 1
+
+At the start and end of your turn, you may teleport one, two, or
+three spaces.
+
+4+: Leap In
+Teleport up to three spaces.
+You may deal 2 damage to an enemy within range.
+Jumping Style lets you dive onto threats that need to go down
+quickly. Sometimes the best team support is to take out the problem.
+Jumping Power and Jumping One-Two are obvious choices, as
+these Forms give you the damage you want to dive on a threat.
+Jumping Blaster is also an option, as the Jumping Ability and Leap
+In let you easily get into position for Shockwave.
+Jumping Wild works pretty well as a panic stance, for when things
+get bad and you don't know what else to do.
+Jumping Vigilance lets you easily get in position to heal or hand out
+Weakness tokens, then jump away to safety. You can trigger your
+Abilities in any order, so at the end of your turn, you can either use the
+Vigilance Ability before jumping away, or after jumping to an enemy.
+
+67
+
+Rallying Style
+
+Range: 1
+
+At the end of your turn, you and each ally within range heals.
+At the start of each ally's turn, if they are within range of you, they
+may heal.
+
+2+ or 3+ or 5+: Group Up
+Pull one ally up to 3 spaces.
+3+: Pull one ally up to 4 spaces.
+5+: Each pulled ally heals.
+Rallying Style is healing focused, capable of picking your whole team
+back up off the ground.
+Rallying Song and Rallying Vigilance are obvious, as the primary
+two healing Forms. Rallying Vigilance is especially good, as this Stance
+prevents your team from losing its healer in a pinch.
+Rallying Iron gives you Armor and access to Secure, which combos
+well with Group Up.
+Rallying Shadow lets you get into position to pull your allies
+wherever they need to be.
+Rallying Blaster and Rallying Control increase your Range, greatly
+improving the Rallying Ability's flexibility.
+
+Unbreakable Style
+
+Range: 1-2
+
+After each Action you perform, give one Iron token to an ally
+other than yourself within range.
+Your allies within range may spend your tokens.
+
+4+: Eyes Open
+You gain 6 Iron tokens and 1 Weakness token.
+Unbreakable Style lets you buff your team by proxy. Any token you
+hold becomes a token your friends hold.
+Unbreakable Control is the obvious choice, increasing your range to
+make sharing tokens easier. The Unbreakable Ability also lets your allies
+use your Control tokens, letting you use them as a range boost.
+Unbreakable Power and Unbreakable Iron let you build up a lot of
+Power or Iron tokens, to use with the Unbreakable Ability.
+Unbreakable Shadow and Unbreakable Reversal keep their Speed
+tokens outside of your turn, letting your allies borrow movement as they
+need it.
+
+68
+
+Archetype: Cyborg
+Cyborgs build power over time. They adapt to the threat in front of
+them, growing stronger, tougher, or faster, as needed. If you let a Cyborg
+build up, they will destroy you.
+Cyborgs is a combo-focused Archetype, using their constant flow of
+basic tokens to trigger powerful Unique Actions. They are good at
+everything and weak to nothing. The Cyborg doesn't have much versatility,
+but they make up for it with sheer firepower and speed.
+Cyborgs need to pay close attention to their token management.
+Basic Tokens are their bread and butter, and everything they do relies on
+keeping a stock of the tokens they need when they need them.
+With a variety of powerful Token Actions and an Ability that gives
+you the tokens you need, the Cyborg sets itself up for success. As long as
+you can keep track of what you need when you need it, the Cyborg can
+handle anything in front of them.
+
+69
+
+Focused Cyborg
+At the start of your turn, you gain four Basic Tokens of your choice.
+
+Fused Cyborg
+At the start of your turn, you gain two Basic Tokens of your choice.
+
+Frantic Cyborg
+At the start of this turn, you gain four Basic Tokens of your choice.
+The Cyborg Abilities give you two or four Basic Tokens of the same
+type. So a Focused Cyborg chooses to gain four Iron tokens, four
+Power tokens, or four Speed tokens at the start of their turn.
+When you choose to gain Speed tokens while using Iron Form or
+Power Form, you will gain half of those tokens as Iron or Power tokens,
+as per the Abilities of those Forms.
+
+Armored Style
+
+Range: 1-2
+
+After you spend Iron tokens, you heal 1.
+
+2 Iron Tokens: You, Stay
+Challenge an enemy within range.
+That enemy discards three Speed tokens.
+With the Armored Ability, you want to spend only 1 Iron token per hit
+you take, if possible. If you spend 4 Iron tokens to block a single hit, the
+Armored Ability still only heals 1.
+Spending Iron tokens to use You, Stay or Fury will heal you 1.
+Armored Style is tough as nails. With each Iron token you hold
+negating two damage instead of one, you are very difficult to take down.
+Armored Iron is the obvious pair, giving you Armor and the Iron
+tokens to spend on You, Stay.
+Armored Shadow and Armored Reversal let you move into position
+to use You, Stay on enemies you want to slow down during their turn.
+Armored Vigilance is a powerful recovery Stance. With the
+Vigilance Ability picking you up, the Cyborg Ability giving Iron tokens,
+and the Armored Ability making each Iron token count, this combination
+all but guarantees you'll survive to your next turn to try something else.
+Like all Cyborg Stances, Armored Song is a valid option entirely
+because Song Form can give you whatever Basic Token you need.
+
+70
+
+Incinerator Style
+
+Range: 1-3
+
+When you spend Power tokens to boost the damage a hit deals,
+give one Burning token to the target of that hit.
+
+2 Power Tokens: Flamethrower
+Choose an enemy within range. They take 1 damage, gain one
+Burning token, and are pushed 1 space.
+If you have 3 Power tokens and spend them all on Flamethrower, it
+deals 2 damage, pushes 2 spaces, and gives 2 Burning tokens.
+Incinerator Style is extremely aggressive, getting enemies out of
+your face and setting them on fire.
+Incinerator Power is the obvious stance to take, as it gives you more
+Power to spend on the Flamethrower. Incinerator's Ability only gives
+one Burning token to a Power-boosted hit, no matter how many Power
+tokens you spend. Spending 5 Power tokens on one Flamethrower deals
+4 damage, pushes 4 spaces, and gives 2 Burning tokens.
+Incinerator One-Two and Incinerator Blaster give you more hits
+with each Action, giving you more opportunities to hand out Burning
+tokens with Incinerator's Ability.
+Like all Cyborg Stances, Incinerator Song is a valid option entirely
+because Song Form can give you whatever Basic Token you need.
+
+Machine Style
+
+Range: 1-2
+
+You may spend your Basic Tokens as if they were any other Basic
+Tokens. The Basic Tokens are Iron, Power, and Speed tokens.
+
+1+ or 4+: High Efficiency
+Choose three: You heal 1; you gain one Iron token; you gain
+one Power token; you gain one Speed token; or you deal 1
+damage to an enemy within range.
+4+: Choose the last two options.
+A 4+ High Efficiency performs all five choices, in the order listed.
+Machine Style is a well-rounded Style that pairs well with any Form.
+Machine Shadow and Machine Reversal keep their Speed tokens
+between turns, allowing you to use them with Machine's Ability.
+High Efficiency does a lot at low cost, so Machine Shadow and
+Machine Wild make the best use of this with their many Action Dice.
+Like all Cyborg Stances, Machine Song is a valid option entirely
+because Song Form can give you whatever Basic Token you need.
+
+71
+
+Rocket Style
+
+Range: 1
+
+After you push someone, you may teleport to any empty space
+adjacent to them.
+
+2 Speed Tokens: Rocket Tackle
+Push an adjacent enemy or ally two spaces.
+Rocket Style carries your allies to where they should be, and pushes
+enemies away from where they want to be.
+Rocket Dance is incredibly mobile, letting you Throw someone,
+teleport to them, and take home a bunch of Speed tokens for your trouble.
+Rocket Shadow and Rocket Reversal can keep hold of your Speed
+Tokens for impromptu Rocket Tackle interrupts.
+Like all Cyborg Stances, Rocket Song is a valid option entirely
+because Song Form can give you whatever Basic Token you need.
+
+Syphon Style
+
+Range: 1-2
+
+At the end of your turn, choose a token you hold. Either replace it
+with a Power token, or gain another copy of it.
+
+2+ or 6+: Power Converter
+Target a single token held by you or someone within range.
+Choose one or both: You steal the targeted token(s) from them;
+and/or replace the targeted token(s) with Power tokens.
+6+: The Choice Effect applies to every token they hold of the
+targeted token's type.
+Syphon Style filters out excess tokens into more Power, letting you
+turn weakness into strength. A 6+ Power Converter will steal and/or
+replace every token of a single type held by your target. So if an ally has 3
+Weakness tokens, you may turn them into 3 Power tokens.
+Syphon Power and Syphon Wild can efficiently use all the Power
+Tokens you gain from Power Converter.
+Syphon Blaster lets you remove more tokens at once. An Amplified
+6+ Power Converter can remove 5 types of tokens from anyone with
+range, giving all of them back to you as Power tokens. Extra targets don't
+give you more choices - you must make the same choice for every target.
+Syphon Reversal can steal your opponent's tokens the moment they
+gain them, before they even get to use them.
+Syphon Zen guarantees you get a 6+ Power Converter each turn.
+Like all Cyborg Stances, Syphon Song is a valid option entirely
+because Song Form can give you whatever Basic Token you need.
+
+72
+
+Archetype: Demon
+Demons are big bullies. They get their strength from making others
+weak. They drain your strength, toss you aside, and just when you think
+you've got the upper hand, they sneak in a surprise attack.
+Demons are an aggressive Archetype, focusing on picking off their
+enemies one by one. They stay on their feet by keeping their enemies off
+balance, and limiting their ability to counterattack effectively.
+Demons need to be wary of their enemy's capabilities, because they
+are relatively fragile. They rely on their tricks, their Fog and Weakness
+tokens and teleports, to avoid being punished for their aggressive antics.
+But what really makes a Demon vicious is their Chaos tokens, which
+they can spend to take Actions out of turn. They need to keep track of
+the best time to use those tokens, because a key interruption can mean
+the difference between defeat and domination.
+
+73
+
+Focused Demon
+At the end of your turn, you gain 2 Chaos tokens.
+
+Fused Demon
+At the end of your turn, you gain 1 Chaos token.
+
+Frantic Demon
+At the end of this turn, you gain 2 Chaos tokens.
+Chaos Token: This token is exclusively used by the Demon. At any
+time, you may spend a Chaos token to immediately take a 4 Action,
+interrupting the current turn until that Action is resolved.
+
+Dark Style
+
+Range: 2-4
+
+You can see and target enemies through Fog.
+At the end of your turn, place a Fog obstacle into your space.
+
+4+: Darkness Dawns
+Place two Fog obstacles into empty spaces within range.
+You may teleport to one of those Fog obstacles.
+
+4+: Twilight Sorrow
+Each enemy standing in Fog gains one Weakness token.
+You gain one Speed token for each enemy affected.
+For Twilight Sorrow, enemies standing adjacent to Fog still count as
+being in Fog. Twilight Sorrow gives you the same number of Speed
+tokens as the number of Weakness tokens it hands out.
+The Dark Ability replaces any obstacle in your space with Fog.
+Dark Style lets you set up a lot of Fog to hide in, and punish any
+enemies who try to use it by handing them Weakness tokens.
+Dark Shadow can use Stunt to create more Fog. The Shadow
+Ability lets you keep your Speed tokens when you use Twilight Sorrow
+out of turn with a Chaos Token.
+Dark Blaster lets you place more fog with Darkness Dawns, as well
+as taking advantage of its Ability to target through Fog for unavoidable,
+long-range Shockwaves or Amplified Damage Actions.
+Dark Control increases your Range, so Darkness Dawns can take
+you farther, and you can use your Control tokens through the Fog.
+
+74
+
+Ogre's Style
+
+Range: 1-2
+
+Your Throw Actions may target any number of enemies within
+range. After you Throw an enemy, they take 1 damage.
+
+3+: Watch Your Step
+Choose an enemy you can see that moved during this turn. You
+deal 2 damage to them.
+Ogre's Style relies on Throws to trigger Watch Your Step, and its
+Ability makes those Throws better and easier to use.
+Ogre's Dance is a powerful mobility stance, turning your Throws into
+a exponential amount of Speed tokens. If you Throw three enemies three
+spaces, you gain 9 Speed tokens!
+Ogre's One-Two deals 2 damage with each Throw you perform.
+Ogre's Reversal can use Watch Your Step to snipe enemies from
+across the map during their own turn, so long as they move at all.
+Ogre's Blaster can Throw a bunch of enemies, then use an
+Amplified Watch Your Step to hit all of them at once.
+Ogre's Control has Range: 1-5, letting you use one Throw Action
+on as many enemies as possible.
+
+Slasher Style
+
+Range: 1
+
+At the end of every turn, you deal 1 damage to an adjacent enemy.
+
+4+: Suddenly…
+Teleport into an empty space adjacent to someone who is alone.
+Someone is alone if nobody is adjacent to them.
+The Slasher Ability deals damage every turn, not just your turn.
+Slasher Style wants to be in the thick of things. By sticking close to
+an enemy who already took their turn, you can slowly tear them apart until
+one of their friends pushes you out of the way. Then, you can use your
+Chaos tokens to Suddenly… be back in position.
+Slasher Reversal and Slasher Shadow can move out of turn, letting
+you stick close to enemies you want to focus on with the Slasher Ability.
+Slasher Power and Slasher Song give you Power tokens, so you
+can deal more damage with the Slasher Ability.
+Slasher Iron gives you the survivability you'll need to stand next to
+your enemies for several turns, and Contain can pull them close and
+place Traps for them to fall in while escaping from you.
+
+75
+
+Vampire Style
+
+Range: 1
+
+After you deal damage with a hit, you heal 1.
+After you give Weakness tokens to an enemy, you gain that many
+Power tokens.
+
+4+: Life Steal
+Deal 2 damage to an enemy within range.
+You may give that enemy one Weakness token.
+Vampire Style drains power with every blow, growing stronger as
+your enemies grow weaker.
+Vampire One-Two and Vampire Blaster give each of your attacks
+another hit, letting the Vampire Ability heal you more.
+Vampire Vigilance has many ways to give out Weakness tokens,
+which all turn into extra Power later.
+Vampire Zen deals 1 damage each time an enemy hits your shield,
+which triggers the Vampire Ability's heal. If you put up your shields while
+damaged, enemies trying to break you will only help pick you back up.
+
+Zombie Style
+
+Range: 1
+
+You have Armor.
+At the start of your turn, if your HP is 3 or less, you heal.
+
+4+: Hunger
+Deal 2 damage to an enemy within range.
+You may take one token from that enemy.
+The target of Hunger loses the token you take from them, and you
+gain that token.
+Zombie Style gets back up and stays on its feet. It is a well-rounded
+Style that pairs well with any Form.
+Zombie Vigilance is a double dose of recovery, healing you twice at
+the start of your turn. This Stance can go from zero HP to a full health bar
+with a single 4+ Stand Strong.
+Zombie Wild lets you easily set up your extra Action Dice from
+Wild's Ability, since Hunger can steal tokens and the Zombie Ability
+can pick you up from death. The tokens you steal with Hunger can also be
+used to pay for Fury.
+
+76
+
+Archetype: Flametongue
+Flametongues want to watch the world burn. They specialize in fire,
+explosions, and blasts of all sorts, destroying the terrain around them as
+they fight.
+Flametongues are a zoning Archetype, discouraging their enemies
+from getting close and dealing their damage from a distance. They hand
+out a lot of Burning tokens, which deal more and more damage the more
+of them your enemies have.
+Flametongues are vulnerable to foes who can remove tokens easily.
+The Angel's Purify, the Cyborg's Power Converter, and the Trickster
+Ability can turn your blistering heat into their own strength. Also, Burning
+Tokens don't trigger until the end of their turn, and everyone can use Put
+It Out!, so don't rely on Burning Tokens to finish your foes off.
+The main way a Flametongue defeats their foes is by giving them
+more to deal with than they can reasonably handle. You give out so many
+Burning tokens, and lay out so many Traps, and punish them for hitting
+you, and just make fighting back the last thing they can afford to do.
+
+77
+
+Focused Flametongue
+After you deal damage to an enemy with an Action, give that
+enemy one Burning token.
+
+Fused Flametongue
+The first time you deal damage to an enemy during your turn, give
+that enemy two Burning tokens.
+If you damage multiple enemies at once, the Fused Flametongue
+Ability only gives Burning tokens to one of them.
+
+Frantic Flametongue
+During this turn, after you deal damage to an enemy with three or
+less Burning tokens, give them one Burning token.
+
+Burning Style
+
+Range: 2-4
+
+After you target an enemy with an Action, if they have four
+Burning tokens or less, give them 1 Burning token.
+
+4+: Burn It All Down
+Target one enemy within range. Give them one Burning token
+and put a Trap into their space.
+Burning Style hands out Burning tokens very aggressively, using
+traps and fire to overwhelm their foes.
+Burning Shadow, Burning One-Two, and Burning Dance
+appreciate the free extra burning tokens while doing what they want to
+do anyway, and have reliable access to Burn It All Down.
+Burning Blaster is your best option for handing out a lot of fire, and
+Burn It All Down is extremely good with extra targets.
+Burning Iron protects you from the traps you lay, while also letting
+you pull enemies through your traps.
+
+78
+
+Explosion Style
+
+Range: 2-4
+
+After you deal damage to an enemy, push that enemy one space.
+After you destroy an obstacle, replace it with an Edge.
+
+6+: Ka-Boom!
+Deal 2 damage to an enemy within range.
+Then, destroy every obstacle adjacent to them.
+When you use Ka-Boom!, the Explosion Ability will push them
+before the second part of Ka-Boom! This means it will destroy obstacles
+adjacent to the space they were pushed into.
+Explosion Style makes craters. It tears the map apart and makes
+all your attacks high-impact, pushing your enemies all over the place.
+Explosion Blaster can use an Amplified Ka-Boom! to destroy a
+huge portion of the battlefield.
+Explosion Power and Explosion One-Two allow you to push
+enemies farther, using either power tokens or the followup hit.
+Explosion Dance can use Dance's mobility, along with the Edges
+you make with Ka-Boom!, to easily ring out your foes.
+
+Inferno Style
+
+Range: 1-2
+
+At the end of your turn, after your Burning tokens have already
+triggered, you gain three Burning tokens.
+After an enemy deals damages to you with an Action, you may
+give them all of your Burning tokens.
+
+Gain 1 Burning Token: Ignition
+Give one Burning token to an enemy within range.
+You can only use Ignition once per turn.
+The three Burning tokens you gain from Inferno's Ability do not hurt
+you the turn you gain them.
+Like all Token Actions, Ignition can be used during enemy turns.
+Inferno Style involves setting yourself on fire to discourage enemies
+from attacking you. That's just smart.
+Inferno Blaster is a strong choice, turning Ignition from a zero sum
+game into a game stacked heavily in your favor.
+Inferno Shadow lets you stay within range of your enemies, so you
+can keep using Ignition every turn.
+Inferno Wild gets extra Action Dice from being on fire.
+Inferno Zen will heavily punish enemies who attack you. Be sure to
+Challenge someone so they have to.
+
+79
+
+Phoenix Style
+
+Range: 1
+
+Whenever you would take damage from Burning tokens or from
+Traps, you heal that much damage instead.
+
+4+: Cleansing Fire
+Choose two: Give a Burning token to someone within range;
+heal an ally within range; or place a Trap within range.
+Phoenix Style pairs well with Inferno Style and Volcanic Style,
+preventing their downsides from destroying you. It functions as an
+excellent follow-up Style to other Flametongue shenanigans.
+Phoenix Vigilance is a powerful self-healing Stance, allowing you to
+rapidly get back in the fight.
+Phoenix Song and Phoenix Iron provide reliable support, so you
+can keep the rest of your team in the fight while your enemies burn.
+Phoenix Shadow has the most chances to use Cleansing Fire, can
+run away during enemy turns, and use Stunt to place a Trap for you to
+stand in and heal up with.
+
+Volcanic Style
+
+Range: 1-3
+
+After you spend Speed tokens on Free Movement, you may place
+a Trap into each space you exit.
+You do not take damage from entering a space with a Trap.
+
+4+: Pyroclasm
+Place three Traps within range. Each Trap placed by this Action
+must be adjacent to a Trap obstacle.
+The Volcanic Ability lets you move through Traps safely, but
+doesn't protect you from damage if you end your turn on one.
+Volcanic Style covers the world around you with fire.
+Volcanic Shadow is the obvious choice. Moving out of turn lets you
+place your Traps reactively, and lets you get out of them if someone tries
+to use them against you by pushing you into one.
+Volcanic Dance is good for similar reasons, as a stance that gains a
+lot of Speed tokens. Throwing enemies through a line of Traps is also
+extremely deadly, if they do not have the Armor to take it.
+Volcanic Song lets you run and hide while you provide support to
+your team, putting a wall of traps between you and your enemies.
+Volcanic Iron and Volcanic Reversal are immune to damage from
+Traps, thanks to their Armor, so you can place Traps recklessly.
+
+80
+
+Archetype: Gunkata
+Gunkata is the ancient combat art of shooting people. Usually with
+guns. Ideally in the face. Probably a lot.
+Gunkata is a high-damage Archetype that hits its enemies over and
+over and over. They embody the idea of death by a thousand cuts, and
+they do it all from fairly far away.
+Big downside: your Styles have to deal with a minimum range. You
+need to be very wary of putting obstacles between you and your targets.
+Fog completely shuts you down and Walls make life difficult, but Rubble
+and Traps make it harder for your enemies to punish your ranged pokes.
+Gunkata is a simple Archetype, but simple doesn't mean weak. Play
+to your strengths and punish your enemies' weaknesses, and you'll find
+that victory is an easy target.
+
+81
+
+Focused Gunkata
+At the start of your turn, push every adjacent enemy one space,
+then move one space.
+At the end of your turn, deal 1 damage to each enemy within range.
+
+Fused Gunkata
+At the end of your turn, deal 1 damage to each enemy within range.
+
+Frantic Gunkata
+At the end of this turn, you may move one space, then deal 1
+damage to each enemy within range. Then, you may move one space.
+
+Akimbo Style
+
+Range: 3-5
+
+After you deal damage to someone, you move one space.
+
+4+: Firing Wild
+Choose one: Deal 1 damage to every enemy and ally adjacent
+to you; or deal 1 damage to every enemy and ally within range.
+Akimbo's Ability does not give you a choice - if you deal damage,
+you must move one space. Firing Wild makes you move one space per
+enemy or ally damaged by it.
+Count up all the damage dealt before you move anywhere. Each
+space of movement is separate, so you may move back and forth over
+and over if you don't want to leave your spot.
+Akimbo One-Two doubles the damage of Firing Wild, and makes
+each of your Damage Actions move you one additional space.
+Akimbo Control can either have a large Range of 3-8, letting you hit
+everyone on the map, or close off your weakness to close range combat
+by making your Range 1-5.
+Akimbo Reversal takes advantage of Akimbo's Ability to give you
+mid-turn movement after your damage-dealing Actions, letting you
+escape from enemies mid-combo.
+
+82
+
+Artillery Style
+
+Range: 3-8
+
+You can see and target enemies through Fog and Walls.
+
+1+ or 6+: Bombardment
+Place a Trap into a space within range.
+6+: Place a Trap into each space adjacent to the first Trap.
+Do not place these Traps over Edges or Walls.
+Artillery Style bombards your enemies with an endless rain of fire.
+Artillery Control can either have a massive Range of 3-11, letting
+you hit everyone on the map, or close off your weakness to close range
+combat by making your Range 1-8.
+Artillery Power can Crush enemies at long range.
+Artillery Blaster can Bombard two spaces at once.
+Artillery Shadow can fill the field with Fog for you to hide behind,
+while keeping your long range advantage anyway.
+Artillery Zen can guarantee a 6+ Bombardment every turn.
+
+Crosshair Style
+
+Range: 4-8
+
+You ignore Armor and Shields when dealing damage.
+Weakness tokens you hold and Iron tokens your enemies hold do
+not reduce the damage you deal.
+
+1+: Take Aim
+Your next Action this turn has its cost and every number listed
+in its description increased by 1.
+Take Aim is especially powerful with Choice Actions and Tiered
+Actions, as it gives you much more from those Actions than normal.
+Crosshair Style keeps your enemies in your sights, ignoring their
+defenses and hitting them where it hurts, as long as you can keep away.
+Crosshair Blaster can use Take Aim to improve Amplify, then
+Amplify a Damage Action to have 4-12 Range and 6 total targets.
+Crosshair One-Two and Crosshair Power take advantage of the
+Crosshair Ability to ignore enemy defenses by dealing high damage.
+Crosshair Control can Take Aim to gain twice as many Control
+Tokens from Suppression, while also removing your weakness to close
+range combat by making your Range 1-8.
+Crosshair Iron, Crosshair Song, and Crosshair Vigilance take
+advantage of Take Aim's wording to pick extra choices or hand out
+multiple extra tokens with their various Unique Actions.
+
+83
+
+Ricochet Style
+
+Range: 2-4
+
+After you deal damage to an enemy with an Action, you may deal
+1 damage to a different enemy within 3 spaces of them.
+
+3+: Trick Shot
+Choose one obstacle within range.
+Deal 2 damage to an enemy within 3 spaces of that obstacle.
+Both the Ricochet Ability and Trick Shot draw line of sight from the
+enemy that triggers the Ricochet, or the obstacle you chose with Trick
+Shot, instead of drawing from you.
+Trick Shot can shoot through Walls and Fog. If you choose a Wall or
+Fog as the targeted obstacle, any enemy within 3 spaces of the Wall or
+Fog is a legal target, even if you couldn't hit them normally.
+Ricochet Style spreads your damage around rapidly, letting you poke
+enemies around corners and soften up many enemies at once.
+Ricochet One-Two is the most machine-gun Stance in the game,
+hitting your enemies two extra times with each attack you make.
+Ricochet Wild and Ricochet Shadow take advantage of Ricochet's
+Ability with their many many Action Dice, and especially with Fury.
+Ricochet Blaster can trigger multiple Ricochets per Action, since
+Ricochet triggers once for each enemy damaged by each Action you
+perform. This makes your Shockwaves especially dangerous.
+
+Ten Thousand Style
+Add
+
+Range: 2-3
+
+to your Action Dice.
+
+2+: Point Blank Shot
+Deal 1 damage to an adjacent enemy. Then, push them 1 space.
+Ten Thousand Style lets you do just a little bit more with any Form,
+making it a universally solid Style.
+Ten Thousand Power can use the extra dice to get into position, or
+to use more Point Blank Shots with all your Power Tokens.
+Ten Thousand Blaster, Ten Thousand One-Two, and Ten
+Thousand Dance all gain bonuses with certain kinds of Actions, so
+having more Actions each turn lets you gain those bonuses more often.
+Ten Thousand Shadow gets an unparalleled eight Action Dice.
+Ten Thousand Vigilance and Ten Thousand Song are the only
+Forms with 1+ Unique Actions for your extra dice to use.
+
+84
+
+Archetype: Phantom
+Phantoms are strange and unusual. They use their paranormal
+powers to fight their battles for them. Invisible barriers, telekinesis,
+teleportation, flight - you have all sorts of strange tricks that are tough for
+many enemies to handle.
+Phantom is a flexible Archetype that can adapt to anything. Your
+universal access to your Unique Actions means that when choosing
+your Stance, you can focus on switching to the Abilities you need.
+Phantoms are flexible, but lack power. You need to rely on your
+team to actually defeat most foes, as the Phantom's Styles don't have
+any damage dealing Abilities or Unique Actions.
+Phantoms have an answer to every problem, and can control the
+battlefield as you see fit. Edges are your friend, and tossing enemies out
+of bounds is child's play to a Phantom.
+
+85
+
+Focused Phantom
+You have access to all of your Styles' Unique Actions at all times,
+no matter what your current Stance is. All of your Unique Actions
+have their cost reduced by 1 (to a minimum of 1+ or 2 tokens).
+The Phantom's cost reduction Ability applies to all of your Unique
+Actions, including your Phantom Style Unique Actions.
+For example, Iron Form's Protect only requires a 5+, and Aura
+Style's Shields Up only costs 2 Basic tokens.
+This Ability has a minimum, so One-Two Form's Slide In doesn't
+become a 0+ Action, and Wild Form's Fury still costs 2 Basic tokens.
+
+Fused Phantom
+Your Unique Actions have their cost reduced by 1 (to a minimum
+of 1+ or 2 tokens).
+
+Frantic Phantom
+You have access to all of your Unique Actions this turn, no
+matter what your current Style and Form are.
+Your Unique Actions have their cost reduced by 1 (to a minimum
+of 1+ or 2 tokens) during this turn.
+
+Aura Style
+
+Range: 1-3
+
+At the start of your turn, you gain a 3 point Shield.
+When an enemy within range damages or breaks a Shield, you
+may move that enemy one space.
+After a Shield within range breaks, you gain 1 Iron token.
+
+3 Basic Tokens: Shields Up
+An ally within range gains a 3 point Shield.
+You always count as an ally within range of your own Actions, so
+Shields Up can give yourself a Shield.
+Aura Style is a shield-based support Style that punishes enemies
+who try to attack your team.
+Aura Zen lets you stack Shields, making it ideal for Aura's benefits.
+Aura Song and Aura Iron are both support-based Stances that can
+generate the tokens you need to use Shields Up.
+Aura Dance and Aura Shadow can generate many Speed Tokens
+to spend on Shields Up.
+
+86
+
+Crying Style
+
+Range: 1-4
+
+At the start of your turn, give one Weakness token to all enemies
+within range.
+At the end of your turn, Challenge an enemy within range and give
+them one Weakness token.
+
+6+: Banshee's Wail
+All enemies within range gain a Weakness token.
+All Traps and Walls within range become Rubble.
+Crying Style weakens all of your enemies at once.
+Crying Control has Range: 1-7, making the Crying Ability and
+Banshee's Wail extra effective.
+Crying Blaster also increases your range, and adds some offensive
+power to the Phantom by giving you access to large Shockwaves.
+Crying Vigilance doubles up on the Weakness-granting Abilities
+and Actions, allowing you to significantly hamper dangerous enemies.
+Crying Zen guarantees you'll have a Banshee's Wail each turn.
+
+Puppet's Style
+
+Range: 1-5
+
+You may use Speed tokens to move any ally, enemy, or obstacle
+within range, using the normal Free Movement rules.
+Walls and Traps you move with this Ability become Rubble.
+Edges cannot be moved with this Ability.
+
+3+ or 5+: Pull The Strings
+Choose an enemy or ally you can see. Move them 3 spaces.
+5+: Choose an enemy or ally you can see. Move them 3 spaces.
+Puppet's Style can re-arrange the battlefield however you see fit.
+Puppet's Dance is the obvious Stance, letting you turn Throws and
+Grapples into Speed Tokens that can move anything within range.
+Puppet's Control gives you more Range, letting you puppeteer from
+farther away, and control your enemy's Actions, too.
+Puppet's Shadow and Puppet's Reversal keep your Speed tokens
+between turns, letting you manipulate your enemies throughout the round.
+But remember, if it is not your turn, you can only use Free Movement at
+the start or end of the turn. If you move an enemy over an Edge at the start
+of their turn, they can use Basic Movement Actions to save themselves.
+
+87
+
+Spirit Style
+
+Range: 1-3
+
+Edges cannot remove your Copies from play. You and your
+Copies can move over Walls as though they were empty space.
+After you use Free Movement on yourself or your Copy, you may
+move any number of your Copies one space.
+
+1+ or 3+ or 5+: Now You See Me…
+Place a Copy into an empty space within range.
+3+: Place a Copy into an empty space within range.
+5+: Place a Copy into an empty space within range.
+
+Destroy 1 Copy: …Now You Don't
+…Now You Don't is a Token Action, but the Cost is one of your Copies.
+
+Teleport into the space of the destroyed Copy.
+
+Spirit Style is a defensive style, letting your move freely while hiding
+yourself behind a wall of Copies.
+Spirit Shadow is one of the slipperiest Stances in the game, turning
+both Speed tokens and Copies into escape mechanisms in the middle of
+enemy turns, and Stunt can make even more Copies to escape with.
+Spirit Dance can cover the battlefield with dancing partners to trigger
+the Dance Ability with, letting you manipulate the battlefield at will.
+Spirit Iron and Spirit Power can use …Now You Don't to get around
+their mobility penalty.
+
+Vortex Style
+
+Range: 1-3
+
+Edges cannot remove you from play. When you stand on an Edge,
+every other Edge counts as an adjacent space you can move to.
+
+4+: Black Hole
+Place an Edge into an empty space within range.
+The Vortex Ability only counts for movement, not Range. You
+cannot stand over any Edge and attack any enemy within Range 1-2 of
+every other Edge. You must move to them.
+Vortex Style opens portals you can use to your advantage, both
+for mobility and to remove your enemies from play.
+Vortex Dance, Vortex Shadow, and Vortex Reversal give you
+the speed to consistently take advantage of your portals.
+Vortex One-Two, Vortex Power, and Vortex Fury can use your
+portals to surprise your foes, suddenly attacking from out of nowhere.
+
+88
+
+Archetype: Punk
+Punks are all about tearing down the world. They need to make their
+mark, stand by their convictions, and rebel against the system. You've got
+guts, and you're not afraid to show 'em. The more the Punk gets beaten
+down, the harder they rise up and hit back.
+The Punk is a tanking Archetype. You want to take hits, because the
+more you bleed, the stronger you hit back on the rebound. The Punk
+knows that if you outlast your enemy, you win.
+The Punk's greatest weakness is biting off more than they can chew.
+Their Styles and Abilities encourage going aggro, and punishing any
+enemies who take the bait. But if you aren't careful, you'll wind up hurt.
+Bait doesn’t live a long life.
+If you can take the heat, though, nobody hits back like a Punk. Once
+they give you a reason, nothing will hold you back.
+
+89
+
+Focused Punk
+At the start of your turn, add X to your Action Pool.
+X is equal to twice the damage on your current health bar.
+If your health bar is full, X = 1.
+
+Fused Punk
+At the start of your turn, add X to your Action Pool.
+X is equal to the damage on your current health bar.
+If your health bar is full, X = 1.
+
+Frantic Punk
+At the start of this turn, add X to your Action Pool.
+X is equal to twice the damage on your current health bar.
+If your health bar is full, X = 1.
+For example, if your Health Bar has 12 HP, and you currently have
+7 HP, you have 5 damage. The Focused and Frantic Punks will add
+a 10 to their Action Pool, while the Fused Punk will add a 5.
+
+Bleeding Style
+
+Range: 1
+
+You don't get Taken Out at zero HP. You can continue to fight as
+long as you remain in play. Your side still loses if everyone in play is
+at zero HP at the same time.
+
+2 HP: Lash Out
+Lash Out is a Token Action that spends your HP.
+You can't spend HP you do not have.
+
+Push an adjacent enemy two spaces.
+
+12+: I'm Still Here
+Deal 7 damage to an enemy within range.
+Then, push that enemy 7 spaces.
+I'm Still Here is nearly impossible to trigger without the Punk Ability.
+Switch to Bleeding Style after you get Taken Out and you can guarantee
+I'm Still Here will do some damage.
+Bleeding Style is tenacity made form, and will never surrender.
+Bleeding Wild is a good desperation Stance, as switching to it while
+you are Taken Out triggers two of Wild's bonus dice.
+Bleeding Blaster can make I'm Still Here hit multiple enemies.
+Bleeding Song can heal your allies even if you die.
+
+90
+
+Brawling Style
+
+Range: 1
+
+After your Shield breaks, you gain 1 Power token.
+After you deal damage, if you didn't spend a Power token on that
+hit, you gain 1 Power token.
+
+2 Power Tokens: Tough It Out
+You gain a 2 point Shield.
+Brawling Style can keep up with the most vicious of foes, building up
+power and then spending it on defense or damage as you need it.
+Brawling One-Two builds up Power tokens very quickly, letting you
+spend them on Power Form's Crush or Wild Form's Fury later.
+Brawling Zen can rebuild its Shields as they break. While inactive
+Shields don't normally become active until the end of the turn, you can use
+Tough It Out after your active Shield breaks to immediately have a new
+active Shield.
+Brawling Wild can unleash devastating Fury. As long as you don't
+spend a Power token to use Fury, you'll get a Power token back, letting
+your Iron and Speed tokens effectively buy Fury at half price.
+
+Flashy Style
+
+Range: 1
+
+After you roll your Action Dice, you may combine two of your
+numbers into a single, larger number.
+
+X: Show Off
+Choose two of these Basic Actions: Movement, Damage,
+A Challenger Approaches, Put It Out!, or Throw.
+Perform both of those Actions as if you had spent X on them.
+You can only use Show Off once per turn.
+The Flashy Ability combines two numbers into one, effectively
+removing one from your Action Pool. For example, if you combine a 3
+and a 4, you gain a 7, but lose both the 3 and the 4.
+Flashy Style is all about doing more with less. It favors Forms with
+many dice to add together with the Flashy Ability.
+Flashy Reversal loves Show Off. The once per turn limit is not a
+drawback when paired with Reversal's Ability.
+Flashy Shadow and Flashy Wild have many Action Dice for you to
+combine with the Flashy Ability.
+Flashy Power is the most statistically likely Stance in the game to get
+a 9+ Crush whenever you need it.
+Flashy Dance can use the Flashy Ability for an incredible Throw.
+
+91
+
+Knockdown Style
+
+Range: 1
+
+After you take damage from an enemy, you deal 1 damage back to
+them.
+
+4+: Take It On The Chin
+Each enemy within range deals 1 damage to you.
+Then, you deal 3 damage to one of them.
+If you use Armor or Iron Tokens to reduce the damage you take to
+zero, the Knockdown Ability does not trigger. If an enemy hits you twice
+with One-Two's Ability, Knockdown's Ability will also hit them twice.
+Knockdown Style loves a good fight, and gives it out as good as it
+gets. Enemies who rely on hitting you multiple times will regret it.
+Knockdown Zen does some very silly things. If you Take It On The
+Chin while you have a Shield up, you will deal 2 damage to every enemy
+within range, until your Shield breaks.
+Knockdown Blaster and Knockdown Control increase your range,
+making Take It On The Chin more dangerous.
+
+Taunting Style
+
+Range: 1
+
+After you take damage, you gain 1 Iron token.
+After you take damage from an enemy with your Challenge, you
+may move one space.
+
+1+: Is That All You Got?
+Challenge an enemy you can see. You gain 1 Iron token.
+
+X: Not Good Enough
+Give X - 2 Weakness tokens to an enemy with your Challenge.
+Then, they discard your Challenge.
+Not Good Enough gives out two less Weakness tokens than the
+number you spent on it. For example, if you spend a 9 to use Not Good
+Enough, you give them seven Weakness tokens. Spending a 1 or a 2
+will give them zero Weakness tokens.
+Taunting Style is a big distraction, letting you Challenge your
+enemies while keeping enough Iron tokens to survive anything.
+Taunting Iron and Taunting Vigilance pair their Iron/Weakness
+token affinity with Taunting Style's use of both.
+Taunting Reversal and Taunting Shadow can move out of turn,
+making you even harder to pin down.
+
+92
+
+Archetype: Teacher
+Your age only holds you back a little
+bit. You're strong, but not as strong as
+you used to be, and your lessons hit
+harder than your fist nowadays. But if
+they listen to their Teacher, they can do
+anything.
+The Teacher is a support based
+Archetype that donates Action Dice to
+the rest of their team. You don't have
+much power yourself, although Elder
+Style lets you draw on the strength you
+once had. Your real strength is in how
+much more you let your team
+accomplish.
+The Teacher is a force multiplier,
+improving the output of everyone around
+them. But being a force multiplier has
+two fatal flaws. If you go down, all your
+bonuses go with you. But on the other
+hand, if you're the last one standing, you
+have no one to give any bonuses to!
+To prevent either of these from
+happening, the Teacher favors a
+defensive play style. As long as you're
+still standing to show them the ropes,
+your team's power will be unparalleled.
+
+93
+
+Focused Teacher
+At the end of your turn, you gain two Inspired tokens.
+
+Fused Teacher
+At the end of your turn, you gain an Inspired token.
+
+Frantic Teacher
+At the end of this turn, you gain two Inspired tokens.
+Inspired Token: This token is only used by the Teacher.
+During an ally's turn, you may spend one Inspired token to roll
+and add that number to their Action Pool.
+
+Patient Style
+
+Range: 1
+
+At the end of your turn, your Speed tokens become Iron tokens.
+You may only take one Action per turn.
+Your Action Pool does not empty between Turns or Rounds.
+
+X: Waiting Game
+Add X+1 to your Action Pool. Then, you may move one space.
+You can only use Waiting Game during enemy turns.
+Waiting Game gives you a number one higher than the number you
+spent to use Waiting Game.
+Patient Style likes to wait. While Reversal Form holds your
+numbers to interrupt your enemies' turns, Patient Style holds them to
+make your next turn ridiculous, using two turns' worth of numbers all at
+once, while tailoring your numbers to the Actions you want to use.
+Patient Reversal Stance may use two Actions per turn, one from
+the Patient Ability and one from the Reversal Ability. As a result, this
+Stance can use Waiting Game twice as often as other Patient Stances.
+Patient Song and Patient Dance can gain a lot of Speed tokens,
+giving you a lot of Iron tokens while you wait to build up a big turn next.
+If you want to add a lot of little numbers to your next turn, you want to
+use Patient Shadow or Patient Wild.
+If you want to add some big numbers to your next turn, you want to
+use Patient Control or Patient Power.
+
+94
+
+Elder Style
+
+Range: 1-2
+
+The cost of this Stance's Unique Actions are reduced by 1 (to a
+minimum of 1+ or 2 tokens).
+Once per turn, during your turn, you may use any Unique Action
+you know, from among all of your Stances, for free. It does not cost
+any tokens or numbers to use. If your free Action is a Tiered Action,
+you perform it as if you spent a 7.
+Elder Style is a strange beast. It pairs well with any Form, but it also
+pairs with every other Form and Style you have, due to its Ability.
+Elder Style likes Forms with good Unique Actions it can use for free.
+Some of the best are Blaster Form's Amplify, Iron Form's Protect,
+Power Form's Crush, and Song Form's Sing Along.
+You do not need to pair Elder Style with these Forms to use these
+Actions. You just need to have these Forms among your Stances.
+Elder Shadow only needs 2 Speed tokens to use Stunt, letting you
+teleport all over while leaving obstacles everywhere. An Amplified Stunt
+will place four obstacles into adjacent spaces.
+Elder Reversal is so ineffective I have to warn against it. Elder's cost
+reduction does nothing for Counter Attack, and the Elder Ability to use a
+surprise Unique Action once during your turn is heavily limited by the
+Reversal Ability's once per turn Action limit.
+
+Mastermind Style
+
+Range: No
+
+You cannot perform Actions. Instead, you spend your numbers
+on your allies, making them perform Actions for you.
+Each Action you take uses an ally's current location, range, and
+Stance bonuses as if they'd taken that Action themselves. You can
+only give Actions to allies you can see.
+After each Action an ally performs during your turn, you may
+move 1 space.
+Mastermind Style directs your allies, deciding what they do for them.
+Be wary of Mastermind One-Two, Mastermind Power, and
+Mastermind Zen. Their Abilities do nothing when you can't take Actions.
+Mastermind Vigilance can do its job much easier when you can
+make your allies Weaken enemies themselves, without putting yourself in
+harm's way.
+Mastermind Reversal can donate Actions to your allies exactly
+when they need them most, making a full-team Reversal Form.
+Mastermind Iron has Armor and a downside that doesn't matter if
+you don't need to go anywhere.
+
+95
+
+Motivating Style
+
+Range: 1-2
+
+At the end of your turn, allies within range heal, and you gain an
+Inspired token.
+
+4+: You Can Do It!
+Choose an ally within range. They choose two: They heal; they
+move two spaces; they gain a copy of a token they hold; or they
+discard one token they hold.
+The Inspired token you gain from the Motivating Ability is the same
+as the one used for the Teacher Ability.
+Motivating Style is a support based style, and lets you fill the role of
+the Cavalry, encouraging you to group up with your team mates.
+Motivating Dance and Motivating Shadow can easily put you in
+position to use You Can Do It! and the Motivating Ability.
+Motivating Iron doubles up on your defenses and support options.
+
+Training Style
+
+Range: 1
+
+At the end of your turn, give an ally one Training token.
+Training Token: Before performing an Action, you may spend a Training
+token to increase all numbers listed in that Action by 1, including its cost.
+You may only spend 1 Training token per turn.
+
+3+: Watch Closely
+You gain one Training Token. If you spend it before the end of
+this turn, give one Training Token to an ally.
+When you use a Training Token, pay close attention to the wording of
+the modified Action. Actions that say "target one enemy" will now say
+"target two enemies," while Actions that say "an enemy" or "an ally" will
+still have only one target.
+For example, the basic Damage Action deals damage to two targets,
+and deals one more damage to both of them. The basic Grapple or
+Throw Actions, however, are unchanged by Training Tokens.
+Training Style is a balanced Style that does not lean in any
+particular direction. Its primary benefit, the Training Tokens, are best
+used with one Watch Closely per turn, so any Form with four or more
+Action Dice makes a good pair with Training Style.
+
+96
+
+Archetype: Trickster
+Everyone loves a good trick, unless the trick was played on them.
+Tricksters revel in confusion, changing the rules as they go. As long as
+you can stay one step ahead, nobody can handle you.
+Tricksters are a zoning Archetype, keeping enemies close or
+pushing them away as needed. You stay out of reach while keeping your
+enemies within your own. As long as your enemies can never catch you,
+you cannot lose.
+Tricksters are extremely powerful when they have everything they
+need, but they rely on a lot of things to keep their tricks rolling. Illusion
+Style, Mysterious Style, and Hidden Style all rely on certain types of
+terrain, and terrain can be cleared away by your enemies. More than any
+other Archetype, Tricksters need careful planning so you don't run out
+of tricks right when you need them most.
+Tricksters are hard to pin down, hard to fight reliably, and hard to
+deal with. You may not deal the most damage, but you'll give your
+enemies hell trying to keep up with everything you've got going on.
+Nothing is easy when you're fighting a Trickster.
+
+97
+
+Focused Trickster
+You may spend any tokens you hold as if they were Iron tokens.
+When you spend Iron tokens to reduce the damage you take, push
+your attacker 1 space, then you may move 1 space.
+
+Fused Trickster
+You may spend any Basic Tokens you hold as Iron tokens.
+When you spend Iron tokens to reduce the damage you take, you
+may move 1 space.
+
+Frantic Trickster
+Until your next turn, you may spend any tokens you hold as if they
+were Iron tokens.
+When you spend Iron tokens to reduce the damage you take, push
+your attacker 1 space, then you may move 1 space.
+
+Caged Style
+
+Range: 1
+
+Adjacent enemies cannot gain or spend Speed tokens.
+
+2+: Welcome To My Maze
+Deal 1 damage to one enemy outside of your Range.
+Then, pull them three spaces.
+Caged Style traps your enemies until you're ready to let them go.
+Caged Zen forces your enemies to stay with you, giving them no
+choice but to eat counter-attack damage from the Zen Ability.
+Caged Iron and Caged Reversal make good use of their Armor, so
+you can survive caging any enemy you want.
+Caged Vigilance can use Welcome To My Maze to guarantee an
+enemy is within range for the Vigilance Ability.
+Caged Blaster is a suicidal strategy - you can pull every enemy to
+you, and force them to Take You Out if they want to escape your Ability. If
+your team has a strategy that requires every enemy to be in one spot,
+Caged Blaster can guarantee they will be.
+
+98
+
+Mysterious Style
+
+Range: 1-2
+
+At the start of your turn, place a Fog obstacle into your space.
+While you stand in Fog, your maximum range is doubled.
+
+3 Speed or Iron Tokens: Ghost Walk
+Place a Fog obstacle into an empty space within range.
+Then, teleport to a Fog obstacle within range.
+The Mysterious Ability replaces an obstacle in your space with Fog.
+You can pay for Ghost Walk with any quantity of each token, as long
+as you spend a total of 3 tokens. 3 Speed, 2 Speed and 1 Iron, 2 Iron and
+1 Speed, and 3 Iron tokens are all legal costs to pay for Ghost Walk.
+Mysterious Style strikes from hiding, using Fog to be untouchable.
+Mysterious Control increases your range, letting you attack, control,
+and Ghost Walk across the whole map.
+Mysterious Blaster also increases your range, while also letting
+Ghost Walk place additional Fog and giving you access to Shockwave.
+While standing in Fog, an Amplified Shockwave has Range: 1-10.
+Mysterious Shadow and Mysterious Reversal keep their Speed
+tokens between turns, letting you Ghost Walk to escape harm.
+Mysterious Iron can Ghost Walk to make up for Iron Form's lack of
+maneuverability, while also gaining Iron tokens for Trickster Abilities.
+
+Illusion Style
+
+Range: 1-3
+
+After an enemy deals damage to you while within range of at least
+one of your Copies, you deal 1 damage to them. If they are within
+range of three or more Copies, you deal 2 damage to them instead.
+You may spend your Copies as Iron tokens.
+
+3+ or 6+: Where Are You Looking?
+Place 2 Copies into empty spaces within range.
+6+: Place 2 more Copies into empty spaces within range.
+Illusion Style punishes enemies who try to hurt you without clearing
+out your Copies. Once you set up, it takes a lot of effort to set you back.
+Illusion Control and Illusion Blaster have increased Range,
+making your Copies more dangerous. Illusion Blaster also places extra
+Copies with Where Are You Looking?
+Illusion Shadow can place additional Copies using Stunt in the
+middle of the enemy's turn, for a sudden surprise.
+Illusion Zen increases the punishment for attacking you.
+
+99
+
+Hidden Style
+
+Range: 1-3
+
+You may move through Walls as though they were empty spaces.
+You can see and target enemies through Walls.
+
+3 Iron tokens: Sudden Strike
+Deal 2 damage to an enemy within range.
+The Hidden Ability lets you stand in Walls. A Wall you are standing in
+does not block line of sight to you.
+Hidden Style is a defense oriented Style, but is generically useful
+with any Form you want to pair it with.
+Hidden Iron and Hidden Song have the Iron tokens you need for
+Sudden Strike.
+Hidden Reversal and Hidden Shadow can escape from enemies by
+going through the walls.
+
+Whip Style
+
+Range: 2-5
+
+Your Throw Actions target one person within range.
+When you Throw or Grapple an enemy, they take 2 damage.
+
+5+: Grapple Hook
+Teleport to any empty space within range.
+The Whip Ability prevents you from Throwing adjacent enemies.
+Whip Style is a zoning Style, staying out of enemy range and
+keeping your enemies from getting close.
+Whip Dance adds a lot of value to your Throws and Grapples, to the
+point that every Action you take in this Stance should be a Throw, a
+Grapple, or Try And Keep Up.
+Whip Reversal is incredibly good at interrupting enemy combos. You
+can Throw your enemies away from your allies, or Grapple Hook yourself
+away if they come after you.
+The Whip Ability gets around Shadow Form's low, inconsistent
+damage output. When even the 1's in your pool deal 2 damage, Whip
+Shadow can deal 12 damage every single turn, divided up in 2 damage
+packages however you see fit. The only requirement is keeping your
+enemies within range as you ping pong them back and forth, and
+Shadow's free Speed tokens help you maintain that distance.
+
+100
+
+Archetype: Underdog
+You're just a regular kid, and you're in way over your head. Or you
+would be, if being an ordinary underdog didn't make you the most
+dangerous person in the room at all times.
+The Underdog is an all-around balanced Archetype, focused on
+keeping your enemies under control. Its Styles have a lot of flexibility,
+and most of their Actions are Choice Actions, allowing you to respond
+to any kind of situation with some kind of answer.
+The Underdog is all about getting back up again. The longer a battle
+goes, the more it favors the Underdog, as they turn pain into power. But
+unlike the Punk, who turns damage into powerful high-cost Actions, the
+Underdog turns damage into basic tokens they can spend, so they
+require careful thinking and tenacity to make the most out of their bonus.
+The Underdog is a middle ground between the controlling Angel, the
+tanking Punk, and the combo-heavy Cyborg. But you can leave it to an
+Underdog to patch together a solution to every situation.
+
+101
+
+Focused Underdog
+At the start of your turn, you gain one Basic token of your choice.
+After you take damage, you gain one Basic token of your choice.
+
+Fused Underdog
+At the start of your turn, you gain one Basic token of your choice.
+After you take damage, you gain one Basic token of your choice.
+You cannot choose a Basic token you are already holding.
+
+Frantic Underdog
+At the start of this turn, you gain one Basic token of your choice.
+Until your next turn, after you take damage, you gain one Basic
+token of your choice.
+The Basic tokens are Iron, Power, and Speed tokens.
+Fused Underdogs holding all three Basic Tokens may spend their
+Iron Tokens before taking damage. Doing this will let them regain an Iron
+token from taking damage, if they no longer have any.
+Fused Underdogs may choose any Basic Token at the start of their
+turn, even if it is one they already hold.
+
+Collateral Style
+
+Range: 1-2
+
+After you destroy an obstacle, you gain one Basic token of your
+choice.
+
+3+: Roughhousing
+Destroy an obstacle within range, then choose one: Teleport to
+that obstacle's space; deal 1 damage to each enemy adjacent to
+the destroyed obstacle; or destroy another obstacle within range.
+You can spend 2 Basic Tokens to choose a second option from
+the list, or 3 Basic Tokens to choose all three.
+Collateral Style tears the arena apart. If your enemies were relying
+on walls and traps to protect themselves, Collateral will put a stop to that.
+Collateral Blaster is interesting, because extra targets give
+Roughhousing some unique properties. If you choose "Deal 1 damage
+to each enemy adjacent to the destroyed obstacle," and destroyed four
+obstacles, you'll deal 1 damage to each enemy adjacent to any of those
+obstacles!
+Collateral Control increases your range, making Roughhousing's
+teleport choice more useful.
+
+102
+
+Distracting Style
+
+Range: 1-2
+
+After an enemy deals damage to you, if they have no Weakness
+tokens, give that enemy one Weakness token.
+
+1+ or 2 Basic Tokens: Flare
+Flare can be used as either a Simple or Token Action.
+Move one space, then give one Weakness token to one enemy
+within range.
+Distracting Style makes you the perfect distraction. Hard to catch
+and hard to hit, you can outlast all but the most aggressive assaults. Be
+sure to Challenge your enemies, so the distraction works!
+Distracting Shadow is an incredibly elusive Stance, able to move
+constantly with Flares and Stunts during your enemies' turns.
+Distracting Iron and Distracting Zen let you survive the attention,
+giving your Armor or Shields to block some damage.
+Distracting Reversal is the halfway point between Iron and Shadow,
+giving you the reactions of Shadow and the Armor of Iron.
+Distracting Vigilance is a solid recovery Stance. Rather than
+Challenge your enemies and force them to take Weakness tokens, this
+Stance uses its Ability as a threat, a way to punish attackers who come
+after you while you try to heal.
+
+Eye of the Style
+
+Range: 1
+
+At the start of your turn, you gain a Bonus of your choice.
+
+3+: Thrill of the Fight
+Target an adjacent enemy, then choose one: Challenge them;
+you deal 2 damage to them; or give them 2 Burning tokens.
+You can spend 2 Basic Tokens to choose a second option from
+the list, or 3 Basic Tokens to choose all three.
+The Bonuses are on page 20.
+Eye of the Style is a versatile Style that gives you exactly what you
+need right when you need it. It pairs well with any Form you wish to use.
+Eye of the Shadow can use the Freedom Bonus to gain even more
+Speed tokens, letting you Stunt with impunity.
+Eye of the Wild can use Freedom or Power Up to build up your Fury.
+
+103
+
+Lucky Style
+
+Range: 1
+
+You have Armor.
+Add
+
+to your Action Dice.
+
+3+: Just What I Needed
+Choose one: You gain 2 Basic tokens; you teleport two or three
+spaces; or you heal.
+You can spend 2 Basic Token to choose a second option from
+the list, or 3 Basic Tokens to choose all three.
+Lucky Style is basic, but extremely solid, granting you both Armor
+and an extra Action each turn. It combines well with any Form, but Armor
+doesn't stack, so don't pair it with Reversal or Iron Form.
+Lucky One-Two, Lucky Song, and Lucky Vigilance make best use
+out of Lucky Style's bonus die, as these Forms each have very cheap
+Actions they want to perform as often as possible.
+Lucky Blaster has two solid 3+ Actions, so half of the time Lucky
+Style's bonus die will give this Stance a free Amplify or Shockwave.
+
+Misfortune's Style
+
+Range: 1-3
+
+When you would take damage from a Trap, deal that damage to
+an enemy within range instead. If no enemies are within range, gain
+one Power token instead.
+
+1+ or 3 Basic Tokens: Bad Luck
+Bad Luck can be used as either a Simple or Token Action.
+Place a Trap into a space within range.
+Misfortune's Style turns your bad luck around, filling the terrain with
+Traps while becoming immune to them yourself.
+Misfortune's Shadow lets you keep your enemies close, while also
+giving you Stunt as another means of placing Traps.
+Misfortune's Zen combines both Abilities to pile on the 1 damage
+reactions. Death by a thousand cuts.
+Misfortune's Control increases your range, making Bad Luck even
+easier to spread around. In addition, Control Tokens extend your ability to
+share misfortune and stop your enemies from doing as they please.
+
+104
+
+Archetype: Wardancer
+You have mastered the art of combat. And to you, art is exactly what
+it is: temporary, ever-changing, always improving, never perfect. You fight
+to perform, and you will put on a better show than anybody.
+The Wardancer is an aggressive Archetype, focused on high
+damage dealing and mobility. Wardancer Styles are hyper-focused on
+specific kinds of aggression, giving you exactly the hammer you need to
+pound down any nail.
+Mechanically, the Wardancer has the highest numbers. All of their
+Unique Actions are Tiered Actions, and they get stronger when you
+spend larger numbers to use them. Their Ability increases their numbers
+after they roll, but they still favor Forms with large dice to begin with:
+Control, Dance, Power, Wild, and Zen Forms especially.
+The Wardancer is a very simple fighter to play. But simple doesn't
+mean weak, as they are unrivaled in raw power and speed.
+
+105
+
+Focused Wardancer
+After rolling your Action Dice, either increase all of your numbers
+by 1, or increase one of your numbers by 4.
+
+Fused Wardancer
+After rolling your Action Dice, increase two of your numbers by 2.
+
+Frantic Wardancer
+After rolling your Action Dice this turn, either increase all of your
+numbers by 1, or increase one of your numbers by 4.
+
+Forbidden Style
+
+Range: 1-2
+
+At the start of your turn, you take 2 damage. This damage cannot
+drop you below 1 HP on your current Health Bar.
+This Style is attached to two Forms. You have the Abilities and
+Unique Actions from each Form. Do not use the Action Dice listed
+in those Forms. This Stance's Action Dice are determined by
+combining the results of the following chart:
+Blaster:
+
+Reversal:
+
+Control:
+
+Shadow:
+
+Dance:
+Iron:
+
+Song:
+Vigilance:
+
+One-Two:
+
+Wild:
+
+Power:
+
+Zen:
+
+Forbidden Style lets you combine two Forms into a single Stance.
+This makes it the most open-ended Style in the game.
+You only get one Skill from a Forbidden Stance. You can choose
+which Form you take that Skill from.
+If you want damage, Forbidden Power Blaster or Forbidden
+Blaster One-Two double down on damage increasing Abilities.
+Combining Shadow or Dance with any other Form makes that Form
+highly mobile, so Iron, Power, Wild, and Zen appreciate these pairs.
+If you want maximum defense, combine Iron, Reversal, Vigilance,
+and Zen Forms in any way you please.
+Forbidden One-Two Wild turns every 2 Basic tokens you hold into 2
+damage. Spend everything on Movement, and destroy them with
+One-Two Fury.
+
+106
+
+Lightning Style
+
+Range: 1
+
+After you deal damage, you gain 1 Speed token.
+
+2+ or 5+ or 8+: Deadly Dance
+Teleport 2 spaces. Deal 1 damage to an enemy within range.
+5+: Teleport 2 spaces. Deal 2 damage to an enemy within range.
+8+: Teleport 2 spaces. Deal 2 damage to an enemy within range.
+Lightning Style is fast. Real fast. So fast you can't see it coming.
+Lightning One-Two makes great use of Whirlwind and Deadly
+Dance with the Lightning Ability, giving you tons of Speed tokens while
+you hit multiple times per Action.
+Lightning Shadow and Lightning Dance are obvious Stances, as
+they can put those extra Speed tokens to use on their Unique Actions.
+Lightning Wild is a monstrous Stance that refunds half of your Fury,
+letting you keep the chain going 50% longer than normal.
+With the Wardancer Ability, Lightning Zen can perform an 8+
+Deadly Dance and a 5+ Deadly Dance every single turn.
+
+Overwhelming Style
+
+Range: 1
+
+You ignore Armor when dealing damage.
+When an enemy hits you with an Action, you may spend a Power
+token to deal 1 damage to them and push them 1 space.
+
+4+ or 8+: Power Strike
+Deal 2 damage to an enemy within range.
+You gain 2 Power tokens.
+8+: Deal 4 damage and gain 4 Power tokens instead.
+Overwhelming Style can break through the mightiest defenses,
+leaving your enemies reeling from your mere presence.
+Overwhelming Power is the obvious choice, letting you immediately
+spend as many of those Power tokens as possible on damage.
+Overwhelming Blaster, Wild, and One-Two each appreciate the
+Overwhelming Ability to ignore Armor, for Shockwave, Fury, and the
+One-Two Ability.
+With the Wardancer Ability, Overwhelming Zen can perform an 8+
+Power Strike and two 4+ Power Strikes every single turn.
+
+107
+
+Relentless Style
+
+Range: 1
+
+When you deal damage to an enemy, immediately push them one
+space and then move into the empty space they left.
+If you damage multiple enemies at the same time, push all of them
+one space, then move into one of the empty spaces they left.
+
+3+ or 5+ or 7+: Rush Down
+Deal 1 damage to an enemy within range.
+Then, deal 1 damage to an enemy within range.
+5+: Then, deal 1 damage to an enemy within range.
+7+: Then, deal 1 damage to an enemy within range.
+The Relentless Ability requires you to move into their space if you
+can, even if you do not want to. If they are standing in a full space (such as
+a Wall) due to an Ability, you do not move into that space.
+Relentless Style lets you smash your foes across the battlefield.
+Relentless One-Two and Relentless Blaster hit additional times, so
+you can move farther and push farther.
+Relentless Blaster and Relentless Control have additional range,
+so you don't accidentally send opponent's flying out of your reach.
+Relentless Zen can Rush Down very efficiently, as their numbers
+perfectly line up with Rush Down's cost.
+
+Weightless Style
+
+Range: 1
+
+All spaces are Empty spaces to you.
+Edges cannot remove you from play.
+Rubble does not make you discard Speed tokens.
+Traps deal no damage to you.
+
+4+ or 7+: Effortless
+Teleport to any space you can see.
+7+: Choose an ally. They may teleport to any space they can see.
+Weightless Style ignores trouble in a way no other Style can. You
+have no way of stopping their tricks, so why not just ignore them?
+Weightless Power and Weightless Iron can use Effortless to make
+up for their lack of mobility.
+Weightless Blaster can re-position your entire team with Effortless.
+Weightless Song and Weightless Vigilance are excellent recovery
+Stances, able to escape any trap or foe.
+
+108
+
+Archetype: Winterblossom
+Your style is calm, controlled, precise, and icy. A Winterblossom's
+fighting style revolves around controlling and weakening your enemies,
+reducing them to a helpless mess that cannot hope to fight back.
+The Winterblossom is a controlling Archetype that shuts down your
+foes, similar to the Angel. But while the Angel buffs herself into being
+untouchable, the Winterblossom weakens her foes into uselessness,
+before destroying them with a well-timed power blow.
+The Winterblossom has no problems against other defensive and
+controlling foes, winning the war of attrition with ease. But aggressive
+enemies are a problem, as they can dish out damage faster than you can
+stop it. One-Two Form is especially bad for you, as its users can remove
+two Weakness tokens per attack.
+But if you can pile on the Weakness tokens, your opponents will never
+be able to touch you.
+
+109
+
+Focused Winterblossom
+At the start of every turn, give 1 Weakness token to one enemy
+within range.
+
+Fused Winterblossom
+At the start and end of your turn, give 1 Weakness token to one
+enemy within range.
+
+Frantic Winterblossom
+At the start and end of this turn, give 2 Weakness tokens to one
+enemy within range.
+Focused Winterblossoms give out a Weakness token at the start of
+every turn, not just yours. Each ally's turn, each enemy's turn, if an enemy
+is within your range, you may hand them a Weakness token.
+
+Crystal Style
+
+Range: 1-2
+
+When one of your Copies is destroyed, it deals 1 damage to every
+enemy adjacent to it.
+3+ or 6+: Splinter
+Place a Copy of you into any space within range. Then, deal 1
+damage to every enemy adjacent to that Copy.
+6+: Place a Copy of you into any space within range. Then, deal
+1 damage to every enemy adjacent to that Copy.
+Free: Shatter
+Shatter is a Token Action that costs nothing.
+
+Destroy one of your Copies. Give one Weakness token to an
+enemy that was within range of that Copy.
+Crystal Style litters the field with bombs for you to detonate at will.
+Crystal Blaster lets you place more Copies per Splinter, and give
+out Weakness tokens to multiple enemies with Shatter.
+Crystal Shadow can use Stunt to place Copies in the middle of
+your enemies' turns, surprising them with an instant Shatter.
+Crystal Control gives you tons of range, letting you place Copies
+from afar and use them as a network for your Control tokens and
+Winterblossom Ability.
+Crystal Zen can reliably Splinter 2-3 times a turn.
+
+
