@@ -28,71 +28,94 @@ Future<void> showArchetypePickerSheet(
     return;
   }
 
-  final picks = policies.paddedArchetypeIds(heroType, initialArchetypeIds);
+  final initialPicks =
+      policies.paddedArchetypeIds(heroType, initialArchetypeIds);
 
   await showDialog<void>(
     context: context,
     barrierDismissible: true,
-    builder: (context) => StatefulBuilder(
-      builder: (context, setState) => AlertDialog(
-        title: const Text('Choose Archetype'),
-        content: SizedBox(
-          width: 560,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...rules.archetypes.where((a) {
-                  // For multi-slot heroes (Fused/Frantic), hide archetypes already
-                  // selected in other slots so each remaining picker only shows valid options.
-                  for (var i = 0; i < picks.length; i++) {
-                    if (i == editSlotIndex) continue;
-                    if (picks[i].isNotEmpty && picks[i] == a.id) return false;
-                  }
-                  return true;
-                }).map((a) {
-                  final current =
-                      picks[editSlotIndex].isEmpty ? null : picks[editSlotIndex];
-                  final complexity = a.complexity.clamp(1, 3);
-                  final stars = '${'★' * complexity}${'☆' * (3 - complexity)}';
-                  return RadioListTile<String>(
-                    value: a.id,
-                    groupValue: current,
-                    onChanged: (v) async {
-                      if (v == null) return;
-                      picks[editSlotIndex] = v;
-                      setState(() {});
-                      final err = policies.validateArchetypeSlotPick(
-                        heroType,
-                        picks,
-                        v,
-                        editSlotIndex,
-                      );
-                      if (err != null) {
-                        onValidationError?.call(err);
-                        return;
+    builder: (dialogContext) {
+      final picks = List<String>.from(initialPicks);
+      return StatefulBuilder(
+        builder: (context, setState) {
+          final screenW = MediaQuery.sizeOf(context).width;
+          final contentWidth = (screenW - 48).clamp(280.0, 560.0);
+          final slotPick =
+              picks[editSlotIndex].isEmpty ? null : picks[editSlotIndex];
+          return AlertDialog(
+            title: const Text('Choose Archetype'),
+            content: SizedBox(
+              width: contentWidth,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...rules.archetypes.where((a) {
+                      for (var i = 0; i < picks.length; i++) {
+                        if (i == editSlotIndex) continue;
+                        if (picks[i].isNotEmpty && picks[i] == a.id) {
+                          return false;
+                        }
                       }
-                      await onApply(List<String>.from(picks));
-                      if (context.mounted) Navigator.pop(context);
-                    },
-                    title: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '${a.name} ($stars)',
-                          ),
+                      return true;
+                    }).map((a) {
+                      final complexity = a.complexity.clamp(1, 3);
+                      final stars =
+                          '${'★' * complexity}${'☆' * (3 - complexity)}';
+                      return RadioListTile<String>(
+                        value: a.id,
+                        groupValue: slotPick,
+                        onChanged: (v) {
+                          if (v == null) return;
+                          setState(() => picks[editSlotIndex] = v);
+                        },
+                        title: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '${a.name} ($stars)',
+                              ),
+                            ),
+                            _archetypeInfoIcon(context, a),
+                          ],
                         ),
-                        _archetypeInfoIcon(context, a),
-                      ],
-                    ),
-                  );
-                }),
-              ],
+                      );
+                    }),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
-    ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: slotPick == null
+                    ? null
+                    : () async {
+                        final err = policies.validateArchetypeSlotPick(
+                          heroType,
+                          picks,
+                          slotPick,
+                          editSlotIndex,
+                        );
+                        if (err != null) {
+                          onValidationError?.call(err);
+                          return;
+                        }
+                        await onApply(List<String>.from(picks));
+                        if (dialogContext.mounted) {
+                          Navigator.pop(dialogContext);
+                        }
+                      },
+                child: const Text('Apply'),
+              ),
+            ],
+          );
+        },
+      );
+    },
   );
 }
 

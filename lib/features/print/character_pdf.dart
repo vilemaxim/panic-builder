@@ -55,6 +55,21 @@ abstract final class _PdfPalette {
   /// Lighter accent for inner side boards (ribbons stay [_PdfPalette.stanceActionTitle]).
   static const PdfColor stanceActionBoard = PdfColor.fromInt(0xFF42AB63);
   static const PdfColor stanceRail = PdfColor.fromInt(0xFFF5D96D);
+
+  /// Frantic style-only cards ([RulebookStylePalette]).
+  static const PdfColor franticStyleRibbon = PdfColor.fromInt(0xFFE53935);
+  static const PdfColor franticStyleRail = PdfColor.fromInt(0xFFFF7961);
+  static const PdfColor franticStyleBody = PdfColor.fromInt(0xFFFFEBEE);
+
+  /// Frantic form-only cards ([RulebookFormPalette]).
+  static const PdfColor franticFormRibbon = PdfColor.fromInt(0xFF1565C0);
+  static const PdfColor franticFormRail = PdfColor.fromInt(0xFF64B5F6);
+  static const PdfColor franticFormBody = PdfColor.fromInt(0xFFE3F2FD);
+
+  /// Header copy on saturated ribbons (style/form PDF strips).
+  static const PdfColor saturatedRibbonInk = PdfColor.fromInt(0xFFFFFFFF);
+  static const PdfColor saturatedRibbonMuted =
+      PdfColor.fromInt(0xE6FFFFFF);
 }
 
 const double _kOuterMargin = 14;
@@ -490,17 +505,19 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
 
         final maxW = cons?.maxWidth ?? double.infinity;
         final colW = maxW.isFinite ? maxW : _stanceOrCharacterHalfWidth();
+        final ribbonFrac = ht == HeroTypeKind.frantic ? 0.6 : 0.75;
+        final ribbonW = colW * ribbonFrac;
         return pw.Container(
           color: _PdfPalette.purpleBg,
           child: pw.Align(
             alignment: pw.Alignment.centerLeft,
             child: pw.SizedBox(
-              width: colW * 0.75,
+              width: ribbonW,
               child: _PdfSkewLeftRibbon(
                 fillColor: _PdfPalette.purpleBand,
                 child: pw.ConstrainedBox(
                   constraints: pw.BoxConstraints(
-                    maxWidth: colW * 0.75,
+                    maxWidth: ribbonW,
                   ),
                   child: pw.Padding(
                     padding: const pw.EdgeInsets.fromLTRB(
@@ -585,14 +602,6 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     int slotIndex,
   ) {
     final entries = <({String name, String ability})>[];
-    final build = rules.buildById(c.buildId);
-    final buildDescription = (build?.description ?? '').trim();
-    if (build != null && buildDescription.isNotEmpty) {
-      entries.add((
-        name: build.name,
-        ability: _normalizeAbilityTextPdf(buildDescription),
-      ));
-    }
     final slotId = c.archetypeIds.length > slotIndex
         ? c.archetypeIds[slotIndex]
         : '';
@@ -609,7 +618,9 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       }
     }
     if (entries.isEmpty) {
-      return archetypeHintPdf('Pick a build and archetype to view abilities.');
+      return archetypeHintPdf(
+        'Pick an archetype for this stance to view its ability.',
+      );
     }
     final bodyStyle = style(size: 10.6, height: 1.28);
     final badgeStyle = style(
@@ -648,37 +659,39 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       builder: (ctx, cons) {
         final maxW = cons?.maxWidth ?? double.infinity;
         final colW = maxW.isFinite ? maxW : _stanceOrCharacterHalfWidth();
+        final ribbonW = colW * 0.6;
         return pw.Container(
           color: _PdfPalette.purpleBg,
           child: pw.Align(
             alignment: pw.Alignment.centerLeft,
-            child: _PdfSkewLeftRibbon(
-              fillColor: _PdfPalette.purpleBand,
-              child: pw.ConstrainedBox(
-                constraints: pw.BoxConstraints(
-                  maxWidth: colW,
-                ),
-                child: pw.Padding(
-                  padding: const pw.EdgeInsets.fromLTRB(
-                    8 + _kRailTextInset,
-                    5,
-                    8,
-                    5,
-                  ),
-                  child: pw.Row(
-                    mainAxisSize: pw.MainAxisSize.min,
-                    children: [
-                      if (buildLabel.isNotEmpty)
+            child: pw.SizedBox(
+              width: ribbonW,
+              child: _PdfSkewLeftRibbon(
+                fillColor: _PdfPalette.purpleBand,
+                child: pw.ConstrainedBox(
+                  constraints: pw.BoxConstraints(maxWidth: ribbonW),
+                  child: pw.Padding(
+                    padding: const pw.EdgeInsets.fromLTRB(
+                      8 + _kRailTextInset,
+                      5,
+                      8,
+                      5,
+                    ),
+                    child: pw.Row(
+                      mainAxisSize: pw.MainAxisSize.min,
+                      children: [
+                        if (buildLabel.isNotEmpty)
+                          pw.Text(
+                            normalizePdfTextForHelvetica(buildLabel),
+                            style: nameStyle,
+                          ),
+                        if (buildLabel.isNotEmpty) pw.SizedBox(width: 8),
                         pw.Text(
-                          normalizePdfTextForHelvetica(buildLabel),
+                          normalizePdfTextForHelvetica(archLabel),
                           style: nameStyle,
                         ),
-                      if (buildLabel.isNotEmpty) pw.SizedBox(width: 8),
-                      pw.Text(
-                        normalizePdfTextForHelvetica(archLabel),
-                        style: nameStyle,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -695,28 +708,27 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       return archetypeHintPdf('Pick a Hero Type to view archetype abilities.');
     }
     if (heroType == HeroTypeKind.frantic) {
-      const franticRules =
-          'At the start and end of your turn, you may move one space.\n'
-          'When you would choose your Stance, instead choose one Frantic Ability, '
-          'one Style, and one Form you know to create your Stance for the turn. '
-          'You cannot choose an Ability, Style, or Form you used on your previous turn.';
-      final parts = franticRules
-          .split(RegExp(r'\n\s*\n+'))
-          .map((p) => p.trim())
-          .where((p) => p.isNotEmpty)
-          .toList();
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          for (var i = 0; i < parts.length; i++) ...[
-            pw.Text(
-              normalizePdfTextForHelvetica(parts[i]),
-              style: style(size: 10.8, height: 1.28),
-            ),
-            if (i < parts.length - 1) pw.SizedBox(height: 7),
-          ],
-        ],
-      );
+      final build = rules.buildById(c.buildId);
+      final buildDescription = (build?.description ?? '').trim();
+      if (build != null && buildDescription.isNotEmpty) {
+        final bodyStyle = style(size: 10.6, height: 1.28);
+        final badgeStyle = style(
+          size: 9.6,
+          bold: true,
+          color: PdfColors.white,
+          height: 1,
+        );
+        return pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: abilityParagraphsWithBadgePdf(
+            _normalizeAbilityTextPdf(buildDescription),
+            build.name,
+            bodyStyle,
+            badgeStyle,
+          ),
+        );
+      }
+      return archetypeHintPdf('Pick a build to view its ability.');
     }
 
     final entries = <({String name, String ability})>[];
@@ -1254,7 +1266,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     );
   }
 
-  pw.Widget stanceRailsOverlay(pw.Widget child) {
+  pw.Widget pdfStanceRailsOverlay(PdfColor railColor, pw.Widget child) {
     return pw.Stack(
       children: [
         child,
@@ -1264,7 +1276,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
           bottom: 0,
           child: pdfFilledVerticalBar(
             width: _kRailW,
-            color: _PdfPalette.stanceRail,
+            color: railColor,
           ),
         ),
         pw.Positioned(
@@ -1273,25 +1285,219 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
           bottom: 0,
           child: pdfFilledVerticalBar(
             width: _kRailW,
-            color: _PdfPalette.stanceRail,
+            color: railColor,
           ),
         ),
       ],
     );
   }
 
-  pw.Widget stanceInnerColumn(int stanceIndex) {
-    final data = stancePageData(stanceIndex);
+  ({
+    String headerPrimary,
+    String headerSecondary,
+    List<int> dicePool,
+    List<({String text, String badge})> passives,
+    List<({String title, String body, String badge})> actions,
+  }) stanceSlotPdfFromPageData(
+    ({
+      String header,
+      String rangeLabel,
+      List<int> dicePool,
+      List<({String text, String badge})> passives,
+      List<({String title, String body, String badge})> actions,
+    })
+    page,
+  ) {
+    return (
+      headerPrimary: page.header,
+      headerSecondary: page.rangeLabel,
+      dicePool: page.dicePool,
+      passives: page.passives,
+      actions: page.actions,
+    );
+  }
+
+  String pdfStyleActionHeadingPdf(RuleStyle style, RuleSkill? skill) {
+    final n = skill?.name.trim();
+    if (n != null && n.isNotEmpty) return '$n Action';
+    final words = trimStyleSuffix(style.name);
+    return '$words Action';
+  }
+
+  String pdfStyleRulesBodyFallbackPdf(RuleStyle st, RuleSkill? skill) {
+    if (skill != null && skill.description.trim().isNotEmpty) {
+      return skill.description.trim();
+    }
+    return '${st.basicInfo}\n\n${st.marginNotes}'.trim();
+  }
+
+  ({
+    String headerPrimary,
+    String headerSecondary,
+    List<int> dicePool,
+    List<({String text, String badge})> passives,
+    List<({String title, String body, String badge})> actions,
+  }) franticStyleSlotPdfData(int stanceIndex) {
+    final stance =
+        stanceIndex < c.stances.length ? c.stances[stanceIndex] : null;
+    final styleRule = rules.styleById(stance?.styleId);
+    final styleSkill = _pdfResolvedStyleSkill(styleRule, rules);
+    final rangeLabel = _pdfStyleRangeLabel(styleRule, styleSkill);
+    final styleLabel =
+        styleRule == null ? '(Pick a Style)' : trimStyleSuffix(styleRule.name);
+
+    final passives = <({String text, String badge})>[];
+    final actions = <({String title, String body, String badge})>[];
+
+    if (styleRule != null) {
+      final passive = styleRule.passive.trim();
+      final structured = passive.isNotEmpty || styleRule.actions.isNotEmpty;
+      if (structured) {
+        if (passive.isNotEmpty) {
+          for (final p in splitParagraphs(passive)) {
+            passives.add((text: p, badge: styleLabel));
+          }
+        }
+        for (final a in styleRule.actions) {
+          final heading =
+              a.heading.trim().isNotEmpty ? a.heading.trim() : styleLabel;
+          final body = splitParagraphs(a.description).join('\n\n');
+          if (body.isNotEmpty) {
+            actions.add((title: heading, body: body, badge: styleLabel));
+          }
+        }
+      } else {
+        final fb = pdfStyleRulesBodyFallbackPdf(styleRule, styleSkill).trim();
+        if (fb.isNotEmpty) {
+          actions.add((
+            title: pdfStyleActionHeadingPdf(styleRule, styleSkill),
+            body: fb,
+            badge: styleLabel,
+          ));
+        }
+      }
+    }
+
+    if (passives.isEmpty && actions.isEmpty) {
+      passives.add((
+        text: 'Pick a style on the Style tab.',
+        badge: 'Style',
+      ));
+    }
+
+    return (
+      headerPrimary: styleLabel,
+      headerSecondary: rangeLabel,
+      dicePool: const <int>[],
+      passives: passives,
+      actions: actions,
+    );
+  }
+
+  ({
+    String headerPrimary,
+    String headerSecondary,
+    List<int> dicePool,
+    List<({String text, String badge})> passives,
+    List<({String title, String body, String badge})> actions,
+  }) franticFormSlotPdfData(int stanceIndex) {
+    final stance =
+        stanceIndex < c.stances.length ? c.stances[stanceIndex] : null;
+    final formRule = rules.formById(stance?.formId);
+    final formRaw =
+        stance?.formDisplayName.trim().isNotEmpty == true
+            ? stance!.formDisplayName.trim()
+            : (formRule?.name ?? '');
+    final formLabel =
+        formRule == null ? '(Pick a Form)' : trimFormSuffix(formRaw);
+    final dicePool = formDicePoolForForm(formRule);
+
+    final passives = <({String text, String badge})>[];
+    final actions = <({String title, String body, String badge})>[];
+
+    if (formRule != null) {
+      final passiveLine =
+          formRule.passive.trim().isNotEmpty
+              ? formRule.passive.trim()
+              : (formRule.actions.isNotEmpty
+                  ? formRule.description.trim()
+                  : '');
+      final structured = passiveLine.isNotEmpty || formRule.actions.isNotEmpty;
+      if (structured) {
+        if (passiveLine.isNotEmpty) {
+          for (final p in splitParagraphs(passiveLine)) {
+            passives.add((text: p, badge: formLabel));
+          }
+        }
+        for (final a in formRule.actions) {
+          final heading =
+              a.heading.trim().isNotEmpty ? a.heading.trim() : formLabel;
+          final body = splitParagraphs(a.description).join('\n\n');
+          if (body.isNotEmpty) {
+            actions.add((title: heading, body: body, badge: formLabel));
+          }
+        }
+      } else {
+        for (final id in formRule.skillIds) {
+          final sk = rules.skillById(id);
+          if (sk == null) continue;
+          final desc = sk.description.trim();
+          if (desc.isEmpty) {
+            passives.add((
+              text: sk.name.trim().isEmpty ? id : sk.name.trim(),
+              badge: formLabel,
+            ));
+            continue;
+          }
+          for (final p in splitParagraphs(desc)) {
+            passives.add((text: p, badge: formLabel));
+          }
+        }
+        if (passives.isEmpty) {
+          passives.add((
+            text: '${formRule.name} - skills not loaded.',
+            badge: formLabel,
+          ));
+        }
+      }
+    }
+
+    if (passives.isEmpty && actions.isEmpty && formRule == null) {
+      passives.add((
+        text: 'Pick a form on the Forms tab.',
+        badge: 'Form',
+      ));
+    }
+
+    return (
+      headerPrimary: formLabel,
+      headerSecondary: '',
+      dicePool: dicePool,
+      passives: passives,
+      actions: actions,
+    );
+  }
+
+  pw.Widget pdfStanceTemplateInnerColumn({
+    required String headerPrimary,
+    required String headerSecondary,
+    required List<int> dicePool,
+    required List<({String text, String badge})> passives,
+    required List<({String title, String body, String badge})> actions,
+    required PdfColor titleRibbonFill,
+    required PdfColor headerPrimaryColor,
+    required PdfColor headerSecondaryColor,
+  }) {
     final headerStyle = style(
       size: 13.6,
       bold: true,
-      color: _PdfPalette.ink,
+      color: headerPrimaryColor,
       height: 1.1,
     );
     final rangeStyle = style(
       size: 10.4,
       bold: true,
-      color: _PdfPalette.ink,
+      color: headerSecondaryColor,
       height: 1.15,
     );
     final passiveStyle = style(
@@ -1299,6 +1505,8 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       color: _PdfPalette.ink,
       height: 1.25,
     );
+
+    final secondaryTrimmed = headerSecondary.trim();
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
@@ -1308,11 +1516,11 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
             final maxW = cons?.maxWidth ?? double.infinity;
             final colW = maxW.isFinite ? maxW : _stanceOrCharacterHalfWidth();
             final ribbonW = colW * 0.75;
-            final dice = data.dicePool;
+            final dice = dicePool;
             final ribbon = pw.SizedBox(
               width: ribbonW,
               child: _PdfSkewLeftRibbon(
-                fillColor: _PdfPalette.stanceTitle,
+                fillColor: titleRibbonFill,
                 cornerRadius: 6,
                 child: pw.Padding(
                   padding: const pw.EdgeInsets.fromLTRB(
@@ -1326,18 +1534,20 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
                     mainAxisSize: pw.MainAxisSize.min,
                     children: [
                       pw.Text(
-                        normalizePdfTextForHelvetica(data.header),
+                        normalizePdfTextForHelvetica(headerPrimary),
                         style: headerStyle,
                         maxLines: 2,
                         overflow: pw.TextOverflow.clip,
                       ),
-                      pw.SizedBox(height: 5),
-                      pw.Text(
-                        normalizePdfTextForHelvetica(data.rangeLabel),
-                        style: rangeStyle,
-                        maxLines: 2,
-                        overflow: pw.TextOverflow.clip,
-                      ),
+                      if (secondaryTrimmed.isNotEmpty) ...[
+                        pw.SizedBox(height: 5),
+                        pw.Text(
+                          normalizePdfTextForHelvetica(secondaryTrimmed),
+                          style: rangeStyle,
+                          maxLines: 2,
+                          overflow: pw.TextOverflow.clip,
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -1351,8 +1561,6 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
               );
             }
 
-            // Full-width stack so dice anchor from the inner edge (not squeezed past the rail).
-            // Chips may overlap the ribbon on the left; [right] inset keeps them off the border.
             return pw.SizedBox(
               width: colW,
               child: pw.Stack(
@@ -1381,73 +1589,206 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              for (var i = 0; i < data.passives.length; i++) ...[
+              for (var i = 0; i < passives.length; i++) ...[
                 sourceParagraphWithBadge(
-                  text: data.passives[i].text,
-                  badge: data.passives[i].badge,
+                  text: passives[i].text,
+                  badge: passives[i].badge,
                   textStyle: passiveStyle,
                   badgeColor: _PdfPalette.stanceActionTitle,
                 ),
-                if (i < data.passives.length - 1) pw.SizedBox(height: 6),
+                if (i < passives.length - 1) pw.SizedBox(height: 6),
               ],
             ],
           ),
         ),
-        for (var i = 0; i < data.actions.length; i++) ...[
+        for (var i = 0; i < actions.length; i++) ...[
           if (i > 0) pw.SizedBox(height: 8),
-          stanceActionSection(data.actions[i]),
+          stanceActionSection(actions[i]),
         ],
       ],
     );
   }
 
-  pw.Widget stanceHalfPage(int stanceIndex) {
+  pw.Widget pdfStanceTemplateHalfPage({
+    required PdfColor railColor,
+    required PdfColor bodyFill,
+    required PdfColor titleRibbonFill,
+    required PdfColor headerPrimaryColor,
+    required PdfColor headerSecondaryColor,
+    required ({
+      String headerPrimary,
+      String headerSecondary,
+      List<int> dicePool,
+      List<({String text, String badge})> passives,
+      List<({String title, String body, String badge})> actions,
+    }) slot,
+  }) {
     return pw.Container(
-      color: _PdfPalette.stanceBody,
-      child: stanceRailsOverlay(
+      color: bodyFill,
+      child: pdfStanceRailsOverlay(
+        railColor,
         pw.Padding(
           padding: const pw.EdgeInsets.fromLTRB(0, 0, 0, 12),
-          child: stanceInnerColumn(stanceIndex),
+          child: pdfStanceTemplateInnerColumn(
+            headerPrimary: slot.headerPrimary,
+            headerSecondary: slot.headerSecondary,
+            dicePool: slot.dicePool,
+            passives: slot.passives,
+            actions: slot.actions,
+            titleRibbonFill: titleRibbonFill,
+            headerPrimaryColor: headerPrimaryColor,
+            headerSecondaryColor: headerSecondaryColor,
+          ),
         ),
       ),
     );
   }
 
-  doc.addPage(
-    pw.Page(
-      pageFormat: halfLetterLandscape,
-      build: (ctx) => pw.Container(
-        color: _PdfPalette.paper,
-        padding: const pw.EdgeInsets.all(_kOuterMargin),
-        child: pw.Row(
-          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-          children: [
-            pw.Expanded(child: characterHalfPage()),
-            pw.SizedBox(width: _halfGap),
-            pw.Expanded(child: stanceHalfPage(0)),
-          ],
-        ),
-      ),
-    ),
-  );
+  pw.Widget stanceHalfPage(int stanceIndex) {
+    final slot = stanceSlotPdfFromPageData(stancePageData(stanceIndex));
+    return pdfStanceTemplateHalfPage(
+      railColor: _PdfPalette.stanceRail,
+      bodyFill: _PdfPalette.stanceBody,
+      titleRibbonFill: _PdfPalette.stanceTitle,
+      headerPrimaryColor: _PdfPalette.ink,
+      headerSecondaryColor: _PdfPalette.ink,
+      slot: slot,
+    );
+  }
 
-  doc.addPage(
-    pw.Page(
-      pageFormat: halfLetterLandscape,
-      build: (ctx) => pw.Container(
-        color: _PdfPalette.paper,
-        padding: const pw.EdgeInsets.all(_kOuterMargin),
-        child: pw.Row(
-          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-          children: [
-            pw.Expanded(child: stanceHalfPage(1)),
-            pw.SizedBox(width: _halfGap),
-            pw.Expanded(child: stanceHalfPage(2)),
-          ],
+  pw.Widget franticStylePdfHalfPage(int stanceIndex) {
+    return pdfStanceTemplateHalfPage(
+      railColor: _PdfPalette.franticStyleRail,
+      bodyFill: _PdfPalette.franticStyleBody,
+      titleRibbonFill: _PdfPalette.franticStyleRibbon,
+      headerPrimaryColor: _PdfPalette.saturatedRibbonInk,
+      headerSecondaryColor: _PdfPalette.saturatedRibbonMuted,
+      slot: franticStyleSlotPdfData(stanceIndex),
+    );
+  }
+
+  pw.Widget franticFormPdfHalfPage(int stanceIndex) {
+    return pdfStanceTemplateHalfPage(
+      railColor: _PdfPalette.franticFormRail,
+      bodyFill: _PdfPalette.franticFormBody,
+      titleRibbonFill: _PdfPalette.franticFormRibbon,
+      headerPrimaryColor: _PdfPalette.saturatedRibbonInk,
+      headerSecondaryColor: _PdfPalette.saturatedRibbonMuted,
+      slot: franticFormSlotPdfData(stanceIndex),
+    );
+  }
+
+  final franticPdf = c.heroType == HeroTypeKind.frantic;
+
+  if (franticPdf) {
+    doc.addPage(
+      pw.Page(
+        pageFormat: halfLetterLandscape,
+        build: (ctx) => pw.Container(
+          color: _PdfPalette.paper,
+          padding: const pw.EdgeInsets.all(_kOuterMargin),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              pw.Expanded(child: characterHalfPage()),
+              pw.SizedBox(width: _halfGap),
+              pw.Expanded(child: franticStylePdfHalfPage(0)),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+
+    doc.addPage(
+      pw.Page(
+        pageFormat: halfLetterLandscape,
+        build: (ctx) => pw.Container(
+          color: _PdfPalette.paper,
+          padding: const pw.EdgeInsets.all(_kOuterMargin),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              pw.Expanded(child: franticStylePdfHalfPage(1)),
+              pw.SizedBox(width: _halfGap),
+              pw.Expanded(child: franticStylePdfHalfPage(2)),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    doc.addPage(
+      pw.Page(
+        pageFormat: halfLetterLandscape,
+        build: (ctx) => pw.Container(
+          color: _PdfPalette.paper,
+          padding: const pw.EdgeInsets.all(_kOuterMargin),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              pw.Expanded(child: franticFormPdfHalfPage(0)),
+              pw.SizedBox(width: _halfGap),
+              pw.Expanded(child: franticFormPdfHalfPage(1)),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    doc.addPage(
+      pw.Page(
+        pageFormat: halfLetterLandscape,
+        build: (ctx) => pw.Container(
+          color: _PdfPalette.paper,
+          padding: const pw.EdgeInsets.all(_kOuterMargin),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              pw.Expanded(child: franticFormPdfHalfPage(2)),
+              pw.SizedBox(width: _halfGap),
+              pw.Expanded(child: pw.Container(color: _PdfPalette.paper)),
+            ],
+          ),
+        ),
+      ),
+    );
+  } else {
+    doc.addPage(
+      pw.Page(
+        pageFormat: halfLetterLandscape,
+        build: (ctx) => pw.Container(
+          color: _PdfPalette.paper,
+          padding: const pw.EdgeInsets.all(_kOuterMargin),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              pw.Expanded(child: characterHalfPage()),
+              pw.SizedBox(width: _halfGap),
+              pw.Expanded(child: stanceHalfPage(0)),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    doc.addPage(
+      pw.Page(
+        pageFormat: halfLetterLandscape,
+        build: (ctx) => pw.Container(
+          color: _PdfPalette.paper,
+          padding: const pw.EdgeInsets.all(_kOuterMargin),
+          child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              pw.Expanded(child: stanceHalfPage(1)),
+              pw.SizedBox(width: _halfGap),
+              pw.Expanded(child: stanceHalfPage(2)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   return doc.save();
 }

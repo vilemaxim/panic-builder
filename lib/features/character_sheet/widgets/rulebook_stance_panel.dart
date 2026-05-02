@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../data/rules_models.dart';
 import 'form_dice_catalog.dart';
 import 'rulebook_ribbon_clipper.dart';
+import 'rulebook_stance_chrome.dart';
 import 'stance_rules_tooltip.dart';
 
 class RulebookStancePanel extends StatelessWidget {
@@ -16,6 +17,8 @@ class RulebookStancePanel extends StatelessWidget {
     this.formDisplayLabel,
     this.onPickStyle,
     this.onPickForm,
+    this.chrome = RulebookStanceChrome.stance,
+    this.styleOnly = false,
   });
 
   final RuleStyle? style;
@@ -29,16 +32,12 @@ class RulebookStancePanel extends StatelessWidget {
   final VoidCallback? onPickStyle;
   final VoidCallback? onPickForm;
 
-  static const Color _titleYellow = Color(0xFFC8D53D);
-  static const Color _bodyYellow = Color(0xFFEFF2B8);
-  static const Color _actionTitleGreen = Color(0xFF177E2B);
+  /// Shell colors (stance yellow vs frantic style-card red).
+  final RulebookStanceChrome chrome;
 
-  /// Softer green for action side strokes (ribbon fill stays [_actionTitleGreen]).
-  static const Color _actionSideBorderGreen = Color(0xFF5CBF78);
-
-  /// Full action block fill (ribbon row + description); dark ribbon paints on top.
-  static const Color _actionDescriptionBg = Color(0xFFC5E5D5);
-  static const Color _sourceBadgeYellow = Color(0xFF9A8E1E);
+  /// When true (Frantic style cards), show style rules only — no form header, dice,
+  /// passives, or actions tied to a form.
+  final bool styleOnly;
 
   /// Action title ribbon width as a fraction of the stance panel content width.
   static const double _actionRibbonWidthFactor = 0.75;
@@ -78,12 +77,13 @@ class RulebookStancePanel extends StatelessWidget {
     final styleName = style == null
         ? '(Pick a Style)'
         : _trimStyleSuffix(style!.name);
-    final rawFormLabel = form == null
+    final effectiveForm = styleOnly ? null : form;
+    final rawFormLabel = effectiveForm == null
         ? ''
         : (formDisplayLabel != null && formDisplayLabel!.trim().isNotEmpty)
         ? formDisplayLabel!.trim()
-        : form!.name;
-    final formName = form == null
+        : effectiveForm.name;
+    final formName = effectiveForm == null
         ? '(Pick a Form)'
         : _trimFormSuffix(rawFormLabel);
     final styleSkill = _resolvedStyleSkill(style, rules);
@@ -91,27 +91,29 @@ class RulebookStancePanel extends StatelessWidget {
     final styleCitationBadge = style == null
         ? 'Style'
         : _trimStyleSuffix(style!.name);
-    final formCitationBadge = form == null
+    final formCitationBadge = effectiveForm == null
         ? 'Form'
         : _trimFormSuffix(rawFormLabel);
     final styleDm = _styleDisplayModel(style, styleSkill);
-    final formDm = _formDisplayModel(form, rules);
+    final formDm = _formDisplayModel(effectiveForm, rules);
 
     final styleActionWidgets = _styleActionSections(style, styleSkill, styleDm);
-    final formActionWidgets = _formActionSections(
-      form,
-      formDm,
-      formCitationBadge,
-    );
+    final formActionWidgets = styleOnly
+        ? const <Widget>[]
+        : _formActionSections(
+            effectiveForm,
+            formDm,
+            formCitationBadge,
+          );
     final hasActionsBelow =
         styleActionWidgets.isNotEmpty || formActionWidgets.isNotEmpty;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: _bodyYellow,
+      decoration: BoxDecoration(
+        color: chrome.mainBodyBackground,
         border: Border(
-          left: BorderSide(color: Color(0xFFF5D96D), width: 6),
-          right: BorderSide(color: Color(0xFFF5D96D), width: 6),
+          left: BorderSide(color: chrome.lateralRail, width: 6),
+          right: BorderSide(color: chrome.lateralRail, width: 6),
         ),
       ),
       child: Column(
@@ -126,6 +128,8 @@ class RulebookStancePanel extends StatelessWidget {
             styleDm,
             formDm,
             hasActionsBelow: hasActionsBelow,
+            chrome: chrome,
+            styleOnly: styleOnly,
           ),
           for (var i = 0; i < styleActionWidgets.length; i++) ...[
             if (i > 0) const SizedBox(height: 8),
@@ -352,6 +356,8 @@ class RulebookStancePanel extends StatelessWidget {
     })
     formDm, {
     required bool hasActionsBelow,
+    required RulebookStanceChrome chrome,
+    required bool styleOnly,
   }) {
     final notes = style?.marginNotes.trim() ?? '';
     final hasPassives =
@@ -366,7 +372,8 @@ class RulebookStancePanel extends StatelessWidget {
         // height does not vertically center the ribbon.
         LayoutBuilder(
           builder: (context, constraints) {
-            final diceRow = _diceWidgetsForForm(form);
+            final diceRow =
+                styleOnly ? const <Widget>[] : _diceWidgetsForForm(form);
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -379,7 +386,7 @@ class RulebookStancePanel extends StatelessWidget {
                         topRightRadius: kRulebookRibbonCornerRadius,
                       ),
                       child: ColoredBox(
-                        color: _titleYellow,
+                        color: chrome.titleRibbonFill,
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(
                             minHeight: _titleHeaderRibbonMinHeight,
@@ -416,38 +423,37 @@ class RulebookStancePanel extends StatelessWidget {
                                       child: _editableHeaderPart(
                                         styleName,
                                         onPickStyle,
+                                        chrome,
                                       ),
                                     ),
-                                    Tooltip(
-                                      message: form == null
-                                          ? 'Pick a style first, then tap here to choose a form.'
-                                          : rules != null
-                                          ? stanceFormRulesBody(form!, rules!)
-                                          : _formTooltipWithoutRules(form!),
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
+                                    if (!styleOnly)
+                                      Tooltip(
+                                        message: form == null
+                                            ? 'Pick a style first, then tap here to choose a form.'
+                                            : rules != null
+                                            ? stanceFormRulesBody(form!, rules!)
+                                            : _formTooltipWithoutRules(form!),
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 8,
+                                        ),
+                                        padding: const EdgeInsets.all(10),
+                                        preferBelow: true,
+                                        waitDuration: const Duration(
+                                          milliseconds: 200,
+                                        ),
+                                        child: _editableHeaderPart(
+                                          formName,
+                                          onPickForm,
+                                          chrome,
+                                        ),
                                       ),
-                                      padding: const EdgeInsets.all(10),
-                                      preferBelow: true,
-                                      waitDuration: const Duration(
-                                        milliseconds: 200,
-                                      ),
-                                      child: _editableHeaderPart(
-                                        formName,
-                                        onPickForm,
-                                      ),
-                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
                                   rangeText,
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black,
-                                  ),
+                                  style: chrome.rangeLineStyle,
                                 ),
                               ],
                             ),
@@ -565,13 +571,12 @@ class RulebookStancePanel extends StatelessWidget {
     return buf.toString().trim();
   }
 
-  Widget _editableHeaderPart(String text, VoidCallback? onTap) {
-    const headerStyle = TextStyle(
-      fontSize: 36,
-      fontWeight: FontWeight.w800,
-      height: 1.0,
-      color: Colors.black,
-    );
+  Widget _editableHeaderPart(
+    String text,
+    VoidCallback? onTap,
+    RulebookStanceChrome chrome,
+  ) {
+    final headerStyle = chrome.headerTitleStyle;
     if (onTap == null) {
       return Text(text, style: headerStyle, softWrap: true);
     }
@@ -585,7 +590,11 @@ class RulebookStancePanel extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(text, style: headerStyle, softWrap: true),
-            const Icon(Icons.edit_outlined, size: 24, color: Colors.black87),
+            Icon(
+              Icons.edit_outlined,
+              size: 24,
+              color: chrome.headerIconColor,
+            ),
           ],
         ),
       ),
@@ -641,7 +650,7 @@ class RulebookStancePanel extends StatelessWidget {
             topRightRadius: kRulebookRibbonCornerRadius,
           ),
           child: ColoredBox(
-            color: _actionTitleGreen,
+            color: chrome.actionTitleGreen,
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: minRibbonH),
               child: Padding(
@@ -670,10 +679,10 @@ class RulebookStancePanel extends StatelessWidget {
   Widget _actionSection({required String title, required Widget body}) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: _actionDescriptionBg,
+        color: chrome.actionDescriptionBg,
         border: Border(
-          left: BorderSide(color: _actionSideBorderGreen, width: 6),
-          right: BorderSide(color: _actionSideBorderGreen, width: 6),
+          left: BorderSide(color: chrome.actionSideBorderGreen, width: 6),
+          right: BorderSide(color: chrome.actionSideBorderGreen, width: 6),
         ),
       ),
       child: Column(
@@ -699,7 +708,7 @@ class RulebookStancePanel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: _sourceBadgeYellow,
+        color: chrome.sourceBadgeYellow,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(

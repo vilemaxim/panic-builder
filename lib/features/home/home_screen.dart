@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
 import '../../domain/character.dart';
+import '../../widgets/app_async_feedback.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -34,9 +35,10 @@ class HomeScreen extends ConsumerWidget {
           child: listAsync.when(
             loading: () => const Padding(
               padding: EdgeInsets.all(24),
-              child: Text('Loading characters…'),
+              child: AppAsyncLoading(message: 'Loading characters…'),
             ),
-            error: (e, _) => Text('Error: $e'),
+            error: (e, _) =>
+                AppAsyncError(error: e, title: 'Could not load saved characters'),
             data: (characters) {
               return ListView(
                 padding: const EdgeInsets.all(20),

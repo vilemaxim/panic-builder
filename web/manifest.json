@@ -3,10 +3,10 @@
     "short_name": "PatD Builder",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
+    "background_color": "#F6EED6",
+    "theme_color": "#8B2C2B",
     "description": "Create and print Panic at the Dojo 1e characters (offline-friendly PWA).",
-    "orientation": "portrait-primary",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {

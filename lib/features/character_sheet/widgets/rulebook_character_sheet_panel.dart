@@ -154,35 +154,40 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
         Widget nameSegment() {
           if (onName != null) {
-            return Tooltip(
-              message: 'Edit hero name',
-              preferBelow: true,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () async {
-                    final v = await _editLine(
-                      context,
-                      title: 'Hero name',
-                      initial: character.characterName,
-                    );
-                    if (v != null && context.mounted) {
-                      onName(v);
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(displayName, style: nameStyle),
-                        const SizedBox(width: 6),
-                        Icon(
-                          Icons.edit_outlined,
-                          size: 24,
-                          color: Colors.white.withValues(alpha: 0.92),
-                        ),
-                      ],
+            return Semantics(
+              button: true,
+              label: 'Edit hero name',
+              child: Tooltip(
+                message: 'Edit hero name',
+                preferBelow: true,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () async {
+                      final v = await _editLine(
+                        context,
+                        title: 'Hero name',
+                        initial: character.characterName,
+                      );
+                      if (v != null && context.mounted) {
+                        onName(v);
+                      }
+                    },
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(displayName, style: nameStyle),
+                          const SizedBox(width: 6),
+                          Icon(
+                            Icons.edit_outlined,
+                            size: 24,
+                            color: Colors.white.withValues(alpha: 0.92),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -194,26 +199,31 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
         Widget heroTypeSegment() {
           if (onHero != null) {
-            return Tooltip(
-              message: 'Choose hero type',
-              preferBelow: true,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: onHero,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(subtitle, style: subtitleStyle),
-                        const SizedBox(width: 6),
-                        Icon(
-                          Icons.edit_outlined,
-                          size: 24,
-                          color: Colors.white.withValues(alpha: 0.88),
-                        ),
-                      ],
+            return Semantics(
+              button: true,
+              label: 'Choose hero type',
+              child: Tooltip(
+                message: 'Choose hero type',
+                preferBelow: true,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onHero,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(subtitle, style: subtitleStyle),
+                          const SizedBox(width: 6),
+                          Icon(
+                            Icons.edit_outlined,
+                            size: 24,
+                            color: Colors.white.withValues(alpha: 0.88),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -283,26 +293,31 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
         Widget buildSegment() {
           if (onBuild != null) {
-            return Tooltip(
-              message: 'Choose build',
-              preferBelow: true,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: onBuild,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(buildLabel, style: nameStyle),
-                        const SizedBox(width: 6),
-                        Icon(
-                          Icons.edit_outlined,
-                          size: 24,
-                          color: Colors.white.withValues(alpha: 0.92),
-                        ),
-                      ],
+            return Semantics(
+              button: true,
+              label: 'Choose build',
+              child: Tooltip(
+                message: 'Choose build',
+                preferBelow: true,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onBuild,
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(buildLabel, style: nameStyle),
+                          const SizedBox(width: 6),
+                          Icon(
+                            Icons.edit_outlined,
+                            size: 24,
+                            color: Colors.white.withValues(alpha: 0.92),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -315,26 +330,31 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
         Widget archetypeSegment(int slotIndex, {String? label}) {
           final text = label ?? archLabel;
           if (onArch != null) {
-            return Tooltip(
-              message: 'Choose archetype',
-              preferBelow: true,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => onArch(slotIndex),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(text, style: subtitleStyle),
-                        const SizedBox(width: 6),
-                        Icon(
-                          Icons.edit_outlined,
-                          size: 24,
-                          color: Colors.white.withValues(alpha: 0.88),
-                        ),
-                      ],
+            return Semantics(
+              button: true,
+              label: 'Choose archetype',
+              child: Tooltip(
+                message: 'Choose archetype',
+                preferBelow: true,
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => onArch(slotIndex),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(text, style: subtitleStyle),
+                          const SizedBox(width: 6),
+                          Icon(
+                            Icons.edit_outlined,
+                            size: 24,
+                            color: Colors.white.withValues(alpha: 0.88),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -385,18 +405,22 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
           ),
         );
 
+        final ribbonBar = ColoredBox(
+          color: _purpleBand,
+          child: ribbonInner,
+        );
         return ColoredBox(
           color: _purpleBg,
           child: Align(
             alignment: Alignment.centerLeft,
             child: ClipPath(
               clipper: const LeftRibbonClipper(topRightRadius: kRulebookRibbonCornerRadius),
-              child: IntrinsicWidth(
-                child: ColoredBox(
-                  color: _purpleBand,
-                  child: ribbonInner,
-                ),
-              ),
+              child: ht == HeroTypeKind.frantic
+                  ? SizedBox(
+                      width: layoutW * 0.6,
+                      child: ribbonBar,
+                    )
+                  : IntrinsicWidth(child: ribbonBar),
             ),
           ),
         );
@@ -514,62 +538,73 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
     final ribbon = ColoredBox(
       color: _purpleBg,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: ClipPath(
-          clipper: const LeftRibbonClipper(topRightRadius: kRulebookRibbonCornerRadius),
-          child: IntrinsicWidth(
-            child: ColoredBox(
-              color: _purpleBand,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: _skillRibbonHeight),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (buildLabel.isNotEmpty) ...[
-                        Text(buildLabel, style: nameStyle),
-                        const SizedBox(width: 8),
-                      ],
-                      if (onArch != null)
-                        Tooltip(
-                          message: 'Choose archetype',
-                          preferBelow: true,
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () => onArch(slotIndex),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 2,
-                                  horizontal: 2,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(archLabel, style: nameStyle),
-                                    const SizedBox(width: 6),
-                                    Icon(
-                                      Icons.edit_outlined,
-                                      size: 24,
-                                      color: Colors.white.withValues(alpha: 0.88),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final ribbonW = constraints.maxWidth * 0.6;
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: ClipPath(
+              clipper: const LeftRibbonClipper(topRightRadius: kRulebookRibbonCornerRadius),
+              child: SizedBox(
+                width: ribbonW,
+                child: ColoredBox(
+                  color: _purpleBand,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: _skillRibbonHeight),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (buildLabel.isNotEmpty) ...[
+                            Text(buildLabel, style: nameStyle),
+                            const SizedBox(width: 8),
+                          ],
+                          if (onArch != null)
+                            Semantics(
+                              button: true,
+                              label: 'Choose archetype',
+                              child: Tooltip(
+                                message: 'Choose archetype',
+                                preferBelow: true,
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: () => onArch(slotIndex),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 2,
+                                        horizontal: 2,
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(archLabel, style: nameStyle),
+                                          const SizedBox(width: 6),
+                                          Icon(
+                                            Icons.edit_outlined,
+                                            size: 24,
+                                            color: Colors.white
+                                                .withValues(alpha: 0.88),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        )
-                      else
-                        Text(archLabel, style: nameStyle),
-                    ],
+                            )
+                          else
+                            Text(archLabel, style: nameStyle),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
 
@@ -589,11 +624,6 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
   Widget _franticSlotAbilityContent(int slotIndex) {
     final entries = <({String name, String ability})>[];
-    final build = rules.buildById(character.buildId);
-    final buildDescription = (build?.description ?? '').trim();
-    if (build != null && buildDescription.isNotEmpty) {
-      entries.add((name: build.name, ability: _normalizeAbilityText(buildDescription)));
-    }
     final slotId = character.archetypeIds.length > slotIndex
         ? character.archetypeIds[slotIndex]
         : '';
@@ -609,7 +639,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       }
     }
     if (entries.isEmpty) {
-      return _archetypeHint('Pick a build and archetype to view abilities.');
+      return _archetypeHint('Pick an archetype for this stance to view its ability.');
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -628,32 +658,20 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       return _archetypeHint('Pick a Hero Type to view archetype abilities.');
     }
     if (heroType == HeroTypeKind.frantic) {
-      const franticRules =
-          'At the start and end of your turn, you may move one space.\n'
-          'When you would choose your Stance, instead choose one Frantic Ability, '
-          'one Style, and one Form you know to create your Stance for the turn. '
-          'You cannot choose an Ability, Style, or Form you used on your previous turn.';
-      final parts = franticRules
-          .split(RegExp(r'\n\s*\n+'))
-          .map((p) => p.trim())
-          .where((p) => p.isNotEmpty)
-          .toList();
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (var i = 0; i < parts.length; i++) ...[
-            Text(
-              parts[i],
-              style: const TextStyle(
-                color: Color(0xFF2F2418),
-                fontSize: 15,
-                height: 1.3,
-              ),
+      final build = rules.buildById(character.buildId);
+      final buildDescription = (build?.description ?? '').trim();
+      if (build != null && buildDescription.isNotEmpty) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ..._abilityParagraphsWithBadge(
+              _normalizeAbilityText(buildDescription),
+              build.name,
             ),
-            if (i < parts.length - 1) const SizedBox(height: 8),
           ],
-        ],
-      );
+        );
+      }
+      return _archetypeHint('Pick a build to view its ability.');
     }
     final entries = <({String name, String ability})>[];
     final build = rules.buildById(character.buildId);
@@ -816,16 +834,20 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                     ),
                   ),
                   if (onEdit != null)
-                    Tooltip(
-                      message: 'Replace skill',
-                      child: InkWell(
-                        onTap: onEdit,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: Icon(
-                            Icons.edit_outlined,
-                            size: 18,
-                            color: Colors.white.withValues(alpha: 0.92),
+                    Semantics(
+                      button: true,
+                      label: 'Replace stance skill',
+                      child: Tooltip(
+                        message: 'Replace skill',
+                        child: InkWell(
+                          onTap: onEdit,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Icon(
+                              Icons.edit_outlined,
+                              size: 18,
+                              color: Colors.white.withValues(alpha: 0.92),
+                            ),
                           ),
                         ),
                       ),
@@ -874,16 +896,20 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                     ),
                   ),
                   if (onEdit != null)
-                    Tooltip(
-                      message: 'Two-word skill',
-                      child: InkWell(
-                        onTap: onEdit,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 4),
-                          child: Icon(
-                            Icons.edit_outlined,
-                            size: 18,
-                            color: Colors.white.withValues(alpha: 0.92),
+                    Semantics(
+                      button: true,
+                      label: 'Edit two-word skill',
+                      child: Tooltip(
+                        message: 'Two-word skill',
+                        child: InkWell(
+                          onTap: onEdit,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: Icon(
+                              Icons.edit_outlined,
+                              size: 18,
+                              color: Colors.white.withValues(alpha: 0.92),
+                            ),
                           ),
                         ),
                       ),

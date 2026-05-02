@@ -170,14 +170,14 @@ class CharacterPolicies {
     if (archErr != null) return archErr;
     if (stances.length != 3) return 'Configure all three stances.';
 
-    final formIds = stances.map((s) => s.formId).toList();
-    if (formIds.toSet().length != 3) {
-      return 'Each stance must use a different form.';
-    }
-
     final styleIds = stances.map((s) => s.styleId).toList();
     if (styleIds.toSet().length != 3) {
       return 'Each stance must use a different style.';
+    }
+
+    final formIds = stances.map((s) => s.formId).toList();
+    if (formIds.toSet().length != 3) {
+      return 'Each stance must use a different form.';
     }
 
     for (final st in stances) {

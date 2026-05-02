@@ -113,95 +113,99 @@ Future<String?> showPickSkillFromRulesDialog(
 }) async {
   final all = skillsGrantedByForms(rules);
   final ctrl = TextEditingController();
-  return showDialog<String>(
-    context: context,
-    barrierDismissible: true,
-    builder: (dialogContext) {
-      return StatefulBuilder(
-        builder: (ctx, setState) {
-          final q = ctrl.text.trim().toLowerCase();
-          final filtered = q.isEmpty
-              ? all
-              : all.where((s) {
-                  final name = s.name.toLowerCase();
-                  final desc = s.description.toLowerCase();
-                  final id = s.id.toLowerCase();
-                  return name.contains(q) ||
-                      desc.contains(q) ||
-                      id.contains(q);
-                }).toList();
-          return AlertDialog(
-            title: const Text('Choose skill'),
-            content: SizedBox(
-              width: 520,
-              height: 420,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    controller: ctrl,
-                    decoration: const InputDecoration(
-                      hintText: 'Search by name or description…',
-                      isDense: true,
+  try {
+    return await showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (ctx, setState) {
+            final q = ctrl.text.trim().toLowerCase();
+            final filtered = q.isEmpty
+                ? all
+                : all.where((s) {
+                    final name = s.name.toLowerCase();
+                    final desc = s.description.toLowerCase();
+                    final id = s.id.toLowerCase();
+                    return name.contains(q) ||
+                        desc.contains(q) ||
+                        id.contains(q);
+                  }).toList();
+            return AlertDialog(
+              title: const Text('Choose skill'),
+              content: SizedBox(
+                width: 520,
+                height: 420,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextField(
+                      controller: ctrl,
+                      decoration: const InputDecoration(
+                        hintText: 'Search by name or description…',
+                        isDense: true,
+                      ),
+                      onChanged: (_) => setState(() {}),
                     ),
-                    onChanged: (_) => setState(() {}),
-                  ),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: filtered.isEmpty
-                        ? Center(
-                            child: Text(
-                              all.isEmpty
-                                  ? 'No skills listed on forms in the rules data.'
-                                  : 'No matches.',
-                              textAlign: TextAlign.center,
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: filtered.isEmpty
+                          ? Center(
+                              child: Text(
+                                all.isEmpty
+                                    ? 'No skills listed on forms in the rules data.'
+                                    : 'No matches.',
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: filtered.length,
+                              itemBuilder: (context, i) {
+                                final s = filtered[i];
+                                final selected = s.id == currentSkillId;
+                                final desc = s.description.trim();
+                                return ListTile(
+                                  selected: selected,
+                                  title: Text(
+                                    s.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  subtitle: Padding(
+                                    padding: const EdgeInsets.only(top: 4),
+                                    child: Text(
+                                      desc.isEmpty ? '—' : desc,
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                      maxLines: 5,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  isThreeLine: true,
+                                  onTap: () =>
+                                      Navigator.pop(dialogContext, s.id),
+                                );
+                              },
                             ),
-                          )
-                        : ListView.builder(
-                            itemCount: filtered.length,
-                            itemBuilder: (context, i) {
-                              final s = filtered[i];
-                              final selected = s.id == currentSkillId;
-                              final desc = s.description.trim();
-                              return ListTile(
-                                selected: selected,
-                                title: Text(
-                                  s.name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                subtitle: Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Text(
-                                    desc.isEmpty ? '—' : desc,
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                    maxLines: 5,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                isThreeLine: true,
-                                onTap: () =>
-                                    Navigator.pop(dialogContext, s.id),
-                              );
-                            },
-                          ),
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: const Text('Cancel'),
-              ),
-            ],
-          );
-        },
-      );
-    },
-  );
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: const Text('Cancel'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  } finally {
+    ctrl.dispose();
+  }
 }
 
 Future<String?> showTwoWordSkillDialog(
@@ -210,30 +214,51 @@ Future<String?> showTwoWordSkillDialog(
 }) async {
   final ctrl = TextEditingController(text: initial);
   String? error;
-  return showDialog<String>(
-    context: context,
-    barrierDismissible: true,
-    builder: (ctx) => StatefulBuilder(
-      builder: (ctx, setState) {
-        return AlertDialog(
-          title: const Text('Two-word skill'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Enter exactly two words for your custom skill name.',
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: ctrl,
-                autofocus: true,
-                decoration: InputDecoration(
-                  errorText: error,
-                  hintText: 'e.g. Iron Palm',
+  try {
+    return await showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setState) {
+          return AlertDialog(
+            title: const Text('Two-word skill'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Enter exactly two words for your custom skill name.',
                 ),
-                textInputAction: TextInputAction.done,
-                onSubmitted: (_) {
+                const SizedBox(height: 12),
+                TextField(
+                  controller: ctrl,
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    errorText: error,
+                    hintText: 'e.g. Iron Palm',
+                  ),
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) {
+                    final v = ctrl.text.trim();
+                    final words = v.split(RegExp(r'\s+'));
+                    if (words.length != 2 || words.any((w) => w.isEmpty)) {
+                      setState(() {
+                        error = 'Use exactly two words.';
+                      });
+                      return;
+                    }
+                    Navigator.pop(ctx, v);
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () {
                   final v = ctrl.text.trim();
                   final words = v.split(RegExp(r'\s+'));
                   if (words.length != 2 || words.any((w) => w.isEmpty)) {
@@ -244,31 +269,14 @@ Future<String?> showTwoWordSkillDialog(
                   }
                   Navigator.pop(ctx, v);
                 },
+                child: const Text('Save'),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () {
-                final v = ctrl.text.trim();
-                final words = v.split(RegExp(r'\s+'));
-                if (words.length != 2 || words.any((w) => w.isEmpty)) {
-                  setState(() {
-                    error = 'Use exactly two words.';
-                  });
-                  return;
-                }
-                Navigator.pop(ctx, v);
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
-    ),
-  );
+          );
+        },
+      ),
+    );
+  } finally {
+    ctrl.dispose();
+  }
 }

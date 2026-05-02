@@ -56,12 +56,10 @@ class _RoutedAppState extends ConsumerState<RoutedApp> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionContainer.disabled(
-      child: MaterialApp.router(
-        title: 'Panic at the Dojo — Character Builder',
-        theme: ref.watch(appThemeProvider),
-        routerConfig: _router,
-      ),
+    return MaterialApp.router(
+      title: 'Panic at the Dojo — Character Builder',
+      theme: ref.watch(appThemeProvider),
+      routerConfig: _router,
     );
   }
 }

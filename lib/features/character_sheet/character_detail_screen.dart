@@ -8,13 +8,17 @@ import 'package:printing/printing.dart';
 import '../../app/providers.dart';
 import '../../data/rules_models.dart';
 import '../../domain/character.dart';
+import '../../domain/hero_type_kind.dart';
 import '../../util/download.dart';
+import '../../widgets/app_async_feedback.dart';
 import '../print/character_pdf.dart';
 import 'character_skills_ui.dart';
 import 'widgets/archetype_picker_sheet.dart';
 import 'widgets/build_picker_sheet.dart';
 import 'widgets/hero_type_picker_sheet.dart';
+import 'widgets/frantic_form_section.dart';
 import 'widgets/rulebook_character_sheet_panel.dart';
+import 'widgets/rulebook_stance_chrome.dart';
 import 'widgets/rulebook_stance_panel.dart';
 
 class CharacterDetailScreen extends ConsumerStatefulWidget {
@@ -53,9 +57,12 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
     final rulesAsync = ref.watch(mergedRulesProvider);
 
     return asyncChar.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
+      loading: () => const Scaffold(
+        body: AppAsyncLoading(message: 'Loading character…'),
+      ),
+      error: (e, _) => Scaffold(
+        body: AppAsyncError(error: e, title: 'Could not load this character'),
+      ),
       data: (c) {
         if (c == null) {
           return Scaffold(
@@ -70,9 +77,12 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
         }
 
         return rulesAsync.when(
-          loading: () =>
-              const Scaffold(body: Center(child: CircularProgressIndicator())),
-          error: (e, _) => Scaffold(body: Center(child: Text('Rules: $e'))),
+          loading: () => const Scaffold(
+            body: AppAsyncLoading(message: 'Loading rules…'),
+          ),
+          error: (e, _) => Scaffold(
+            body: AppAsyncError(error: e, title: 'Could not load rules'),
+          ),
           data: (rules) {
             return Scaffold(
               appBar: AppBar(
@@ -81,7 +91,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                 ),
                 actions: [
                   IconButton(
-                    tooltip: 'Print / PDF',
+                    tooltip: 'Preview PDF (print or download from preview)',
                     icon: const Icon(Icons.picture_as_pdf_outlined),
                     onPressed: () => context.push('/print/${c.id}'),
                   ),
@@ -176,7 +186,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Stances',
+                    c.heroType == HeroTypeKind.frantic ? 'Styles' : 'Stances',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 8),
@@ -184,6 +194,19 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                     final st = c.stances[i];
                     final style = rules.styleById(st.styleId);
                     final form = rules.formById(st.formId);
+                    final frantic = c.heroType == HeroTypeKind.frantic;
+                    if (frantic && style != null) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: RulebookStancePanel(
+                          chrome: RulebookStanceChrome.franticStyle,
+                          styleOnly: true,
+                          style: style,
+                          form: null,
+                          rules: rules,
+                        ),
+                      );
+                    }
                     if (style != null && form != null) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
@@ -207,22 +230,71 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                       ),
                     );
                   }),
+                  if (c.heroType == HeroTypeKind.frantic) ...[
+                    const SizedBox(height: 16),
+                    Text(
+                      'Forms',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    ...List.generate(c.stances.length, (i) {
+                      final st = c.stances[i];
+                      final formRule = rules.formById(st.formId);
+                      final archId =
+                          i < c.archetypeIds.length ? c.archetypeIds[i] : '';
+                      final arch =
+                          archId.isNotEmpty ? rules.archetypeById(archId) : null;
+                      final slotName = arch?.name.trim();
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: i < c.stances.length - 1 ? 16 : 0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              slotName != null && slotName.isNotEmpty
+                                  ? 'Form ${i + 1} · $slotName'
+                                  : 'Form ${i + 1}',
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            const SizedBox(height: 8),
+                            FranticFormSection(
+                              form: formRule,
+                              rules: rules,
+                              formDisplayLabel:
+                                  st.formDisplayName.trim().isEmpty
+                                      ? null
+                                      : st.formDisplayName,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
                   const SizedBox(height: 16),
-                  Row(
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      FilledButton(
-                        onPressed: () async {
-                          final updated =
-                              c.copyWith(updatedAt: DateTime.now());
-                          await _persist(updated);
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Saved.')),
-                          );
-                        },
-                        child: const Text('Save'),
+                      Tooltip(
+                        message:
+                            'Most edits save when you change them. Tap to refresh the saved copy timestamp on this device.',
+                        child: FilledButton(
+                          onPressed: () async {
+                            final updated =
+                                c.copyWith(updatedAt: DateTime.now());
+                            await _persist(updated);
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Saved.')),
+                            );
+                          },
+                          child: const Text('Save'),
+                        ),
                       ),
-                      const SizedBox(width: 12),
                       OutlinedButton(
                         onPressed: () async {
                           final current = c.copyWith(updatedAt: DateTime.now());
@@ -238,14 +310,15 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('PDF export failed: $e'),
+                                content: Text(
+                                  'Could not share PDF. Try Preview PDF in the toolbar. (${e.toString()})',
+                                ),
                               ),
                             );
                           }
                         },
-                        child: const Text('Save PDF'),
+                        child: const Text('Share PDF'),
                       ),
-                      const SizedBox(width: 12),
                       OutlinedButton(
                         onPressed: () => _exportJson(c),
                         child: const Text('Export JSON'),
@@ -279,12 +352,23 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
     if (!mounted) return;
     var char = _currentCharacter();
     if (char == null) return;
-    if (stanceIndex >= char.stances.length ||
-        char.stances[stanceIndex].formId.isEmpty) {
+    if (stanceIndex >= char.stances.length) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pick a form for this stance in the stance section.'),
+        const SnackBar(content: Text('Configure this stance first.')),
+      );
+      return;
+    }
+    final stRow = char.stances[stanceIndex];
+    if (stRow.formId.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            char.heroType == HeroTypeKind.frantic
+                ? 'Pick a form in the Forms section first.'
+                : 'Pick a form for this stance in the stance section.',
+          ),
         ),
       );
       return;

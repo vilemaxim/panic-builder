@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:printing/printing.dart';
 
 import '../../app/providers.dart';
+import '../../widgets/app_async_feedback.dart';
 import 'character_pdf.dart';
 
 class PrintCharacterScreen extends ConsumerWidget {
@@ -18,22 +19,30 @@ class PrintCharacterScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Print character'),
+        title: const Text('PDF preview'),
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () => context.pop(),
         ),
       ),
       body: asyncChar.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+        loading: () =>
+            const AppAsyncLoading(message: 'Loading character…'),
+        error: (e, _) => AppAsyncError(
+          error: e,
+          title: 'Could not load this character',
+        ),
         data: (c) {
           if (c == null) {
             return const Center(child: Text('Character not found.'));
           }
           return rulesAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Rules: $e')),
+            loading: () =>
+                const AppAsyncLoading(message: 'Loading rules…'),
+            error: (e, _) => AppAsyncError(
+              error: e,
+              title: 'Could not load rules',
+            ),
             data: (rules) => PdfPreview(
               build: (format) => buildCharacterPdfBytes(c, rules),
               initialPageFormat: halfLetterLandscape,

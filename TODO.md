@@ -18,6 +18,7 @@
 ## Character creation
 
 - [ ] Add a character creation wizard or helper aimed at people who have not played the game before
+- [ ] Support templates for build, archetype, and stances
 
 ## Print
 

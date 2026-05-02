@@ -3,15 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/providers.dart';
+import '../../widgets/app_async_feedback.dart';
 import '../../data/rules_models.dart';
 import '../../domain/character.dart';
 import '../../domain/character_policies.dart';
+import '../../domain/hero_type_kind.dart';
 import '../../domain/stance.dart';
 import '../character_sheet/character_skills_ui.dart';
 import '../character_sheet/widgets/archetype_picker_sheet.dart';
 import '../character_sheet/widgets/build_picker_sheet.dart';
 import '../character_sheet/widgets/hero_type_picker_sheet.dart';
 import '../character_sheet/widgets/rulebook_character_sheet_panel.dart';
+import '../character_sheet/widgets/frantic_form_section.dart';
+import '../character_sheet/widgets/rulebook_stance_chrome.dart';
 import '../character_sheet/widgets/rulebook_stance_panel.dart';
 import '../character_sheet/widgets/stance_picker_dialogs.dart';
 
@@ -34,7 +38,86 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
 
   void _snack(String msg) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 6),
+      ),
+    );
+  }
+
+  Future<void> _confirmExitToHome() async {
+    final leave = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Leave builder?'),
+        content: const Text(
+          'Your work-in-progress stays on this device when you leave. '
+          'Opening Create new character from Home clears that draft and starts a blank sheet.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Stay'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Leave'),
+          ),
+        ],
+      ),
+    );
+    if (leave == true && mounted) context.go('/');
+  }
+
+  String? _stanceTabPrerequisiteMessage(
+    Character c,
+    CharacterPolicies policies,
+  ) {
+    if (c.heroType == null) {
+      return 'Choose a hero type on the Character tab before configuring stances.';
+    }
+    return policies.validateArchetypes(c.heroType, c.archetypeIds);
+  }
+
+  String? _formsTabPrerequisiteMessage(
+    Character c,
+    CharacterPolicies policies,
+  ) {
+    final base = _stanceTabPrerequisiteMessage(c, policies);
+    if (base != null) return base;
+    final padded = _stancesPadded(c);
+    for (var i = 0; i < 3; i++) {
+      if (padded[i].styleId.isEmpty) {
+        return 'Pick all three styles on the Style tab before choosing forms.';
+      }
+    }
+    return null;
+  }
+
+  Widget _infoBanner({required IconData icon, required String message}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: const Color(0xFFFFF4E0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: const BorderSide(color: Color(0xFF3B2B1E), width: 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, size: 22),
+              const SizedBox(width: 10),
+              Expanded(child: Text(message)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -43,37 +126,74 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     final c = ref.watch(creationSessionProvider);
 
     return rulesAsync.when(
-      loading: () =>
-          const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (e, _) => Scaffold(body: Center(child: Text('Rules error: $e'))),
+      loading: () => const Scaffold(
+        body: AppAsyncLoading(message: 'Loading rules…'),
+      ),
+      error: (e, _) => Scaffold(
+        body: AppAsyncError(
+          error: e,
+          title: 'Could not load rules',
+        ),
+      ),
       data: (rules) {
         final policies = CharacterPolicies(rules);
+        final completionHint = policies.validateCreationComplete(c);
+        final frantic = c.heroType == HeroTypeKind.frantic;
+        final tabCount = frantic ? 3 : 4;
         return DefaultTabController(
-          length: 4,
+          key: ValueKey<int>(tabCount),
+          length: tabCount,
           child: Scaffold(
             appBar: AppBar(
               title: const Text('Character Sheet Builder'),
-              bottom: const TabBar(
-                tabs: [
-                  Tab(text: 'Character'),
-                  Tab(text: 'Stance 1'),
-                  Tab(text: 'Stance 2'),
-                  Tab(text: 'Stance 3'),
-                ],
+              bottom: TabBar(
+                tabs: frantic
+                    ? const [
+                        Tab(text: 'Character'),
+                        Tab(text: 'Style'),
+                        Tab(text: 'Forms'),
+                      ]
+                    : const [
+                        Tab(text: 'Character'),
+                        Tab(text: 'Stance 1'),
+                        Tab(text: 'Stance 2'),
+                        Tab(text: 'Stance 3'),
+                      ],
               ),
               actions: [
                 TextButton(
-                  onPressed: () => context.go('/'),
+                  onPressed: _confirmExitToHome,
                   child: const Text('Exit'),
                 ),
               ],
             ),
-            body: TabBarView(
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _characterTab(c, rules, policies),
-                _stanceTab(c, rules, policies, 0),
-                _stanceTab(c, rules, policies, 1),
-                _stanceTab(c, rules, policies, 2),
+                if (completionHint != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: _infoBanner(
+                      icon: Icons.flag_outlined,
+                      message: completionHint,
+                    ),
+                  ),
+                Expanded(
+                  child: TabBarView(
+                    children: frantic
+                        ? [
+                            _characterTab(c, rules, policies),
+                            _franticStylesTab(c, rules, policies),
+                            _franticFormsTab(c, rules, policies),
+                          ]
+                        : [
+                            _characterTab(c, rules, policies),
+                            _stanceTab(c, rules, policies, 0),
+                            _stanceTab(c, rules, policies, 1),
+                            _stanceTab(c, rules, policies, 2),
+                          ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -145,9 +265,12 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     final s = c.stances.length > idx ? c.stances[idx] : null;
     final style = s == null ? null : rules.styleById(s.styleId);
     final form = s == null ? null : rules.formById(s.formId);
+    final stanceHint = _stanceTabPrerequisiteMessage(c, policies);
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        if (stanceHint != null)
+          _infoBanner(icon: Icons.info_outline, message: stanceHint),
         RulebookStancePanel(
           style: style,
           form: form,
@@ -160,6 +283,112 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
           onPickForm: () => _openStanceFormPick(rules, policies, idx),
         ),
       ],
+    );
+  }
+
+  Widget _franticStylesTab(
+    Character c,
+    MergedRules rules,
+    CharacterPolicies policies,
+  ) {
+    final stanceHint = _stanceTabPrerequisiteMessage(c, policies);
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        if (stanceHint != null)
+          _infoBanner(icon: Icons.info_outline, message: stanceHint),
+        for (var idx = 0; idx < 3; idx++) ...[
+          if (idx > 0) const SizedBox(height: 20),
+          _franticStyleSlotHeading(c, rules, idx),
+          const SizedBox(height: 8),
+          _franticStyleSlotPanel(c, rules, policies, idx),
+        ],
+      ],
+    );
+  }
+
+  Widget _franticStyleSlotHeading(Character c, MergedRules rules, int idx) {
+    final archId = idx < c.archetypeIds.length ? c.archetypeIds[idx] : '';
+    final arch = archId.isNotEmpty ? rules.archetypeById(archId) : null;
+    final subtitle = arch?.name.trim();
+    final t = Theme.of(context);
+    return Text(
+      subtitle != null && subtitle.isNotEmpty
+          ? 'Style ${idx + 1} · $subtitle'
+          : 'Style ${idx + 1}',
+      style: t.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+    );
+  }
+
+  Widget _franticStyleSlotPanel(
+    Character c,
+    MergedRules rules,
+    CharacterPolicies policies,
+    int idx,
+  ) {
+    final s = c.stances.length > idx ? c.stances[idx] : null;
+    final style = s == null ? null : rules.styleById(s.styleId);
+    return RulebookStancePanel(
+      chrome: RulebookStanceChrome.franticStyle,
+      styleOnly: true,
+      style: style,
+      form: null,
+      rules: rules,
+      onPickStyle: () => _openStanceStylePick(rules, policies, idx),
+      onPickForm: null,
+    );
+  }
+
+  Widget _franticFormsTab(
+    Character c,
+    MergedRules rules,
+    CharacterPolicies policies,
+  ) {
+    final hint = _formsTabPrerequisiteMessage(c, policies);
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        if (hint != null)
+          _infoBanner(icon: Icons.info_outline, message: hint),
+        for (var idx = 0; idx < 3; idx++) ...[
+          if (idx > 0) const SizedBox(height: 20),
+          _franticFormSlotHeading(c, rules, idx),
+          const SizedBox(height: 8),
+          _franticFormSlotPanel(c, rules, policies, idx),
+        ],
+      ],
+    );
+  }
+
+  Widget _franticFormSlotHeading(Character c, MergedRules rules, int idx) {
+    final archId = idx < c.archetypeIds.length ? c.archetypeIds[idx] : '';
+    final arch = archId.isNotEmpty ? rules.archetypeById(archId) : null;
+    final subtitle = arch?.name.trim();
+    final t = Theme.of(context);
+    return Text(
+      subtitle != null && subtitle.isNotEmpty
+          ? 'Form ${idx + 1} · $subtitle'
+          : 'Form ${idx + 1}',
+      style: t.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+    );
+  }
+
+  Widget _franticFormSlotPanel(
+    Character c,
+    MergedRules rules,
+    CharacterPolicies policies,
+    int idx,
+  ) {
+    final s = c.stances.length > idx ? c.stances[idx] : null;
+    final form = s == null ? null : rules.formById(s.formId);
+    return FranticFormSection(
+      form: form,
+      rules: rules,
+      formDisplayLabel:
+          s != null && s.formDisplayName.trim().isNotEmpty
+              ? s.formDisplayName
+              : null,
+      onPickForm: () => _openStanceFormPick(rules, policies, idx),
     );
   }
 
@@ -268,7 +497,11 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
 
     final cur = idx < c.stances.length ? c.stances[idx] : null;
     if (cur == null || cur.styleId.isEmpty) {
-      _snack('Pick a style first.');
+      _snack(
+        c.heroType == HeroTypeKind.frantic
+            ? 'Pick a style on the Style tab first.'
+            : 'Pick a style first.',
+      );
       return;
     }
 
@@ -321,9 +554,17 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
   ) async {
     if (!mounted) return;
     var c = ref.read(creationSessionProvider);
-    if (stanceIndex >= c.stances.length ||
-        c.stances[stanceIndex].formId.isEmpty) {
-      _snack('Pick a form for this stance on the Stance tab first.');
+    if (stanceIndex >= c.stances.length) {
+      _snack('Configure this stance first.');
+      return;
+    }
+    final st = c.stances[stanceIndex];
+    if (st.formId.isEmpty) {
+      _snack(
+        c.heroType == HeroTypeKind.frantic
+            ? 'Pick a form on the Forms tab first.'
+            : 'Pick a form for this stance on the Stance tab first.',
+      );
       return;
     }
     if (shouldWarnBeforeSlot0Edit(c, rules, stanceIndex)) {
