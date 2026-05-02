@@ -708,6 +708,16 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       return archetypeHintPdf('Pick a Hero Type to view archetype abilities.');
     }
     if (heroType == HeroTypeKind.frantic) {
+      final intro = normalizePdfTextForHelvetica(
+        rules.sheetPresentation.franticAbilityIntroLine(c.characterName),
+      );
+      final introWidget = pw.Padding(
+        padding: const pw.EdgeInsets.only(bottom: 6),
+        child: pw.Text(
+          intro,
+          style: style(size: 11.1, bold: true, height: 1.22),
+        ),
+      );
       final build = rules.buildById(c.buildId);
       final buildDescription = (build?.description ?? '').trim();
       if (build != null && buildDescription.isNotEmpty) {
@@ -720,15 +730,24 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
         );
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: abilityParagraphsWithBadgePdf(
-            _normalizeAbilityTextPdf(buildDescription),
-            build.name,
-            bodyStyle,
-            badgeStyle,
-          ),
+          children: [
+            introWidget,
+            ...abilityParagraphsWithBadgePdf(
+              _normalizeAbilityTextPdf(buildDescription),
+              build.name,
+              bodyStyle,
+              badgeStyle,
+            ),
+          ],
         );
       }
-      return archetypeHintPdf('Pick a build to view its ability.');
+      return pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          introWidget,
+          archetypeHintPdf('Pick a build to view its ability.'),
+        ],
+      );
     }
 
     final entries = <({String name, String ability})>[];
@@ -909,6 +928,19 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
         ],
       ),
       pw.SizedBox(height: 5),
+      if (c.heroType == HeroTypeKind.frantic &&
+          rules.sheetPresentation.franticHeroStanceRules.trim().isNotEmpty) ...[
+        pw.Padding(
+          padding: const pw.EdgeInsets.symmetric(horizontal: 4),
+          child: pw.Text(
+            normalizePdfTextForHelvetica(
+              rules.sheetPresentation.franticHeroStanceRules.trim(),
+            ),
+            style: style(size: 10.4, height: 1.28),
+          ),
+        ),
+        pw.SizedBox(height: 5),
+      ],
       pdfInnerBoardedBody(
         backgroundColor: _PdfPalette.purpleBg,
         boardColor: _PdfPalette.purpleBorder,

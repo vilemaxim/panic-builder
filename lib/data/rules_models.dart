@@ -304,6 +304,14 @@ class RuleSheetPresentation {
           "{name}'s Frantic Abilities are:",
     );
   }
+
+  /// Substitutes `{name}` in [franticAbilityIntroTemplate] using [characterDisplayName].
+  String franticAbilityIntroLine(String characterDisplayName) {
+    final name = characterDisplayName.trim().isEmpty
+        ? 'Hero'
+        : characterDisplayName.trim();
+    return franticAbilityIntroTemplate.replaceAll('{name}', name);
+  }
 }
 
 class RuleSuper {

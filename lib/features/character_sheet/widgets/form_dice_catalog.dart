@@ -27,22 +27,6 @@ const List<String> kBundledDiceIconAssetPaths = [
   'assets/icons/dice/d10.png',
 ];
 
-/// PNG asset path when present (legacy / tooling); UI uses [formDieChip] painter paths.
-String? dieIconAssetPathForSides(int sides) {
-  switch (sides) {
-    case 4:
-      return 'assets/icons/dice/d4.png';
-    case 6:
-      return 'assets/icons/dice/d6.png';
-    case 8:
-      return 'assets/icons/dice/d8.png';
-    case 10:
-      return 'assets/icons/dice/d10.png';
-    default:
-      return null;
-  }
-}
-
 /// Nearest bundled die family (4 / 6 / 8 / 10) used as silhouette for non-standard face counts.
 int canonicalDiceSidesForProxy(int sides) {
   if (sides <= 4) return 4;
@@ -50,9 +34,6 @@ int canonicalDiceSidesForProxy(int sides) {
   if (sides <= 8) return 8;
   return 10;
 }
-
-List<int> formDicePoolForFormId(String formId) =>
-    kFormDicePoolByFormId[formId] ?? const [];
 
 /// Prefer dice from merged rules; fall back to [kFormDicePoolByFormId] by form id.
 List<int> formDicePoolForForm(RuleForm? form) {

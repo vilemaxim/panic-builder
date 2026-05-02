@@ -505,6 +505,21 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               ],
             ),
             const SizedBox(height: _ribbonGap),
+            if (character.heroType == HeroTypeKind.frantic &&
+                rules.sheetPresentation.franticHeroStanceRules.trim().isNotEmpty) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+                child: Text(
+                  rules.sheetPresentation.franticHeroStanceRules.trim(),
+                  style: const TextStyle(
+                    color: Color(0xFF2F2418),
+                    fontSize: 13.5,
+                    height: 1.35,
+                  ),
+                ),
+              ),
+              const SizedBox(height: _ribbonGap),
+            ],
             archetypeRibbon,
             Container(
               width: double.infinity,
@@ -658,12 +673,27 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       return _archetypeHint('Pick a Hero Type to view archetype abilities.');
     }
     if (heroType == HeroTypeKind.frantic) {
+      final introLine = rules.sheetPresentation.franticAbilityIntroLine(
+        character.characterName,
+      );
+      final intro = Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(
+          introLine,
+          style: const TextStyle(
+            color: Color(0xFF2F2418),
+            fontSize: 13.5,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      );
       final build = rules.buildById(character.buildId);
       final buildDescription = (build?.description ?? '').trim();
       if (build != null && buildDescription.isNotEmpty) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            intro,
             ..._abilityParagraphsWithBadge(
               _normalizeAbilityText(buildDescription),
               build.name,
@@ -671,7 +701,13 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
           ],
         );
       }
-      return _archetypeHint('Pick a build to view its ability.');
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          intro,
+          _archetypeHint('Pick a build to view its ability.'),
+        ],
+      );
     }
     final entries = <({String name, String ability})>[];
     final build = rules.buildById(character.buildId);

@@ -11,6 +11,8 @@ analyzer:
   exclude:
     - "**/*.g.dart"
   errors:
+    unused_element: warning
+    unused_import: warning
     # Web-only download helper; keep dart:html until migrating to package:web.
     avoid_web_libraries_in_flutter: ignore
     deprecated_member_use: ignore

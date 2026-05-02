@@ -9,18 +9,6 @@ class CharacterSheetPresenter {
 
   final MergedRules rules;
 
-  static String joinParagraphs(String a, String b) {
-    final x = a.trim();
-    final y = b.trim();
-    if (x.isEmpty) {
-      return y;
-    }
-    if (y.isEmpty) {
-      return x;
-    }
-    return '$x\n\n$y';
-  }
-
   String bannerSubtitle(HeroTypeKind? hero) {
     if (hero == null) {
       return '(Pick a Hero Type)';
