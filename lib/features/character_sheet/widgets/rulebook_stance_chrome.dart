@@ -55,18 +55,18 @@ class RulebookStanceChrome {
     sourceBadgeYellow: Color(0xFF9A8E1E),
   );
 
-  static final RulebookStanceChrome franticStyle = RulebookStanceChrome(
+  static final RulebookStanceChrome franticStyle = const RulebookStanceChrome(
     mainBodyBackground: RulebookStylePalette.bodyBackground,
     lateralRail: RulebookStylePalette.lateralRail,
     titleRibbonFill: RulebookStylePalette.ribbon,
-    headerTitleStyle: const TextStyle(
+    headerTitleStyle: TextStyle(
       fontSize: 36,
       fontWeight: FontWeight.w800,
       height: 1.0,
       color: Colors.white,
     ),
     headerIconColor: Color(0xE6FFFFFF),
-    rangeLineStyle: const TextStyle(
+    rangeLineStyle: TextStyle(
       fontSize: 20,
       fontWeight: FontWeight.w700,
       color: Color(0xE6FFFFFF),

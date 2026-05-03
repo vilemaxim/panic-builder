@@ -3,6 +3,9 @@ import 'character.dart';
 import 'hero_type_kind.dart';
 import 'stance.dart';
 
+/// Max length for the custom final skill label (rules suggest two words).
+const int kCustomHeroSkillMaxChars = 80;
+
 /// Pure validation helpers for creation flow.
 class CharacterPolicies {
   const CharacterPolicies(this.rules);
@@ -160,6 +163,111 @@ class CharacterPolicies {
         .toList();
   }
 
+  /// When non-null, choosing [archetypeId] in [editSlotIndex] duplicates another slot.
+  String? explainArchetypeDuplicateForSlot(
+    HeroTypeKind? hero,
+    List<String> paddedArchetypeIds,
+    int editSlotIndex,
+    String archetypeId,
+  ) {
+    if (hero == null) return null;
+    final need = archetypeSlotCount(hero);
+    if (editSlotIndex < 0 || editSlotIndex >= need) return null;
+    if (archetypeId.isEmpty) return null;
+    for (var i = 0; i < paddedArchetypeIds.length; i++) {
+      if (i == editSlotIndex) continue;
+      if (paddedArchetypeIds[i] == archetypeId && archetypeId.isNotEmpty) {
+        return 'Archetypes must be distinct (already used in another slot).';
+      }
+    }
+    return null;
+  }
+
+  /// Explains why [styleId] is not in [allowedStyleIdsForStance] for this snapshot.
+  String? explainWhyStyleNotAllowed({
+    required HeroTypeKind hero,
+    required List<String> archetypeIds,
+    required int stanceIndex,
+    required List<Stance> partialStances,
+    required String styleId,
+  }) {
+    if (stanceIndex < 0 || stanceIndex > 2) return 'Invalid stance index.';
+    final trimmed = styleId.trim();
+    if (trimmed.isEmpty) return null;
+
+    final allowed = allowedStyleIdsForStance(
+      hero: hero,
+      archetypeIds: archetypeIds,
+      stanceIndex: stanceIndex,
+      partialStances: partialStances,
+    );
+    if (allowed.contains(trimmed)) return null;
+
+    if (rules.styleById(trimmed) == null) {
+      return 'Unknown or invalid style.';
+    }
+
+    for (var i = 0; i < partialStances.length; i++) {
+      if (i == stanceIndex) continue;
+      if (partialStances[i].styleId == trimmed) {
+        return 'Each stance must use a different style.';
+      }
+    }
+
+    final style = rules.styleById(trimmed)!;
+    final archIds = paddedArchetypeIds(hero, archetypeIds);
+
+    switch (hero) {
+      case HeroTypeKind.focused:
+        if (archIds[0].isEmpty) {
+          return 'Choose an archetype so Focused stance styles can follow the rules.';
+        }
+        if (style.archetypeId != archIds[0]) {
+          return 'Focused: all styles must belong to your archetype.';
+        }
+        return 'This style does not match the stance rules for your current picks.';
+      case HeroTypeKind.fused:
+        final a0 = archIds.isNotEmpty ? archIds[0] : '';
+        final a1 = archIds.length > 1 ? archIds[1] : '';
+        if (a0.isEmpty || a1.isEmpty) {
+          return 'Pick both fused archetypes so stance styles can follow the rules.';
+        }
+        if (style.archetypeId != a0 && style.archetypeId != a1) {
+          return 'Fused: styles must come from your two archetypes only.';
+        }
+        return 'Fused: pick exactly two styles from one archetype and one from the other.';
+      case HeroTypeKind.frantic:
+        if (stanceIndex >= archIds.length) {
+          return 'Frantic: stance ${stanceIndex + 1} uses the archetype from the same numbered slot.';
+        }
+        final needArch = archIds[stanceIndex];
+        if (needArch.isEmpty) {
+          return 'Pick all three archetypes so each Frantic stance can follow the rules.';
+        }
+        if (style.archetypeId != needArch) {
+          return 'Frantic: stance ${stanceIndex + 1} must use a style from archetype ${stanceIndex + 1}.';
+        }
+        return 'This style does not match the stance rules for your current picks.';
+    }
+  }
+
+  /// Form [formId] cannot be used on [stanceIndex] because another stance already has it.
+  String? explainFormUsedOnAnotherStance({
+    required List<Stance> stances,
+    required int stanceIndex,
+    required String formId,
+  }) {
+    final fid = formId.trim();
+    if (fid.isEmpty) return null;
+    for (var i = 0; i < stances.length; i++) {
+      if (i == stanceIndex) continue;
+      if (stances[i].formId == fid) {
+        return 'Each stance must use a different form.';
+      }
+    }
+    return null;
+  }
+
   String? validateStances(
     HeroTypeKind? hero,
     List<String> archetypeIds,
@@ -282,9 +390,8 @@ class CharacterPolicies {
 
     final tw = skills.twoWordSkill.trim();
     if (tw.isEmpty) return 'Enter your two-word skill.';
-    final words = tw.split(RegExp(r'\s+'));
-    if (words.length != 2) {
-      return 'Two-word skill must be exactly two words.';
+    if (tw.length > kCustomHeroSkillMaxChars) {
+      return 'Skill name must be $kCustomHeroSkillMaxChars characters or fewer.';
     }
     return null;
   }

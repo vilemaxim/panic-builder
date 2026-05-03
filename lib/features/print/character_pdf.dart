@@ -182,7 +182,7 @@ pw.Widget pdfInnerBoardedBody({
         pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
           children: [
-            if (header != null) header,
+            ?header,
             pw.Padding(
               padding: pw.EdgeInsets.fromLTRB(textInset, 8, textInset, 10),
               child: body,
@@ -287,7 +287,7 @@ class _PdfSkewLeftRibbon extends pw.SingleChildWidget {
         ..lineTo(left + w, bottom + h)
         ..lineTo(left + w - skew, bottom);
     }
-    context.canvas..closePath();
+    context.canvas.closePath();
 
     if (clipOnly) {
       context.canvas.clipPath();
@@ -367,9 +367,9 @@ class _PdfSkewRightRibbon extends pw.SingleChildWidget {
         ..curveTo(c1x, c1y, c2x, c2y, arcEndX, arcEndY)
         ..lineTo(tlX, tlY);
     } else {
-      context.canvas..lineTo(left, bottom);
+      context.canvas.lineTo(left, bottom);
     }
-    context.canvas..closePath();
+    context.canvas.closePath();
 
     if (clipOnly) {
       context.canvas.clipPath();
@@ -996,7 +996,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
                         fillColor: _PdfPalette.bannerBrown,
                         cornerRadius: 6,
                         child: pw.Padding(
-                          padding: pw.EdgeInsets.fromLTRB(
+                          padding: const pw.EdgeInsets.fromLTRB(
                             12 + _kRailTextInset,
                             9,
                             14 + _kBannerTrailingReservePdf + _kRailTextInset,
@@ -1284,7 +1284,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
             width: 28,
             height: 28,
             decoration: pw.BoxDecoration(
-              color: PdfColor.fromInt(0xFF4A4A4A),
+              color: const PdfColor.fromInt(0xFF4A4A4A),
               borderRadius: pw.BorderRadius.circular(5),
             ),
             alignment: pw.Alignment.center,

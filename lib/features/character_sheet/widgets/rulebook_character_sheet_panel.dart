@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
 import '../../../domain/character.dart';
+import '../../../domain/character_policies.dart';
+import '../../../domain/character_rule_overlay.dart';
 import '../../../domain/hero_type_kind.dart';
 import '../character_sheet_presenter.dart';
+import 'rule_violation_marker.dart';
 import 'rulebook_ribbon_clipper.dart';
 
 /// Optional tap targets on the banner: name, hero type, build, archetypes.
@@ -125,6 +128,15 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     final handlers = identityHandlers;
     final skillH = skillHandlers;
     final c = character;
+    final policies = CharacterPolicies(rules);
+    final archViolations = CharacterRuleOverlay.archetypeSlotViolations(
+      policies,
+      c,
+    );
+    final skillPillViolation =
+        CharacterRuleOverlay.stanceSkillPillViolation(policies, c);
+    final twoWordPillViolation =
+        CharacterRuleOverlay.twoWordSkillPillViolation(policies, c);
     final displayName = character.characterName.trim().isEmpty
         ? 'Unnamed hero'
         : character.characterName.trim();
@@ -327,7 +339,11 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
           return Text(buildLabel, style: nameStyle);
         }
 
-        Widget archetypeSegment(int slotIndex, {String? label}) {
+        Widget archetypeSegment(
+          int slotIndex, {
+          String? label,
+          String? ruleViolationHint,
+        }) {
           final text = label ?? archLabel;
           if (onArch != null) {
             return Semantics(
@@ -346,6 +362,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          if (ruleViolationHint != null) ...[
+                            RuleViolationTriangle(message: ruleViolationHint),
+                            const SizedBox(width: 4),
+                          ],
                           Text(text, style: subtitleStyle),
                           const SizedBox(width: 6),
                           Icon(
@@ -361,7 +381,16 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               ),
             );
           }
-          return Text(text, style: subtitleStyle);
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (ruleViolationHint != null) ...[
+                RuleViolationTriangle(message: ruleViolationHint),
+                const SizedBox(width: 4),
+              ],
+              Text(text, style: subtitleStyle),
+            ],
+          );
         }
 
         final ribbonInner = ConstrainedBox(
@@ -382,6 +411,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                       child: archetypeSegment(
                         0,
                         label: presenter.archetypeSlotBannerLabel(character, 0),
+                        ruleViolationHint: archViolations.isNotEmpty
+                            ? archViolations[0]
+                            : null,
                       ),
                     ),
                     Padding(
@@ -395,10 +427,19 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                       child: archetypeSegment(
                         1,
                         label: presenter.archetypeSlotBannerLabel(character, 1),
+                        ruleViolationHint: archViolations.length > 1
+                            ? archViolations[1]
+                            : null,
                       ),
                     ),
                   ] else
-                    Flexible(child: archetypeSegment(0)),
+                    Flexible(
+                      child: archetypeSegment(
+                        0,
+                        ruleViolationHint:
+                            archViolations.isNotEmpty ? archViolations[0] : null,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -456,6 +497,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                         c,
                         0,
                       ),
+                      ruleViolationHint: skillPillViolation,
                     ),
                   ),
                 ),
@@ -470,6 +512,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                         c,
                         1,
                       ),
+                      ruleViolationHint: skillPillViolation,
                     ),
                   ),
                 ),
@@ -489,6 +532,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                         c,
                         2,
                       ),
+                      ruleViolationHint: skillPillViolation,
                     ),
                   ),
                 ),
@@ -499,6 +543,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                       pills[3],
                       maxWidth: constraints.maxWidth,
                       onEdit: skillH?.onEditTwoWordSkill,
+                      ruleViolationHint: twoWordPillViolation,
                     ),
                   ),
                 ),
@@ -530,7 +575,12 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
             if (character.heroType == HeroTypeKind.frantic) ...[
               for (var i = 0; i < 3; i++) ...[
                 const SizedBox(height: _ribbonGap),
-                _franticBuildArchetypeArea(i, presenter),
+                _franticBuildArchetypeArea(
+                  i,
+                  presenter,
+                  ruleViolationHint:
+                      i < archViolations.length ? archViolations[i] : null,
+                ),
               ],
             ],
           ],
@@ -539,7 +589,12 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     );
   }
 
-  Widget _franticBuildArchetypeArea(int slotIndex, CharacterSheetPresenter presenter) {
+  Widget _franticBuildArchetypeArea(
+    int slotIndex,
+    CharacterSheetPresenter presenter, {
+    String? ruleViolationHint,
+  }) {
+    final archRuleHint = ruleViolationHint;
     final build = rules.buildById(character.buildId);
     final buildLabel = build?.name ?? '';
     final archLabel = presenter.archetypeSlotBannerLabel(character, slotIndex);
@@ -574,6 +629,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                           if (buildLabel.isNotEmpty) ...[
                             Text(buildLabel, style: nameStyle),
                             const SizedBox(width: 8),
+                          ],
+                          if (archRuleHint != null) ...[
+                            RuleViolationTriangle(message: archRuleHint),
+                            const SizedBox(width: 4),
                           ],
                           if (onArch != null)
                             Semantics(
@@ -840,7 +899,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     String label, {
     required double maxWidth,
     VoidCallback? onEdit,
+    String? ruleViolationHint,
   }) {
+    final pillHint = ruleViolationHint;
     return SizedBox(
       width: maxWidth,
       height: _skillRibbonHeight,
@@ -859,6 +920,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               ),
               child: Row(
                 children: [
+                  if (pillHint != null) ...[
+                    RuleViolationTriangle(message: pillHint),
+                    const SizedBox(width: 4),
+                  ],
                   Expanded(
                     child: Text(
                       label,
@@ -901,7 +966,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     String label, {
     required double maxWidth,
     VoidCallback? onEdit,
+    String? ruleViolationHint,
   }) {
+    final pillHint = ruleViolationHint;
     return SizedBox(
       width: maxWidth,
       height: _skillRibbonHeight,
@@ -921,6 +988,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  if (pillHint != null) ...[
+                    RuleViolationTriangle(message: pillHint),
+                    const SizedBox(width: 4),
+                  ],
                   Expanded(
                     child: Text(
                       label,

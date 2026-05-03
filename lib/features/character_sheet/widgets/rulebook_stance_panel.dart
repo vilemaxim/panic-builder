@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
 import 'form_dice_catalog.dart';
+import 'rule_violation_marker.dart';
 import 'rulebook_ribbon_clipper.dart';
 import 'rulebook_stance_chrome.dart';
 import 'stance_rules_tooltip.dart';
@@ -19,6 +20,7 @@ class RulebookStancePanel extends StatelessWidget {
     this.onPickForm,
     this.chrome = RulebookStanceChrome.stance,
     this.styleOnly = false,
+    this.ruleViolationHint,
   });
 
   final RuleStyle? style;
@@ -38,6 +40,9 @@ class RulebookStancePanel extends StatelessWidget {
   /// When true (Frantic style cards), show style rules only — no form header, dice,
   /// passives, or actions tied to a form.
   final bool styleOnly;
+
+  /// Hover tooltip when the current stance row breaks printed rules.
+  final String? ruleViolationHint;
 
   /// Action title ribbon width as a fraction of the stance panel content width.
   static const double _actionRibbonWidthFactor = 0.75;
@@ -130,6 +135,7 @@ class RulebookStancePanel extends StatelessWidget {
             hasActionsBelow: hasActionsBelow,
             chrome: chrome,
             styleOnly: styleOnly,
+            ruleViolationHint: ruleViolationHint,
           ),
           for (var i = 0; i < styleActionWidgets.length; i++) ...[
             if (i > 0) const SizedBox(height: 8),
@@ -358,7 +364,9 @@ class RulebookStancePanel extends StatelessWidget {
     required bool hasActionsBelow,
     required RulebookStanceChrome chrome,
     required bool styleOnly,
+    String? ruleViolationHint,
   }) {
+    final titleRuleHint = ruleViolationHint;
     final notes = style?.marginNotes.trim() ?? '';
     final hasPassives =
         styleDm.passiveParagraphs.isNotEmpty ||
@@ -407,6 +415,12 @@ class RulebookStancePanel extends StatelessWidget {
                                   runSpacing: 10,
                                   crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
+                                    if (titleRuleHint != null) ...[
+                                      RuleViolationTriangle(
+                                        message: titleRuleHint,
+                                      ),
+                                      const SizedBox(width: 4),
+                                    ],
                                     Tooltip(
                                       message: style == null
                                           ? 'Tap to pick a style for this stance. Full rules text appears once you choose.'

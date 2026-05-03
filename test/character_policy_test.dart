@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:panic_at_the_dojo/data/rules_models.dart';
 import 'package:panic_at_the_dojo/domain/character.dart';
 import 'package:panic_at_the_dojo/domain/character_policies.dart';
+import 'package:panic_at_the_dojo/domain/character_rule_overlay.dart';
 import 'package:panic_at_the_dojo/domain/hero_type_kind.dart';
 import 'package:panic_at_the_dojo/domain/skills_state.dart';
 import 'package:panic_at_the_dojo/domain/stance.dart';
@@ -256,5 +257,132 @@ void main() {
       ),
     );
     expect(p.validateSkills(c), isNull);
+  });
+
+  test('skills accept one-word or multi-word custom skill within length', () {
+    final rules = _minimalRules();
+    final p = CharacterPolicies(rules);
+    const stances = [
+      Stance(styleId: 's1', formId: 'f1', formDisplayName: 'F1'),
+      Stance(styleId: 's2', formId: 'f2', formDisplayName: 'F2'),
+      Stance(styleId: 's3', formId: 'f3', formDisplayName: 'F3'),
+    ];
+    final base = Character.blank().copyWith(
+      heroType: HeroTypeKind.focused,
+      buildId: 'b1',
+      archetypeIds: const ['a1'],
+      stances: stances,
+      skillsState: const SkillsState(
+        skillsByStance: [
+          ['k1', 'k2', 'k3'],
+          ['k4', 'k5', 'k6'],
+          ['k7', 'k8', 'k10'],
+        ],
+        replacementSkillId: 'k10',
+        twoWordSkill: 'Thunder',
+      ),
+    );
+    expect(p.validateSkills(base), isNull);
+    expect(
+      p.validateSkills(
+        base.copyWith(
+          skillsState: base.skillsState!.copyWith(
+            twoWordSkill: 'Iron Palm Strike',
+          ),
+        ),
+      ),
+      isNull,
+    );
+  });
+
+  test('skills reject custom skill over max length', () {
+    final rules = _minimalRules();
+    final p = CharacterPolicies(rules);
+    const stances = [
+      Stance(styleId: 's1', formId: 'f1', formDisplayName: 'F1'),
+      Stance(styleId: 's2', formId: 'f2', formDisplayName: 'F2'),
+      Stance(styleId: 's3', formId: 'f3', formDisplayName: 'F3'),
+    ];
+    final longSkill = 'x' * (kCustomHeroSkillMaxChars + 1);
+    final c = Character.blank().copyWith(
+      heroType: HeroTypeKind.focused,
+      buildId: 'b1',
+      archetypeIds: const ['a1'],
+      stances: stances,
+      skillsState: SkillsState(
+        skillsByStance: const [
+          ['k1', 'k2', 'k3'],
+          ['k4', 'k5', 'k6'],
+          ['k7', 'k8', 'k10'],
+        ],
+        replacementSkillId: 'k10',
+        twoWordSkill: longSkill,
+      ),
+    );
+    expect(p.validateSkills(c), isNotNull);
+  });
+
+  test('overlay omits archetype triangles for unfilled slots', () {
+    final rules = _minimalRules();
+    final p = CharacterPolicies(rules);
+    final c = Character.blank().copyWith(
+      heroType: HeroTypeKind.focused,
+      archetypeIds: const [],
+    );
+    final v = CharacterRuleOverlay.archetypeSlotViolations(p, c);
+    expect(v.every((e) => e == null), isTrue);
+  });
+
+  test('overlay shows archetype triangles for duplicate picks', () {
+    final rules = _minimalRules();
+    final p = CharacterPolicies(rules);
+    final c = Character.blank().copyWith(
+      heroType: HeroTypeKind.fused,
+      archetypeIds: const ['a1', 'a1'],
+    );
+    final v = CharacterRuleOverlay.archetypeSlotViolations(p, c);
+    expect(v[0], isNotNull);
+    expect(v[1], isNotNull);
+  });
+
+  test('overlay hides stance row hint when only archetypes are missing', () {
+    final rules = _minimalRules();
+    final p = CharacterPolicies(rules);
+    final c = Character.blank().copyWith(
+      heroType: HeroTypeKind.focused,
+      archetypeIds: const [],
+      stances: const [
+        Stance(styleId: 's1', formId: 'f1', formDisplayName: 'F1'),
+        Stance(styleId: '', formId: '', formDisplayName: ''),
+        Stance(styleId: '', formId: '', formDisplayName: ''),
+      ],
+    );
+    expect(CharacterRuleOverlay.stanceRowViolation(p, c, 0), isNull);
+  });
+
+  test('overlay hides two-word pill while custom skill is still empty', () {
+    final rules = _minimalRules();
+    final p = CharacterPolicies(rules);
+    const stances = [
+      Stance(styleId: 's1', formId: 'f1', formDisplayName: 'F1'),
+      Stance(styleId: 's2', formId: 'f2', formDisplayName: 'F2'),
+      Stance(styleId: 's3', formId: 'f3', formDisplayName: 'F3'),
+    ];
+    final c = Character.blank().copyWith(
+      heroType: HeroTypeKind.focused,
+      buildId: 'b1',
+      archetypeIds: const ['a1'],
+      stances: stances,
+      skillsState: const SkillsState(
+        skillsByStance: [
+          ['k1', 'k2', 'k3'],
+          ['k4', 'k5', 'k6'],
+          ['k7', 'k8', 'k9'],
+        ],
+        twoWordSkill: '',
+      ),
+    );
+    expect(p.validateSkills(c), isNotNull);
+    expect(CharacterRuleOverlay.twoWordSkillPillViolation(p, c), isNull);
   });
 }

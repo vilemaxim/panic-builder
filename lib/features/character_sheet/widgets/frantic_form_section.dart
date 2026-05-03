@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
 import 'form_dice_catalog.dart';
+import 'rule_violation_marker.dart';
 import 'rulebook_form_palette.dart';
 import 'rulebook_section_template.dart';
 import 'rulebook_stance_chrome.dart';
@@ -15,6 +16,7 @@ class FranticFormSection extends StatelessWidget {
     required this.rules,
     this.formDisplayLabel,
     this.onPickForm,
+    this.ruleViolationHint,
   });
 
   final RuleForm? form;
@@ -23,6 +25,9 @@ class FranticFormSection extends StatelessWidget {
   /// Overrides [RuleForm.name] in the ribbon when non-empty (alternate form label).
   final String? formDisplayLabel;
   final VoidCallback? onPickForm;
+
+  /// Hover tooltip when this form choice breaks printed stance rules.
+  final String? ruleViolationHint;
 
   static const TextStyle _bodyStyle = TextStyle(
     color: Colors.black,
@@ -51,27 +56,25 @@ class FranticFormSection extends StatelessWidget {
 
     final passiveWidgets = _buildPassiveWidgets(dm, badge);
     final mainBody =
-        passiveWidgets == null
-            ? (form == null
+        passiveWidgets ?? (form == null
                   ? Text(
                       'Tap the title above to choose a form after picking a style.',
                       style: _bodyStyle.copyWith(color: Colors.black54),
                     )
-                  : null)
-            : passiveWidgets;
+                  : null);
 
     final subs = _buildActionSubSections(dm, form, badge, chrome);
 
     final model = RulebookSectionTemplateModel(
-      mainLateralBorder: RulebookTemplateLateralBorder(
+      mainLateralBorder: const RulebookTemplateLateralBorder(
         color: RulebookFormPalette.lateralRail,
       ),
       mainBackground: RulebookFormPalette.bodyBackground,
-      mainRibbonStyle: RulebookTemplateRibbonStyle(
+      mainRibbonStyle: const RulebookTemplateRibbonStyle(
         fill: RulebookFormPalette.ribbon,
         minHeight: 52,
         diagonalReserve: 66,
-        padding: const EdgeInsets.fromLTRB(12, 10, 66, 10),
+        padding: EdgeInsets.fromLTRB(12, 10, 66, 10),
       ),
       mainRibbonTitle: _ribbonTitle(titleText),
       upperRight: diceRow,
@@ -89,9 +92,21 @@ class FranticFormSection extends StatelessWidget {
       height: 1.0,
       color: Colors.white,
     );
+    final hint = ruleViolationHint;
     final tap = onPickForm;
     if (tap == null) {
-      return Text(text, style: style, softWrap: true);
+      if (hint == null) {
+        return Text(text, style: style, softWrap: true);
+      }
+      return Wrap(
+        spacing: 8,
+        runSpacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          RuleViolationTriangle(message: hint),
+          Text(text, style: style, softWrap: true),
+        ],
+      );
     }
     return Material(
       color: Colors.transparent,
@@ -102,6 +117,10 @@ class FranticFormSection extends StatelessWidget {
           runSpacing: 6,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
+            if (hint != null) ...[
+              RuleViolationTriangle(message: hint),
+              const SizedBox(width: 2),
+            ],
             Text(text, style: style, softWrap: true),
             const Icon(Icons.edit_outlined, size: 24, color: Color(0xE6FFFFFF)),
           ],

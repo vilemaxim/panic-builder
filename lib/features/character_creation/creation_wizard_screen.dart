@@ -7,6 +7,7 @@ import '../../widgets/app_async_feedback.dart';
 import '../../data/rules_models.dart';
 import '../../domain/character.dart';
 import '../../domain/character_policies.dart';
+import '../../domain/character_rule_overlay.dart';
 import '../../domain/hero_type_kind.dart';
 import '../../domain/stance.dart';
 import '../character_sheet/character_skills_ui.dart';
@@ -69,6 +70,39 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
       ),
     );
     if (leave == true && mounted) context.go('/');
+  }
+
+  /// Returns true if the user chooses to save despite [validationMessage].
+  Future<bool> _confirmSaveDespiteIncompleteRules(
+    String validationMessage,
+  ) async {
+    final r = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => AlertDialog(
+        icon: const Icon(Icons.warning_amber_rounded, color: Color(0xFFE65100)),
+        title: const Text('Does not match printed rules'),
+        content: SingleChildScrollView(
+          child: Text(
+            'The builder reports:\n\n'
+            '$validationMessage\n\n'
+            'You can go back and fix this, or save anyway to keep a draft or '
+            'homebrew sheet on this device.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Save anyway'),
+          ),
+        ],
+      ),
+    );
+    return r ?? false;
   }
 
   String? _stanceTabPrerequisiteMessage(
@@ -235,16 +269,14 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
         const SizedBox(height: 16),
         FilledButton(
           onPressed: () async {
-            final err = policies.validateCreationComplete(
-              ref.read(creationSessionProvider),
-            );
+            final session = ref.read(creationSessionProvider);
+            final err = policies.validateCreationComplete(session);
             if (err != null) {
-              _snack(err);
-              return;
+              final saveAnyway = await _confirmSaveDespiteIncompleteRules(err);
+              if (!saveAnyway || !mounted) return;
             }
-            final toSave = ref
-                .read(creationSessionProvider)
-                .copyWith(updatedAt: DateTime.now());
+            final toSave =
+                ref.read(creationSessionProvider).copyWith(updatedAt: DateTime.now());
             await ref.read(characterStorageProvider).upsert(toSave);
             ref.invalidate(charactersListProvider);
             if (!mounted) return;
@@ -281,6 +313,8 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
                   : null,
           onPickStyle: () => _openStanceStylePick(rules, policies, idx),
           onPickForm: () => _openStanceFormPick(rules, policies, idx),
+          ruleViolationHint:
+              CharacterRuleOverlay.stanceRowViolation(policies, c, idx),
         ),
       ],
     );
@@ -336,6 +370,8 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
       rules: rules,
       onPickStyle: () => _openStanceStylePick(rules, policies, idx),
       onPickForm: null,
+      ruleViolationHint:
+          CharacterRuleOverlay.stanceRowViolation(policies, c, idx),
     );
   }
 
@@ -389,6 +425,8 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
               ? s.formDisplayName
               : null,
       onPickForm: () => _openStanceFormPick(rules, policies, idx),
+      ruleViolationHint:
+          CharacterRuleOverlay.stanceRowViolation(policies, c, idx),
     );
   }
 
@@ -466,18 +504,16 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     if (!_stancePickPrecheck(c, policies)) return;
 
     final padded = _stancesPadded(c);
-    final allowed = policies.allowedStyleIdsForStance(
-      hero: c.heroType!,
-      archetypeIds: c.archetypeIds,
-      stanceIndex: idx,
-      partialStances: padded,
-    );
     final cur = idx < c.stances.length ? c.stances[idx] : null;
 
     await showStanceStylePickDialog(
       context,
       rules: rules,
-      allowedStyleIds: allowed,
+      policies: policies,
+      hero: c.heroType!,
+      archetypeIds: c.archetypeIds,
+      stanceIndex: idx,
+      partialStances: padded,
       initialStyleId: cur?.styleId,
       onApply: (styleId) async {
         final draft = _stancesPadded(c);
@@ -506,17 +542,13 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     }
 
     final padded = _stancesPadded(c);
-    final usedForms =
-        padded.map((s) => s.formId).where((id) => id.isNotEmpty).toSet();
-
-    final forms = rules.forms
-        .where((f) => !usedForms.contains(f.id) || f.id == cur.formId)
-        .toList();
 
     final formId = await showStanceFormPickDialog(
       context,
       rules: rules,
-      forms: forms,
+      policies: policies,
+      stancesPadded: padded,
+      stanceIndex: idx,
       initialFormId: cur.formId.isEmpty ? null : cur.formId,
     );
     if (formId == null || !mounted) return;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../data/rules_models.dart';
 import '../../../domain/character_policies.dart';
 import '../../../domain/hero_type_kind.dart';
+import 'rule_violation_marker.dart';
 
 Future<void> showArchetypePickerSheet(
   BuildContext context, {
@@ -42,46 +43,108 @@ Future<void> showArchetypePickerSheet(
           final contentWidth = (screenW - 48).clamp(280.0, 560.0);
           final slotPick =
               picks[editSlotIndex].isEmpty ? null : picks[editSlotIndex];
+          final theme = Theme.of(context);
+          final allowed = <RuleArchetype>[];
+          final disallowed = <RuleArchetype>[];
+          for (final a in rules.archetypes) {
+            var takenElsewhere = false;
+            for (var i = 0; i < picks.length; i++) {
+              if (i == editSlotIndex) continue;
+              if (picks[i].isNotEmpty && picks[i] == a.id) {
+                takenElsewhere = true;
+                break;
+              }
+            }
+            if (takenElsewhere) {
+              disallowed.add(a);
+            } else {
+              allowed.add(a);
+            }
+          }
+          allowed.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          );
+          disallowed.sort(
+            (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+          );
+
+          Widget archetypeTile(RuleArchetype a, String? ruleViolation) {
+            final complexity = a.complexity.clamp(1, 3);
+            final stars =
+                '${'★' * complexity}${'☆' * (3 - complexity)}';
+            return RadioListTile<String>(
+              value: a.id,
+              groupValue: slotPick,
+              onChanged: (v) {
+                if (v == null) return;
+                setState(() => picks[editSlotIndex] = v);
+              },
+              title: Row(
+                children: [
+                  if (ruleViolation != null) ...[
+                    RuleViolationTriangle(message: ruleViolation),
+                    const SizedBox(width: 6),
+                  ],
+                  Expanded(
+                    child: Text('${a.name} ($stars)'),
+                  ),
+                  _archetypeInfoIcon(context, a),
+                ],
+              ),
+            );
+          }
+
+          final columnChildren = <Widget>[
+            Text(
+              'Matches printed rules',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 6),
+            if (allowed.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'No archetypes left that are not already chosen in another slot.',
+                  style: theme.textTheme.bodySmall,
+                ),
+              )
+            else
+              ...allowed.map((a) => archetypeTile(a, null)),
+            if (disallowed.isNotEmpty) ...[
+              const Divider(height: 28),
+              Text(
+                'Archetypes already chosen elsewhere (hover the red marker — you may still pick)',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 6),
+              ...disallowed.map((a) {
+                final msg = policies.explainArchetypeDuplicateForSlot(
+                  heroType,
+                  picks,
+                  editSlotIndex,
+                  a.id,
+                );
+                return archetypeTile(
+                  a,
+                  msg ?? 'Archetypes must be distinct.',
+                );
+              }),
+            ],
+          ];
+
           return AlertDialog(
             title: const Text('Choose Archetype'),
             content: SizedBox(
               width: contentWidth,
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...rules.archetypes.where((a) {
-                      for (var i = 0; i < picks.length; i++) {
-                        if (i == editSlotIndex) continue;
-                        if (picks[i].isNotEmpty && picks[i] == a.id) {
-                          return false;
-                        }
-                      }
-                      return true;
-                    }).map((a) {
-                      final complexity = a.complexity.clamp(1, 3);
-                      final stars =
-                          '${'★' * complexity}${'☆' * (3 - complexity)}';
-                      return RadioListTile<String>(
-                        value: a.id,
-                        groupValue: slotPick,
-                        onChanged: (v) {
-                          if (v == null) return;
-                          setState(() => picks[editSlotIndex] = v);
-                        },
-                        title: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '${a.name} ($stars)',
-                              ),
-                            ),
-                            _archetypeInfoIcon(context, a),
-                          ],
-                        ),
-                      );
-                    }),
-                  ],
+                  children: columnChildren,
                 ),
               ),
             ),

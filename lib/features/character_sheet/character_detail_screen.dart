@@ -8,6 +8,7 @@ import 'package:printing/printing.dart';
 import '../../app/providers.dart';
 import '../../data/rules_models.dart';
 import '../../domain/character.dart';
+import '../../domain/character_rule_overlay.dart';
 import '../../domain/hero_type_kind.dart';
 import '../../util/download.dart';
 import '../../widgets/app_async_feedback.dart';
@@ -84,6 +85,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
             body: AppAsyncError(error: e, title: 'Could not load rules'),
           ),
           data: (rules) {
+            final pol = policiesFor(rules);
             return Scaffold(
               appBar: AppBar(
                 title: Text(
@@ -204,6 +206,12 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                           style: style,
                           form: null,
                           rules: rules,
+                          ruleViolationHint:
+                              CharacterRuleOverlay.stanceRowViolation(
+                                pol,
+                                c,
+                                i,
+                              ),
                         ),
                       );
                     }
@@ -218,6 +226,12 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                               st.formDisplayName.trim().isEmpty
                                   ? null
                                   : st.formDisplayName,
+                          ruleViolationHint:
+                              CharacterRuleOverlay.stanceRowViolation(
+                                pol,
+                                c,
+                                i,
+                              ),
                         ),
                       );
                     }
@@ -267,6 +281,12 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                                   st.formDisplayName.trim().isEmpty
                                       ? null
                                       : st.formDisplayName,
+                              ruleViolationHint:
+                                  CharacterRuleOverlay.stanceRowViolation(
+                                    pol,
+                                    c,
+                                    i,
+                                  ),
                             ),
                           ],
                         ),

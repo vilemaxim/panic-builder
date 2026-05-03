@@ -226,13 +226,15 @@ Future<String?> showTwoWordSkillDialog(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text(
-                  'Enter exactly two words for your custom skill name.',
+                Text(
+                  'The rules suggest a two-word name (e.g. Iron Palm). '
+                  'You can use any label up to $kCustomHeroSkillMaxChars characters.',
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: ctrl,
                   autofocus: true,
+                  maxLength: kCustomHeroSkillMaxChars,
                   decoration: InputDecoration(
                     errorText: error,
                     hintText: 'e.g. Iron Palm',
@@ -240,10 +242,16 @@ Future<String?> showTwoWordSkillDialog(
                   textInputAction: TextInputAction.done,
                   onSubmitted: (_) {
                     final v = ctrl.text.trim();
-                    final words = v.split(RegExp(r'\s+'));
-                    if (words.length != 2 || words.any((w) => w.isEmpty)) {
+                    if (v.isEmpty) {
                       setState(() {
-                        error = 'Use exactly two words.';
+                        error = 'Enter a skill name.';
+                      });
+                      return;
+                    }
+                    if (v.length > kCustomHeroSkillMaxChars) {
+                      setState(() {
+                        error =
+                            'At most $kCustomHeroSkillMaxChars characters.';
                       });
                       return;
                     }
@@ -260,10 +268,15 @@ Future<String?> showTwoWordSkillDialog(
               FilledButton(
                 onPressed: () {
                   final v = ctrl.text.trim();
-                  final words = v.split(RegExp(r'\s+'));
-                  if (words.length != 2 || words.any((w) => w.isEmpty)) {
+                  if (v.isEmpty) {
                     setState(() {
-                      error = 'Use exactly two words.';
+                      error = 'Enter a skill name.';
+                    });
+                    return;
+                  }
+                  if (v.length > kCustomHeroSkillMaxChars) {
+                    setState(() {
+                      error = 'At most $kCustomHeroSkillMaxChars characters.';
                     });
                     return;
                   }
