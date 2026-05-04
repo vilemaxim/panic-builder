@@ -61,10 +61,9 @@ Future<void> showStanceStylePickDialog(
     context: context,
     barrierDismissible: true,
     builder: (dialogContext) {
-      String? selected =
-          (initialStyleId != null && initialStyleId.isNotEmpty)
-              ? initialStyleId
-              : null;
+      String? selected = (initialStyleId != null && initialStyleId.isNotEmpty)
+          ? initialStyleId
+          : null;
       return StatefulBuilder(
         builder: (context, setState) {
           final screenW = MediaQuery.sizeOf(context).width;
@@ -78,7 +77,9 @@ Future<void> showStanceStylePickDialog(
           );
           final allowedSet = allowed.toSet();
           final allIds = rules.styles.map((s) => s.id).toList();
-          final disallowed = allIds.where((id) => !allowedSet.contains(id)).toList();
+          final disallowed = allIds
+              .where((id) => !allowedSet.contains(id))
+              .toList();
           final allowedSorted = _sortedStyleIds(rules, allowed);
           final disallowedSorted = _sortedStyleIds(rules, disallowed);
 
@@ -197,9 +198,7 @@ Future<void> showStanceStylePickDialog(
 
 List<RuleForm> _sortedFormsByName(List<RuleForm> forms) {
   final out = List<RuleForm>.from(forms);
-  out.sort(
-    (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-  );
+  out.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   return out;
 }
 
@@ -216,10 +215,9 @@ Future<String?> showStanceFormPickDialog(
     context: context,
     barrierDismissible: true,
     builder: (dialogContext) {
-      String? selected =
-          (initialFormId != null && initialFormId.isNotEmpty)
-              ? initialFormId
-              : null;
+      String? selected = (initialFormId != null && initialFormId.isNotEmpty)
+          ? initialFormId
+          : null;
       return StatefulBuilder(
         builder: (context, setState) {
           final screenW = MediaQuery.sizeOf(context).width;
@@ -306,7 +304,10 @@ Future<String?> showStanceFormPickDialog(
                   stanceIndex: stanceIndex,
                   formId: f.id,
                 );
-                return formTile(f, msg ?? 'Each stance must use a different form.');
+                return formTile(
+                  f,
+                  msg ?? 'Each stance must use a different form.',
+                );
               }),
             ],
           ];
@@ -401,8 +402,9 @@ Future<String?> showFormDisplayNamePickDialog(
                 child: const Text('Cancel'),
               ),
               FilledButton(
-                onPressed:
-                    selected == null ? null : () => Navigator.pop(dialogContext, selected),
+                onPressed: selected == null
+                    ? null
+                    : () => Navigator.pop(dialogContext, selected),
                 child: const Text('Apply'),
               ),
             ],

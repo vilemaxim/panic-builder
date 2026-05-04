@@ -24,14 +24,26 @@ class CharacterSheetPresenter {
     final draft = policies.defaultSkillsFromStances(c.stances);
     for (var i = 0; i < 3; i++) {
       if (c.stances.length > i && c.stances[i].formId.isNotEmpty) {
-        final id = c.skillsState != null &&
+        final id =
+            c.skillsState != null &&
                 i < c.skillsState!.skillsByStance.length &&
                 c.skillsState!.skillsByStance[i].isNotEmpty
             ? c.skillsState!.skillsByStance[i][0]
             : draft.skillsByStance[i][0];
         final sk = rules.skillById(id);
-        final label = sk?.name.trim() ?? '';
-        pills.add(label.isNotEmpty ? label : '—');
+        var label = sk?.name.trim() ?? '';
+        if (label.isEmpty) label = '—';
+        final maxNote = sk?.playerNoteMaxChars;
+        if (maxNote != null &&
+            maxNote > 0 &&
+            c.skillsState != null &&
+            id.isNotEmpty) {
+          final note = (c.skillsState!.skillPlayerNotes[id] ?? '').trim();
+          if (note.isNotEmpty) {
+            label = '$label — $note';
+          }
+        }
+        pills.add(label);
       } else {
         pills.add('—');
       }

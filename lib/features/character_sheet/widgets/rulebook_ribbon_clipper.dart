@@ -25,8 +25,10 @@ extension _RibbonOffsetNormalize on Offset {
 double _ribbonCornerInteriorAngle(Offset prev, Offset corner, Offset next) {
   final incoming = (corner - prev).ribbonNorm();
   final outgoing = (next - corner).ribbonNorm();
-  final cosT =
-      (-incoming.dx * outgoing.dx - incoming.dy * outgoing.dy).clamp(-1.0, 1.0);
+  final cosT = (-incoming.dx * outgoing.dx - incoming.dy * outgoing.dy).clamp(
+    -1.0,
+    1.0,
+  );
   return math.acos(cosT);
 }
 
@@ -45,7 +47,8 @@ class LeftRibbonClipper extends CustomClipper<Path> {
     final skew = _ribbonSkewFor45(size);
 
     if (skew <= 0 || h <= 0) {
-      return Path()..addRect(Rect.fromLTWH(0, 0, math.max(w, 0), math.max(h, 0)));
+      return Path()
+        ..addRect(Rect.fromLTWH(0, 0, math.max(w, 0), math.max(h, 0)));
     }
 
     final rawR = topRightRadius;
@@ -112,7 +115,8 @@ class RightRibbonClipper extends CustomClipper<Path> {
     final skew = _ribbonSkewFor45(size);
 
     if (skew <= 0 || h <= 0) {
-      return Path()..addRect(Rect.fromLTWH(0, 0, math.max(w, 0), math.max(h, 0)));
+      return Path()
+        ..addRect(Rect.fromLTWH(0, 0, math.max(w, 0), math.max(h, 0)));
     }
 
     final tl = Offset(skew, 0);

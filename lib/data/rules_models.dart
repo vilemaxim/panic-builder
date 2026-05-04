@@ -183,6 +183,55 @@ List<RuleFormAction> ruleFormActionsFromJson(dynamic raw) {
   return out;
 }
 
+/// A fixed rules option the player picks when this form is paired with a style
+/// (e.g. Control Form range modes). [minRange]/[maxRange] are additive deltas;
+/// [absoluteMin]/[absoluteMax] override the parsed bound after deltas when set.
+class RuleFormChoice {
+  const RuleFormChoice({
+    required this.id,
+    required this.text,
+    this.helpText,
+    this.minRange,
+    this.maxRange,
+    this.absoluteMin,
+    this.absoluteMax,
+  });
+
+  final String id;
+  final String text;
+
+  /// Full rulebook wording (dialog + Frantic stance sheet). Omitted when [text]
+  /// alone is enough.
+  final String? helpText;
+  final int? minRange;
+  final int? maxRange;
+  final int? absoluteMin;
+  final int? absoluteMax;
+
+  static RuleFormChoice fromJson(Map<String, dynamic> j) => RuleFormChoice(
+    id: j['id'] as String,
+    text: stripRuleTextCarriageReturns(j['text'] as String? ?? ''),
+    helpText: j['helpText'] != null
+        ? stripRuleTextCarriageReturns(j['helpText'] as String)
+        : null,
+    minRange: (j['minRange'] as num?)?.toInt(),
+    maxRange: (j['maxRange'] as num?)?.toInt(),
+    absoluteMin: (j['absoluteMin'] as num?)?.toInt(),
+    absoluteMax: (j['absoluteMax'] as num?)?.toInt(),
+  );
+}
+
+List<RuleFormChoice> ruleFormChoicesFromJson(dynamic raw) {
+  if (raw is! List<dynamic>) return const [];
+  final out = <RuleFormChoice>[];
+  for (final e in raw) {
+    if (e is Map<String, dynamic>) {
+      out.add(RuleFormChoice.fromJson(e));
+    }
+  }
+  return out;
+}
+
 class RuleForm {
   const RuleForm({
     required this.id,
@@ -195,6 +244,9 @@ class RuleForm {
     this.actions = const [],
     this.sourceBook = '',
     this.sourcePage = '',
+    this.minRange,
+    this.maxRange,
+    this.choices = const [],
   });
 
   final String id;
@@ -218,6 +270,18 @@ class RuleForm {
   final List<String> skillIds;
   final String sourceBook;
   final String sourcePage;
+
+  /// Optional **delta** added to the style’s parsed minimum range (stance line).
+  /// Omitted when the form does not change printed range numbers.
+  final int? minRange;
+
+  /// Optional **delta** added to the style’s parsed maximum range (stance line).
+  final int? maxRange;
+
+  /// Rulebook options the player must pick when using this form on a stance
+  /// (see [RuleFormChoice]). When non-empty, [minRange]/[maxRange] on the form
+  /// itself are ignored in favor of the selected choice’s numbers.
+  final List<RuleFormChoice> choices;
 
   static RuleForm fromJson(Map<String, dynamic> j) {
     final diceRaw = j['dice'];
@@ -250,6 +314,9 @@ class RuleForm {
       actions: actions,
       sourceBook: j['sourceBook'] as String? ?? '',
       sourcePage: j['sourcePage']?.toString() ?? '',
+      minRange: (j['minRange'] as num?)?.toInt(),
+      maxRange: (j['maxRange'] as num?)?.toInt(),
+      choices: ruleFormChoicesFromJson(j['choices']),
     );
   }
 }
@@ -260,6 +327,7 @@ class RuleSkill {
     required this.name,
     required this.description,
     this.associatedFormId,
+    this.playerNoteMaxChars,
   });
 
   final String id;
@@ -269,12 +337,17 @@ class RuleSkill {
   /// Form id when this skill is the rulebook skill granted by that form (e.g. form_blaster).
   final String? associatedFormId;
 
+  /// When set (e.g. 30), the sheet asks for a short free-text note after this skill
+  /// appears on the character (rules-driven; see rules JSON).
+  final int? playerNoteMaxChars;
+
   static RuleSkill fromJson(Map<String, dynamic> j) => RuleSkill(
     id: j['id'] as String,
     name: stripRuleTextCarriageReturns(j['name'] as String? ?? ''),
     description: stripRuleTextCarriageReturns(j['description'] as String? ?? ''),
     associatedFormId: j['associatedForm'] as String? ??
         j['associatedFormId'] as String?,
+    playerNoteMaxChars: (j['playerNoteMaxChars'] as num?)?.toInt(),
   );
 }
 

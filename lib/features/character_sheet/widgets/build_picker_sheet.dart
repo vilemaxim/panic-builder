@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
 
+String _buildTooltipMessage(RuleBuild b) {
+  final desc = b.description.trim();
+  final stats = 'Max HP ${b.maxHp} · Bars ${b.hpBars}/${b.totalBars}';
+  if (desc.isEmpty) return stats;
+  return '$desc\n\n$stats';
+}
+
 Future<void> showBuildPickerSheet(
   BuildContext context, {
   required MergedRules rules,
@@ -36,13 +43,10 @@ Future<void> showBuildPickerSheet(
                         children: [
                           Expanded(child: Text(b.name)),
                           Tooltip(
-                            message: b.description,
+                            message: _buildTooltipMessage(b),
                             child: const Icon(Icons.info_outline, size: 18),
                           ),
                         ],
-                      ),
-                      subtitle: Text(
-                        'Max HP ${b.maxHp} · Bars ${b.hpBars}/${b.totalBars}',
                       ),
                     ),
                   ),

@@ -10,6 +10,7 @@ import '../../data/rules_models.dart';
 import '../../domain/character.dart';
 import '../../domain/character_rule_overlay.dart';
 import '../../domain/hero_type_kind.dart';
+import '../../domain/stance.dart';
 import '../../util/download.dart';
 import '../../widgets/app_async_feedback.dart';
 import '../print/character_pdf.dart';
@@ -17,6 +18,7 @@ import 'character_skills_ui.dart';
 import 'widgets/archetype_picker_sheet.dart';
 import 'widgets/build_picker_sheet.dart';
 import 'widgets/hero_type_picker_sheet.dart';
+import 'widgets/form_choice_dialog.dart';
 import 'widgets/frantic_form_section.dart';
 import 'widgets/rulebook_character_sheet_panel.dart';
 import 'widgets/rulebook_stance_chrome.dart';
@@ -58,9 +60,8 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
     final rulesAsync = ref.watch(mergedRulesProvider);
 
     return asyncChar.when(
-      loading: () => const Scaffold(
-        body: AppAsyncLoading(message: 'Loading character…'),
-      ),
+      loading: () =>
+          const Scaffold(body: AppAsyncLoading(message: 'Loading character…')),
       error: (e, _) => Scaffold(
         body: AppAsyncError(error: e, title: 'Could not load this character'),
       ),
@@ -78,9 +79,8 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
         }
 
         return rulesAsync.when(
-          loading: () => const Scaffold(
-            body: AppAsyncLoading(message: 'Loading rules…'),
-          ),
+          loading: () =>
+              const Scaffold(body: AppAsyncLoading(message: 'Loading rules…')),
           error: (e, _) => Scaffold(
             body: AppAsyncError(error: e, title: 'Could not load rules'),
           ),
@@ -107,10 +107,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                     rules: rules,
                     identityHandlers: RulebookSheetIdentityHandlers(
                       onCharacterName: (v) => _persist(
-                        c.copyWith(
-                          characterName: v,
-                          updatedAt: DateTime.now(),
-                        ),
+                        c.copyWith(characterName: v, updatedAt: DateTime.now()),
                       ),
                       onHeroType: () {
                         showHeroTypePickerSheet(
@@ -163,9 +160,9 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                           initialArchetypeIds: c.archetypeIds,
                           onValidationError: (msg) {
                             if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(msg)),
-                            );
+                            ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(SnackBar(content: Text(msg)));
                           },
                           onApply: (ids) async {
                             await _persist(
@@ -184,6 +181,28 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                       onReplaceStanceSkill: (stanceIndex) =>
                           _openReplaceStanceSkill(rules, stanceIndex),
                       onEditTwoWordSkill: _openTwoWordSkill,
+                      onSkillPlayerNote: (skillId, value) {
+                        final latest = ref
+                            .read(characterByIdProvider(widget.characterId))
+                            .value;
+                        if (latest == null) return;
+                        final base = ensureSkillsState(latest, rules);
+                        final m = Map<String, String>.from(
+                          base.skillPlayerNotes,
+                        );
+                        final t = value.trim();
+                        if (t.isEmpty) {
+                          m.remove(skillId);
+                        } else {
+                          m[skillId] = t;
+                        }
+                        _persist(
+                          latest.copyWith(
+                            skillsState: base.copyWith(skillPlayerNotes: m),
+                            updatedAt: DateTime.now(),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -206,6 +225,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                           style: style,
                           form: null,
                           rules: rules,
+                          heroType: c.heroType,
                           ruleViolationHint:
                               CharacterRuleOverlay.stanceRowViolation(
                                 pol,
@@ -218,20 +238,35 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                     if (style != null && form != null) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
-                        child: RulebookStancePanel(
-                          style: style,
-                          form: form,
-                          rules: rules,
-                          formDisplayLabel:
-                              st.formDisplayName.trim().isEmpty
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            RulebookStancePanel(
+                              style: style,
+                              form: form,
+                              rules: rules,
+                              formDisplayLabel: st.formDisplayName.trim().isEmpty
                                   ? null
                                   : st.formDisplayName,
-                          ruleViolationHint:
-                              CharacterRuleOverlay.stanceRowViolation(
-                                pol,
-                                c,
-                                i,
+                              formChoiceId: st.formChoiceId,
+                              heroType: c.heroType,
+                              ruleViolationHint:
+                                  CharacterRuleOverlay.stanceRowViolation(
+                                    pol,
+                                    c,
+                                    i,
+                                  ),
+                            ),
+                            if (form.choices.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              OutlinedButton.icon(
+                                onPressed: () =>
+                                    _openFormRuleChoiceForStance(rules, c, i),
+                                icon: const Icon(Icons.checklist),
+                                label: Text('${form.name} rule option…'),
                               ),
+                            ],
+                          ],
                         ),
                       );
                     }
@@ -254,10 +289,12 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                     ...List.generate(c.stances.length, (i) {
                       final st = c.stances[i];
                       final formRule = rules.formById(st.formId);
-                      final archId =
-                          i < c.archetypeIds.length ? c.archetypeIds[i] : '';
-                      final arch =
-                          archId.isNotEmpty ? rules.archetypeById(archId) : null;
+                      final archId = i < c.archetypeIds.length
+                          ? c.archetypeIds[i]
+                          : '';
+                      final arch = archId.isNotEmpty
+                          ? rules.archetypeById(archId)
+                          : null;
                       final slotName = arch?.name.trim();
                       return Padding(
                         padding: EdgeInsets.only(
@@ -279,8 +316,9 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                               rules: rules,
                               formDisplayLabel:
                                   st.formDisplayName.trim().isEmpty
-                                      ? null
-                                      : st.formDisplayName,
+                                  ? null
+                                  : st.formDisplayName,
+                              formChoiceId: st.formChoiceId,
                               ruleViolationHint:
                                   CharacterRuleOverlay.stanceRowViolation(
                                     pol,
@@ -288,6 +326,16 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                                     i,
                                   ),
                             ),
+                            if (formRule != null &&
+                                formRule.choices.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              OutlinedButton.icon(
+                                onPressed: () =>
+                                    _openFormRuleChoiceForStance(rules, c, i),
+                                icon: const Icon(Icons.checklist),
+                                label: Text('${formRule.name} rule option…'),
+                              ),
+                            ],
                           ],
                         ),
                       );
@@ -304,8 +352,9 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                             'Most edits save when you change them. Tap to refresh the saved copy timestamp on this device.',
                         child: FilledButton(
                           onPressed: () async {
-                            final updated =
-                                c.copyWith(updatedAt: DateTime.now());
+                            final updated = c.copyWith(
+                              updatedAt: DateTime.now(),
+                            );
                             await _persist(updated);
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -319,8 +368,10 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                         onPressed: () async {
                           final current = c.copyWith(updatedAt: DateTime.now());
                           try {
-                            final bytes =
-                                await buildCharacterPdfBytes(current, rules);
+                            final bytes = await buildCharacterPdfBytes(
+                              current,
+                              rules,
+                            );
                             if (!context.mounted) return;
                             await Printing.sharePdf(
                               bytes: bytes,
@@ -364,6 +415,31 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
 
   Character? _currentCharacter() =>
       ref.read(characterByIdProvider(widget.characterId)).value;
+
+  Future<void> _openFormRuleChoiceForStance(
+    MergedRules rules,
+    Character char,
+    int stanceIndex,
+  ) async {
+    if (!mounted) return;
+    if (stanceIndex >= char.stances.length) return;
+    final st = char.stances[stanceIndex];
+    final form = rules.formById(st.formId);
+    if (form == null || form.choices.isEmpty) return;
+    final id = await showFormRuleChoicesDialog(
+      context,
+      form: form,
+      initialChoiceId: st.formChoiceId,
+    );
+    if (id == null || !mounted) return;
+    final latest = _currentCharacter();
+    if (latest == null) return;
+    final draft = List<Stance>.from(latest.stances);
+    draft[stanceIndex] = draft[stanceIndex].copyWith(formChoiceId: id);
+    await _persist(
+      latest.copyWith(stances: draft, updatedAt: DateTime.now()),
+    );
+  }
 
   Future<void> _openReplaceStanceSkill(
     MergedRules rules,
@@ -421,10 +497,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
     final char = _currentCharacter();
     if (char == null) return;
     final base = ensureSkillsState(char, rules);
-    final v = await showTwoWordSkillDialog(
-      context,
-      initial: base.twoWordSkill,
-    );
+    final v = await showTwoWordSkillDialog(context, initial: base.twoWordSkill);
     if (v == null || !mounted) return;
     await _persist(
       char.copyWith(

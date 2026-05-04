@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
+import '../../../data/stance_form_display.dart';
 import 'form_dice_catalog.dart';
 import 'rule_violation_marker.dart';
+import 'rulebook_action_option_text.dart';
 import 'rulebook_form_palette.dart';
 import 'rulebook_section_template.dart';
 import 'rulebook_stance_chrome.dart';
 
-/// Frantic **form** card using [RulebookSectionTemplate]: blue shell, dice upper-right,
-/// passive copy in the main well, tiered actions as green subs (same colors as stance actions).
+/// Frantic **form** card using [RulebookSectionTemplate]: violet shell, dice upper-right,
+/// passive copy in the main well, tiered actions as green subs ([RulebookStanceChrome.stance]
+/// action ramp — same as stance subs).
 class FranticFormSection extends StatelessWidget {
   const FranticFormSection({
     super.key,
     required this.form,
     required this.rules,
     this.formDisplayLabel,
+    this.formChoiceId,
     this.onPickForm,
     this.ruleViolationHint,
   });
@@ -24,6 +28,9 @@ class FranticFormSection extends StatelessWidget {
 
   /// Overrides [RuleForm.name] in the ribbon when non-empty (alternate form label).
   final String? formDisplayLabel;
+
+  /// Selected [RuleFormChoice.id] for this stance’s form (Frantic layout).
+  final String? formChoiceId;
   final VoidCallback? onPickForm;
 
   /// Hover tooltip when this form choice breaks printed stance rules.
@@ -41,7 +48,12 @@ class FranticFormSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chrome = RulebookStanceChrome.stance;
-    final dm = _formDisplayModel(form, rules);
+    final dm = _formDisplayModel(
+      form,
+      rules,
+      formChoiceId: formChoiceId,
+      fullFormChoicePassive: true,
+    );
     final badge = switch (form) {
       null => 'Form',
       final f => _trimFormSuffix(_rawFormLabel(f, formDisplayLabel)),
@@ -56,12 +68,13 @@ class FranticFormSection extends StatelessWidget {
 
     final passiveWidgets = _buildPassiveWidgets(dm, badge);
     final mainBody =
-        passiveWidgets ?? (form == null
-                  ? Text(
-                      'Tap the title above to choose a form after picking a style.',
-                      style: _bodyStyle.copyWith(color: Colors.black54),
-                    )
-                  : null);
+        passiveWidgets ??
+        (form == null
+            ? Text(
+                'Tap the title above to choose a form after picking a style.',
+                style: _bodyStyle.copyWith(color: Colors.black54),
+              )
+            : null);
 
     final subs = _buildActionSubSections(dm, form, badge, chrome);
 
@@ -194,20 +207,20 @@ class FranticFormSection extends StatelessWidget {
     );
 
     for (final a in dm.actions) {
-      final title =
-          a.heading.trim().isNotEmpty ? a.heading.trim() : _formActionHeading(f);
-      final paras = _splitParagraphs(a.description.trim());
-      final body =
-          paras.isEmpty
-              ? const SizedBox.shrink()
-              : _paragraphsWithSource(paras, badge, singleCitation: true);
+      final title = a.heading.trim().isNotEmpty
+          ? a.heading.trim()
+          : _formActionHeading(f);
+      final paras = splitRuleParagraphs(a.description.trim());
+      final body = paras.isEmpty
+          ? const SizedBox.shrink()
+          : _paragraphsWithSource(paras, badge, singleCitation: true);
       out.add(
         RulebookTemplateSubSection(
           lateralBorder: lateral,
           background: chrome.actionDescriptionBg,
           ribbonStyle: ribbonStyle,
           ribbonTitle: Text(title),
-          ribbonWidthFactor: 0.75,
+          ribbonWidthFactor: 0.8,
           body: body,
         ),
       );
@@ -221,7 +234,7 @@ class FranticFormSection extends StatelessWidget {
           background: chrome.actionDescriptionBg,
           ribbonStyle: ribbonStyle,
           ribbonTitle: Text(_formActionHeading(f)),
-          ribbonWidthFactor: 0.75,
+          ribbonWidthFactor: 0.8,
           body: _attributedParagraphBadges(fb, singleCitation: true),
         ),
       );
@@ -260,7 +273,7 @@ class FranticFormSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < paragraphs.length; i++) ...[
-            Text(paragraphs[i], style: _bodyStyle),
+            rulebookActionOptionParagraph(paragraphs[i], _bodyStyle),
             if (i < paragraphs.length - 1) const SizedBox(height: 8),
           ],
           const SizedBox(height: 10),
@@ -302,7 +315,7 @@ class FranticFormSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < items.length; i++) ...[
-            Text(items[i].text, style: _bodyStyle),
+            rulebookActionOptionParagraph(items[i].text, _bodyStyle),
             if (i < items.length - 1) const SizedBox(height: 8),
           ],
           const SizedBox(height: 10),
@@ -318,7 +331,7 @@ class FranticFormSection extends StatelessWidget {
             text: TextSpan(
               style: _bodyStyle,
               children: [
-                TextSpan(text: items[i].text),
+                ...rulebookActionOptionInlineSpans(items[i].text, _bodyStyle),
                 const TextSpan(text: ' '),
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
@@ -341,8 +354,7 @@ String _rawFormLabel(RuleForm form, String? formDisplayLabel) {
   return form.name;
 }
 
-String _trimFormSuffix(String name) =>
-    name.replaceAll(RegExp(r'\s+Form$'), '');
+String _trimFormSuffix(String name) => name.replaceAll(RegExp(r'\s+Form$'), '');
 
 String _formPassiveLine(RuleForm f) {
   final p = f.passive.trim();
@@ -356,7 +368,12 @@ String _formPassiveLine(RuleForm f) {
   List<RuleFormAction> actions,
   List<({String text, String badge})>? fallbackAttributed,
 })
-_formDisplayModel(RuleForm? f, MergedRules r) {
+_formDisplayModel(
+  RuleForm? f,
+  MergedRules r, {
+  String? formChoiceId,
+  required bool fullFormChoicePassive,
+}) {
   if (f == null) {
     return (
       passiveParagraphs: const [],
@@ -368,9 +385,22 @@ _formDisplayModel(RuleForm? f, MergedRules r) {
   final passiveLine = _formPassiveLine(f);
   final structured = passiveLine.isNotEmpty || f.actions.isNotEmpty;
   if (structured) {
+    List<String> passiveParagraphs;
+    if (f.choices.isNotEmpty) {
+      passiveParagraphs = formPassiveParagraphsForDisplay(
+        f,
+        formChoiceId,
+        fullChoiceText: fullFormChoicePassive,
+      );
+      if (passiveParagraphs.isEmpty && passiveLine.isNotEmpty) {
+        passiveParagraphs = splitRuleParagraphs(passiveLine);
+      }
+    } else {
+      passiveParagraphs =
+          passiveLine.isEmpty ? const [] : splitRuleParagraphs(passiveLine);
+    }
     return (
-      passiveParagraphs:
-          passiveLine.isEmpty ? const [] : _splitParagraphs(passiveLine),
+      passiveParagraphs: passiveParagraphs,
       actions: f.actions,
       fallbackAttributed: null,
     );
@@ -398,7 +428,7 @@ List<({String text, String badge})> _formFallbackAttributedItems(
       out.add((text: label, badge: badge));
       continue;
     }
-    final paras = _splitParagraphs(desc);
+    final paras = splitRuleParagraphs(desc);
     if (paras.isEmpty) {
       out.add((text: desc, badge: badge));
     } else {
@@ -418,12 +448,3 @@ String _formActionHeading(RuleForm form) {
   return '$words Action';
 }
 
-List<String> _splitParagraphs(String text) {
-  final t = text.replaceAll('\r', '').trim();
-  if (t.isEmpty) return const [];
-  return t
-      .split(RegExp(r'\n\s*\n+'))
-      .map((e) => e.trim())
-      .where((e) => e.isNotEmpty)
-      .toList();
-}

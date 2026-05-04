@@ -34,9 +34,9 @@ class RulebookStanceChrome {
   final Color sourceBadgeYellow;
 
   static const RulebookStanceChrome stance = RulebookStanceChrome(
-    mainBodyBackground: Color(0xFFEFF2B8),
-    lateralRail: Color(0xFFF5D96D),
-    titleRibbonFill: Color(0xFFC8D53D),
+    mainBodyBackground: Color(0xFFFCFFAE),
+    lateralRail: Color(0xFFFFE37F),
+    titleRibbonFill: Color(0xFFD4DB40),
     headerTitleStyle: TextStyle(
       fontSize: 36,
       fontWeight: FontWeight.w800,
@@ -49,9 +49,9 @@ class RulebookStanceChrome {
       fontWeight: FontWeight.w700,
       color: Colors.black,
     ),
-    actionTitleGreen: Color(0xFF177E2B),
-    actionSideBorderGreen: Color(0xFF5CBF78),
-    actionDescriptionBg: Color(0xFFC5E5D5),
+    actionTitleGreen: Color(0xFF1C7928),
+    actionSideBorderGreen: Color(0xFF3FE054),
+    actionDescriptionBg: Color(0xFF58FE8E),
     sourceBadgeYellow: Color(0xFF9A8E1E),
   );
 
@@ -71,9 +71,9 @@ class RulebookStanceChrome {
       fontWeight: FontWeight.w700,
       color: Color(0xE6FFFFFF),
     ),
-    actionTitleGreen: Color(0xFF177E2B),
-    actionSideBorderGreen: Color(0xFF5CBF78),
-    actionDescriptionBg: Color(0xFFC5E5D5),
+    actionTitleGreen: Color(0xFF1C7928),
+    actionSideBorderGreen: Color(0xFF3FE054),
+    actionDescriptionBg: Color(0xFF58FE8E),
     sourceBadgeYellow: Color(0xFF9A8E1E),
   );
 }

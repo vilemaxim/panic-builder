@@ -17,17 +17,12 @@ List<RuleSkill> skillsGrantedByForms(MergedRules rules) {
       if (sk != null) out.add(sk);
     }
   }
-  out.sort(
-    (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-  );
+  out.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
   return out;
 }
 
 /// First differing cell between [state] and [draft], or null if identical.
-({int si, int sj})? firstSkillDiff(
-  SkillsState state,
-  SkillsStateDraft draft,
-) {
+({int si, int sj})? firstSkillDiff(SkillsState state, SkillsStateDraft draft) {
   for (var i = 0; i < 3; i++) {
     final a = state.skillsByStance[i];
     final b = draft.skillsByStance[i];
@@ -57,12 +52,15 @@ SkillsState buildSlot0Replacement(
     rows.add(List<String>.from(draft.skillsByStance[i]));
   }
   rows[stanceIndex][0] = newSkillId;
+  final priorNotes = c.skillsState?.skillPlayerNotes ?? const {};
+  final pruned = SkillsState.pruneSkillPlayerNotesToGrid(priorNotes, rows);
   return SkillsState(
     skillsByStance: rows,
     swappedStanceIndex: stanceIndex,
     swappedSlotIndex: 0,
     replacementSkillId: newSkillId,
     twoWordSkill: c.skillsState?.twoWordSkill ?? '',
+    skillPlayerNotes: pruned,
   );
 }
 
@@ -176,8 +174,9 @@ Future<String?> showPickSkillFromRulesDialog(
                                     padding: const EdgeInsets.only(top: 4),
                                     child: Text(
                                       desc.isEmpty ? '—' : desc,
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodySmall,
                                       maxLines: 5,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -206,6 +205,30 @@ Future<String?> showPickSkillFromRulesDialog(
   } finally {
     ctrl.dispose();
   }
+}
+
+/// Skills on the current grid that require a short player-written note (rules JSON).
+List<RuleSkill> skillsRequiringPlayerNotes(
+  MergedRules rules,
+  SkillsState state,
+) {
+  final seen = <String>{};
+  final out = <RuleSkill>[];
+  for (var i = 0; i < 3; i++) {
+    if (i >= state.skillsByStance.length) continue;
+    for (var j = 0; j < 3; j++) {
+      if (j >= state.skillsByStance[i].length) continue;
+      final id = state.skillsByStance[i][j];
+      if (id.isEmpty || id == 'skill_placeholder' || !seen.add(id)) continue;
+      final sk = rules.skillById(id);
+      final max = sk?.playerNoteMaxChars;
+      if (sk != null && max != null && max > 0) {
+        out.add(sk);
+      }
+    }
+  }
+  out.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+  return out;
 }
 
 Future<String?> showTwoWordSkillDialog(
@@ -250,8 +273,7 @@ Future<String?> showTwoWordSkillDialog(
                     }
                     if (v.length > kCustomHeroSkillMaxChars) {
                       setState(() {
-                        error =
-                            'At most $kCustomHeroSkillMaxChars characters.';
+                        error = 'At most $kCustomHeroSkillMaxChars characters.';
                       });
                       return;
                     }

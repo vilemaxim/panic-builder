@@ -4,7 +4,8 @@ import '../../../data/rules_models.dart';
 /// else basic info + margin notes.
 String stanceStyleRulesBody(RuleStyle s, [MergedRules? rules]) {
   final sk = rules?.skillById(s.skillId);
-  final hasPrintedFields = s.range.trim().isNotEmpty ||
+  final hasPrintedFields =
+      s.range.trim().isNotEmpty ||
       s.passive.trim().isNotEmpty ||
       s.actions.isNotEmpty;
 
@@ -72,8 +73,9 @@ String stanceFormRulesBody(RuleForm f, MergedRules rules) {
     buf.writeln();
     buf.writeln('Dice: ${f.dice.join(', ')}');
   }
-  final passive =
-      f.passive.trim().isNotEmpty ? f.passive.trim() : f.description.trim();
+  final passive = f.passive.trim().isNotEmpty
+      ? f.passive.trim()
+      : f.description.trim();
   if (passive.isNotEmpty) {
     buf.writeln();
     buf.writeln(passive);

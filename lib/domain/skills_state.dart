@@ -6,6 +6,7 @@ class SkillsState {
     this.swappedSlotIndex,
     this.replacementSkillId,
     this.twoWordSkill = '',
+    this.skillPlayerNotes = const {},
   });
 
   /// Length 3; each inner list length 3 (skill ids).
@@ -20,12 +21,16 @@ class SkillsState {
   final String? replacementSkillId;
   final String twoWordSkill;
 
+  /// Optional short notes keyed by skill id (e.g. what “Basically Magic” covers).
+  final Map<String, String> skillPlayerNotes;
+
   SkillsState copyWith({
     List<List<String>>? skillsByStance,
     int? swappedStanceIndex,
     int? swappedSlotIndex,
     String? replacementSkillId,
     String? twoWordSkill,
+    Map<String, String>? skillPlayerNotes,
     bool clearSwap = false,
   }) => SkillsState(
     skillsByStance: skillsByStance ?? this.skillsByStance,
@@ -39,7 +44,24 @@ class SkillsState {
         ? null
         : (replacementSkillId ?? this.replacementSkillId),
     twoWordSkill: twoWordSkill ?? this.twoWordSkill,
+    skillPlayerNotes: skillPlayerNotes ?? this.skillPlayerNotes,
   );
+
+  /// Drops entries for skill ids not present on the current [skillsByStance] grid.
+  static Map<String, String> pruneSkillPlayerNotesToGrid(
+    Map<String, String> notes,
+    List<List<String>> grid,
+  ) {
+    final used = <String>{};
+    for (final row in grid) {
+      for (final id in row) {
+        used.add(id);
+      }
+    }
+    return Map<String, String>.fromEntries(
+      notes.entries.where((e) => used.contains(e.key)),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'skillsByStance': skillsByStance,
@@ -47,6 +69,7 @@ class SkillsState {
     if (swappedSlotIndex != null) 'swappedSlotIndex': swappedSlotIndex,
     if (replacementSkillId != null) 'replacementSkillId': replacementSkillId,
     'twoWordSkill': twoWordSkill,
+    if (skillPlayerNotes.isNotEmpty) 'skillPlayerNotes': skillPlayerNotes,
   };
 
   static SkillsState fromJson(Map<String, dynamic> json) {
@@ -54,12 +77,20 @@ class SkillsState {
     final byStance = raw
         .map((e) => (e as List<dynamic>).map((s) => s as String).toList())
         .toList();
+    final notesRaw = json['skillPlayerNotes'];
+    final notes = <String, String>{};
+    if (notesRaw is Map) {
+      for (final e in notesRaw.entries) {
+        notes[e.key.toString()] = e.value.toString();
+      }
+    }
     return SkillsState(
       skillsByStance: byStance,
       swappedStanceIndex: json['swappedStanceIndex'] as int?,
       swappedSlotIndex: json['swappedSlotIndex'] as int?,
       replacementSkillId: json['replacementSkillId'] as String?,
       twoWordSkill: json['twoWordSkill'] as String? ?? '',
+      skillPlayerNotes: notes,
     );
   }
 }

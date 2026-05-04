@@ -1,11 +1,13 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 
+import '../../../data/rulebook_style_range.dart';
 import '../../../data/rules_models.dart';
+import '../../../data/stance_form_display.dart';
+import '../../../domain/hero_type_kind.dart';
 import 'form_dice_catalog.dart';
 import 'rule_violation_marker.dart';
-import 'rulebook_ribbon_clipper.dart';
+import 'rulebook_action_option_text.dart';
+import 'rulebook_section_template.dart';
 import 'rulebook_stance_chrome.dart';
 import 'stance_rules_tooltip.dart';
 
@@ -16,6 +18,8 @@ class RulebookStancePanel extends StatelessWidget {
     required this.form,
     this.rules,
     this.formDisplayLabel,
+    this.formChoiceId,
+    this.heroType,
     this.onPickStyle,
     this.onPickForm,
     this.chrome = RulebookStanceChrome.stance,
@@ -28,6 +32,12 @@ class RulebookStancePanel extends StatelessWidget {
 
   /// Overrides [RuleForm.name] in headers/citations (e.g. alternate form name from stance).
   final String? formDisplayLabel;
+
+  /// Selected [RuleFormChoice.id] from the stance, when the form defines choices.
+  final String? formChoiceId;
+
+  /// Used to show full choice [RuleFormChoice.helpText] on the sheet for Frantic heroes.
+  final HeroTypeKind? heroType;
 
   /// When non-null, form skill descriptions are shown in the Form info tooltip.
   final MergedRules? rules;
@@ -45,7 +55,7 @@ class RulebookStancePanel extends StatelessWidget {
   final String? ruleViolationHint;
 
   /// Action title ribbon width as a fraction of the stance panel content width.
-  static const double _actionRibbonWidthFactor = 0.75;
+  static const double _actionRibbonWidthFactor = 0.8;
 
   /// Matches clipped archetype ribbons; taller than skill pills for 22px titles.
   static const double _actionTitleRibbonMinHeight = 44;
@@ -56,17 +66,6 @@ class RulebookStancePanel extends StatelessWidget {
     fontWeight: FontWeight.w800,
     height: 1.25,
   );
-
-  /// Clears [LeftRibbonClipper]'s diagonal at the bottom-right (skew ≈ ribbon height).
-  static const double _actionRibbonDiagonalReserve =
-      _actionTitleRibbonMinHeight + 14;
-
-  /// Combined Style + Form title ribbon (large tap targets).
-  static const double _titleHeaderRibbonMinHeight = 52;
-
-  /// Keeps header copy clear of the clipped diagonal (~skew ≈ height).
-  static const double _titleRibbonDiagonalReserve =
-      _titleHeaderRibbonMinHeight + 14;
 
   /// Title ribbon vs dice column when dice are shown (~80% / ~20%).
   static const int _titleRibbonFlexWithDice = 4;
@@ -91,64 +90,134 @@ class RulebookStancePanel extends StatelessWidget {
     final formName = effectiveForm == null
         ? '(Pick a Form)'
         : _trimFormSuffix(rawFormLabel);
-    final styleSkill = _resolvedStyleSkill(style, rules);
-    final rangeText = _styleRangeLabel(style, styleSkill);
     final styleCitationBadge = style == null
         ? 'Style'
         : _trimStyleSuffix(style!.name);
     final formCitationBadge = effectiveForm == null
         ? 'Form'
         : _trimFormSuffix(rawFormLabel);
+    final styleSkill = _resolvedStyleSkill(style, rules);
+    final resolvedChoice =
+        effectiveForm != null && formChoiceId != null
+            ? ruleFormChoiceById(effectiveForm, formChoiceId)
+            : null;
+    final rangeText = formatStanceRangeSubtitle(
+      style,
+      styleSkill,
+      effectiveForm,
+      formCitationBadge,
+      selectedFormChoice: resolvedChoice,
+    );
     final styleDm = _styleDisplayModel(style, styleSkill);
-    final formDm = _formDisplayModel(effectiveForm, rules);
+    final formDm = _formDisplayModel(
+      effectiveForm,
+      rules,
+      formChoiceId: formChoiceId,
+      fullFormChoicePassive: heroType == HeroTypeKind.frantic,
+    );
 
     final styleActionWidgets = _styleActionSections(style, styleSkill, styleDm);
     final formActionWidgets = styleOnly
-        ? const <Widget>[]
-        : _formActionSections(
-            effectiveForm,
-            formDm,
-            formCitationBadge,
-          );
+        ? const <RulebookTemplateSubSection>[]
+        : _formActionSections(effectiveForm, formDm, formCitationBadge);
     final hasActionsBelow =
         styleActionWidgets.isNotEmpty || formActionWidgets.isNotEmpty;
+    final notes = style?.marginNotes.trim() ?? '';
+    final hasPassives =
+        styleDm.passiveParagraphs.isNotEmpty ||
+        formDm.passiveParagraphs.isNotEmpty ||
+        notes.isNotEmpty;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: chrome.mainBodyBackground,
-        border: Border(
-          left: BorderSide(color: chrome.lateralRail, width: 6),
-          right: BorderSide(color: chrome.lateralRail, width: 6),
-        ),
+    final model = RulebookSectionTemplateModel(
+      mainLateralBorder: RulebookTemplateLateralBorder(
+        color: chrome.lateralRail,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildTitleBar(
-            styleName,
-            formName,
-            rangeText,
-            styleCitationBadge,
-            formCitationBadge,
-            styleDm,
-            formDm,
-            hasActionsBelow: hasActionsBelow,
-            chrome: chrome,
-            styleOnly: styleOnly,
-            ruleViolationHint: ruleViolationHint,
-          ),
-          for (var i = 0; i < styleActionWidgets.length; i++) ...[
-            if (i > 0) const SizedBox(height: 8),
-            styleActionWidgets[i],
-          ],
-          if (styleActionWidgets.isNotEmpty && formActionWidgets.isNotEmpty)
-            const SizedBox(height: 8),
-          for (var i = 0; i < formActionWidgets.length; i++) ...[
-            if (i > 0) const SizedBox(height: 8),
-            formActionWidgets[i],
-          ],
+      mainBackground: chrome.mainBodyBackground,
+      mainRibbonStyle: RulebookTemplateRibbonStyle(
+        fill: chrome.titleRibbonFill,
+        minHeight: 52,
+        diagonalReserve: 66,
+        padding: const EdgeInsets.fromLTRB(12, 10, 66, 10),
+      ),
+      mainRibbonTitle: _mainRibbonTitle(
+        styleName: styleName,
+        formName: formName,
+        styleOnly: styleOnly,
+        chrome: chrome,
+        ruleViolationHint: ruleViolationHint,
+      ),
+      mainRibbonSubtitle: Text(rangeText, style: chrome.rangeLineStyle),
+      upperRight: styleOnly
+          ? null
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < _diceWidgetsForForm(form).length; i++) ...[
+                  if (i > 0) const SizedBox(width: _stanceDiceSpacing),
+                  _diceWidgetsForForm(form)[i],
+                ],
+              ],
+            ),
+      titleRibbonFlex: _titleRibbonFlexWithDice,
+      upperRightFlex: _titleDiceFlexWithDice,
+      mainBody: _passiveAbilitiesSection(
+        style,
+        styleCitationBadge,
+        formCitationBadge,
+        styleDm,
+        formDm,
+        hasActionsBelow: hasActionsBelow,
+      ),
+      mainBodyPadding: (hasPassives || !hasActionsBelow)
+          ? const EdgeInsets.fromLTRB(14, 12, 14, 14)
+          : EdgeInsets.zero,
+      subSections: [...styleActionWidgets, ...formActionWidgets],
+    );
+
+    return RulebookSectionTemplate(model: model);
+  }
+
+  Widget _mainRibbonTitle({
+    required String styleName,
+    required String formName,
+    required bool styleOnly,
+    required RulebookStanceChrome chrome,
+    String? ruleViolationHint,
+  }) {
+    final titleRuleHint = ruleViolationHint;
+    return Wrap(
+      spacing: 14,
+      runSpacing: 10,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        if (titleRuleHint != null) ...[
+          RuleViolationTriangle(message: titleRuleHint),
+          const SizedBox(width: 4),
         ],
-      ),
+        Tooltip(
+          message: style == null
+              ? 'Tap to pick a style for this stance. Full rules text appears once you choose.'
+              : stanceStyleRulesBody(style!, rules),
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.all(10),
+          preferBelow: true,
+          waitDuration: const Duration(milliseconds: 200),
+          child: _editableHeaderPart(styleName, onPickStyle, chrome),
+        ),
+        if (!styleOnly)
+          Tooltip(
+            message: form == null
+                ? 'Pick a style first, then tap here to choose a form.'
+                : rules != null
+                ? stanceFormRulesBody(form!, rules!)
+                : _formTooltipWithoutRules(form!),
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.all(10),
+            preferBelow: true,
+            waitDuration: const Duration(milliseconds: 200),
+            child: _editableHeaderPart(formName, onPickForm, chrome),
+          ),
+      ],
     );
   }
 
@@ -179,7 +248,7 @@ class RulebookStancePanel extends StatelessWidget {
       return (
         passiveParagraphs: passive.isEmpty
             ? const []
-            : _splitParagraphs(passive),
+            : splitRuleParagraphs(passive),
         actions: st.actions,
         fallbackBody: null,
       );
@@ -197,7 +266,12 @@ class RulebookStancePanel extends StatelessWidget {
     List<RuleFormAction> actions,
     List<({String text, String badge})>? fallbackAttributed,
   })
-  _formDisplayModel(RuleForm? f, MergedRules? r) {
+  _formDisplayModel(
+    RuleForm? f,
+    MergedRules? r, {
+    String? formChoiceId,
+    required bool fullFormChoicePassive,
+  }) {
     if (f == null || r == null) {
       return (
         passiveParagraphs: const [],
@@ -209,10 +283,22 @@ class RulebookStancePanel extends StatelessWidget {
     final passiveLine = _formPassiveLine(f);
     final structured = passiveLine.isNotEmpty || f.actions.isNotEmpty;
     if (structured) {
+      List<String> passiveParagraphs;
+      if (f.choices.isNotEmpty) {
+        passiveParagraphs = formPassiveParagraphsForDisplay(
+          f,
+          formChoiceId,
+          fullChoiceText: fullFormChoicePassive,
+        );
+        if (passiveParagraphs.isEmpty && passiveLine.isNotEmpty) {
+          passiveParagraphs = splitRuleParagraphs(passiveLine);
+        }
+      } else {
+        passiveParagraphs =
+            passiveLine.isEmpty ? const [] : splitRuleParagraphs(passiveLine);
+      }
       return (
-        passiveParagraphs: passiveLine.isEmpty
-            ? const []
-            : _splitParagraphs(passiveLine),
+        passiveParagraphs: passiveParagraphs,
         actions: f.actions,
         fallbackAttributed: null,
       );
@@ -247,7 +333,7 @@ class RulebookStancePanel extends StatelessWidget {
         out.add((text: label, badge: badge));
         continue;
       }
-      final paras = _splitParagraphs(desc);
+      final paras = splitRuleParagraphs(desc);
       if (paras.isEmpty) {
         out.add((text: desc, badge: badge));
       } else {
@@ -262,7 +348,7 @@ class RulebookStancePanel extends StatelessWidget {
     return out;
   }
 
-  List<Widget> _styleActionSections(
+  List<RulebookTemplateSubSection> _styleActionSections(
     RuleStyle? st,
     RuleSkill? skill,
     ({
@@ -274,24 +360,24 @@ class RulebookStancePanel extends StatelessWidget {
   ) {
     if (st == null) return const [];
     final badge = _trimStyleSuffix(st.name);
-    final sections = <Widget>[];
+    final sections = <RulebookTemplateSubSection>[];
     for (final a in dm.actions) {
       final title = a.heading.trim().isNotEmpty
           ? a.heading.trim()
           : _styleActionHeading(st, skill);
-      final paras = _splitParagraphs(a.description.trim());
+      final paras = splitRuleParagraphs(a.description.trim());
       final body = paras.isEmpty
           ? const SizedBox.shrink()
           : _paragraphsWithSource(paras, badge, singleCitation: true);
-      sections.add(_actionSection(title: title, body: body));
+      sections.add(_actionSubSection(title: title, body: body));
     }
     final fb = dm.fallbackBody;
     if (fb != null && fb.isNotEmpty) {
       sections.add(
-        _actionSection(
+        _actionSubSection(
           title: _styleActionHeading(st, skill),
           body: _paragraphsWithSource(
-            _splitParagraphs(fb),
+            splitRuleParagraphs(fb),
             badge,
             singleCitation: true,
           ),
@@ -301,7 +387,7 @@ class RulebookStancePanel extends StatelessWidget {
     return sections;
   }
 
-  List<Widget> _formActionSections(
+  List<RulebookTemplateSubSection> _formActionSections(
     RuleForm? f,
     ({
       List<String> passiveParagraphs,
@@ -312,21 +398,21 @@ class RulebookStancePanel extends StatelessWidget {
     String formBadge,
   ) {
     if (f == null) return const [];
-    final sections = <Widget>[];
+    final sections = <RulebookTemplateSubSection>[];
     for (final a in dm.actions) {
       final title = a.heading.trim().isNotEmpty
           ? a.heading.trim()
           : _formActionHeading(f);
-      final paras = _splitParagraphs(a.description.trim());
+      final paras = splitRuleParagraphs(a.description.trim());
       final body = paras.isEmpty
           ? const SizedBox.shrink()
           : _paragraphsWithSource(paras, formBadge, singleCitation: true);
-      sections.add(_actionSection(title: title, body: body));
+      sections.add(_actionSubSection(title: title, body: body));
     }
     final fb = dm.fallbackAttributed;
     if (fb != null && fb.isNotEmpty) {
       sections.add(
-        _actionSection(
+        _actionSubSection(
           title: _formActionHeading(f),
           body: _attributedParagraphBadges(fb, singleCitation: true),
         ),
@@ -341,185 +427,6 @@ class RulebookStancePanel extends StatelessWidget {
     }
     if (st == null) return '';
     return '${st.basicInfo}\n\n${st.marginNotes}'.trim();
-  }
-
-  Widget _buildTitleBar(
-    String styleName,
-    String formName,
-    String rangeText,
-    String styleCitationBadge,
-    String formCitationBadge,
-    ({
-      List<String> passiveParagraphs,
-      List<RuleFormAction> actions,
-      String? fallbackBody,
-    })
-    styleDm,
-    ({
-      List<String> passiveParagraphs,
-      List<RuleFormAction> actions,
-      List<({String text, String badge})>? fallbackAttributed,
-    })
-    formDm, {
-    required bool hasActionsBelow,
-    required RulebookStanceChrome chrome,
-    required bool styleOnly,
-    String? ruleViolationHint,
-  }) {
-    final titleRuleHint = ruleViolationHint;
-    final notes = style?.marginNotes.trim() ?? '';
-    final hasPassives =
-        styleDm.passiveParagraphs.isNotEmpty ||
-        formDm.passiveParagraphs.isNotEmpty ||
-        notes.isNotEmpty;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Title ribbon flush with top of stance panel; row uses [start] so dice
-        // height does not vertically center the ribbon.
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final diceRow =
-                styleOnly ? const <Widget>[] : _diceWidgetsForForm(form);
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: diceRow.isEmpty ? 1 : _titleRibbonFlexWithDice,
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: ClipPath(
-                      clipper: const LeftRibbonClipper(
-                        topRightRadius: kRulebookRibbonCornerRadius,
-                      ),
-                      child: ColoredBox(
-                        color: chrome.titleRibbonFill,
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                            minHeight: _titleHeaderRibbonMinHeight,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                              12,
-                              10,
-                              _titleRibbonDiagonalReserve,
-                              10,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Wrap(
-                                  spacing: 14,
-                                  runSpacing: 10,
-                                  crossAxisAlignment: WrapCrossAlignment.center,
-                                  children: [
-                                    if (titleRuleHint != null) ...[
-                                      RuleViolationTriangle(
-                                        message: titleRuleHint,
-                                      ),
-                                      const SizedBox(width: 4),
-                                    ],
-                                    Tooltip(
-                                      message: style == null
-                                          ? 'Tap to pick a style for this stance. Full rules text appears once you choose.'
-                                          : stanceStyleRulesBody(style!, rules),
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 8,
-                                      ),
-                                      padding: const EdgeInsets.all(10),
-                                      preferBelow: true,
-                                      waitDuration: const Duration(
-                                        milliseconds: 200,
-                                      ),
-                                      child: _editableHeaderPart(
-                                        styleName,
-                                        onPickStyle,
-                                        chrome,
-                                      ),
-                                    ),
-                                    if (!styleOnly)
-                                      Tooltip(
-                                        message: form == null
-                                            ? 'Pick a style first, then tap here to choose a form.'
-                                            : rules != null
-                                            ? stanceFormRulesBody(form!, rules!)
-                                            : _formTooltipWithoutRules(form!),
-                                        margin: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 8,
-                                        ),
-                                        padding: const EdgeInsets.all(10),
-                                        preferBelow: true,
-                                        waitDuration: const Duration(
-                                          milliseconds: 200,
-                                        ),
-                                        child: _editableHeaderPart(
-                                          formName,
-                                          onPickForm,
-                                          chrome,
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  rangeText,
-                                  style: chrome.rangeLineStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (diceRow.isNotEmpty)
-                  Expanded(
-                    flex: _titleDiceFlexWithDice,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 4),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerRight,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              for (var i = 0; i < diceRow.length; i++) ...[
-                                if (i > 0)
-                                  const SizedBox(width: _stanceDiceSpacing),
-                                diceRow[i],
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
-        Padding(
-          padding: (hasPassives || !hasActionsBelow)
-              ? const EdgeInsets.fromLTRB(14, 12, 14, 14)
-              : EdgeInsets.zero,
-          child: _passiveAbilitiesSection(
-            style,
-            styleCitationBadge,
-            formCitationBadge,
-            styleDm,
-            formDm,
-            hasActionsBelow: hasActionsBelow,
-          ),
-        ),
-      ],
-    );
   }
 
   Widget _passiveAbilitiesSection(
@@ -604,111 +511,37 @@ class RulebookStancePanel extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text(text, style: headerStyle, softWrap: true),
-            Icon(
-              Icons.edit_outlined,
-              size: 24,
-              color: chrome.headerIconColor,
-            ),
+            Icon(Icons.edit_outlined, size: 24, color: chrome.headerIconColor),
           ],
         ),
       ),
     );
   }
 
-  /// Full-width green header strip with trailing inset sized to ribbon height so the slash clip does not eat glyphs.
-  Widget _actionRibbonTitle(String title) {
-    const padL = 14.0;
-    const padT = 8.0;
-    const padB = 8.0;
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final maxOuterW =
-            constraints.maxWidth.isFinite && constraints.maxWidth > 8
-            ? constraints.maxWidth
-            : MediaQuery.sizeOf(context).width;
-        final ribbonW = maxOuterW * _actionRibbonWidthFactor;
-        var padR = _actionRibbonDiagonalReserve;
-        var textHeight = 22.0;
-        for (var i = 0; i < 6; i++) {
-          final maxTextW = math.max(40.0, ribbonW - padL - padR);
-          final tp = TextPainter(
-            text: TextSpan(text: title, style: _actionRibbonTitleStyle),
-            textDirection: Directionality.of(context),
-          )..layout(maxWidth: maxTextW);
-          textHeight = tp.height;
-          final ribbonH = math.max(
-            _actionTitleRibbonMinHeight,
-            textHeight + padT + padB,
-          );
-          final neededReserve = ribbonH + 14;
-          final upper = math.max(
-            ribbonW - padL - 40,
-            _actionRibbonDiagonalReserve,
-          );
-          final nextPadR = math.min(neededReserve, upper);
-          if ((nextPadR - padR).abs() < 0.5) {
-            padR = nextPadR;
-            break;
-          }
-          padR = nextPadR;
-        }
-
-        final minRibbonH = math.max(
-          _actionTitleRibbonMinHeight,
-          textHeight + padT + padB,
-        );
-
-        final ribbon = ClipPath(
-          clipper: const LeftRibbonClipper(
-            topRightRadius: kRulebookRibbonCornerRadius,
-          ),
-          child: ColoredBox(
-            color: chrome.actionTitleGreen,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: minRibbonH),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(padL, padT, padR, padB),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    title,
-                    softWrap: true,
-                    style: _actionRibbonTitleStyle,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-
-        return Align(
-          alignment: Alignment.centerLeft,
-          child: SizedBox(width: ribbonW, child: ribbon),
-        );
-      },
-    );
-  }
-
-  Widget _actionSection({required String title, required Widget body}) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: chrome.actionDescriptionBg,
-        border: Border(
-          left: BorderSide(color: chrome.actionSideBorderGreen, width: 6),
-          right: BorderSide(color: chrome.actionSideBorderGreen, width: 6),
+  RulebookTemplateSubSection _actionSubSection({
+    required String title,
+    required Widget body,
+  }) {
+    return RulebookTemplateSubSection(
+      lateralBorder: RulebookTemplateLateralBorder(
+        color: chrome.actionSideBorderGreen,
+      ),
+      background: chrome.actionDescriptionBg,
+      ribbonStyle: RulebookTemplateRibbonStyle(
+        fill: chrome.actionTitleGreen,
+        minHeight: _actionTitleRibbonMinHeight,
+        diagonalReserve: _actionTitleRibbonMinHeight + 14,
+        padding: const EdgeInsets.fromLTRB(
+          14,
+          8,
+          _actionTitleRibbonMinHeight + 14,
+          8,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _actionRibbonTitle(title),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
-            child: body,
-          ),
-        ],
-      ),
+      ribbonTitle: Text(title, softWrap: true, style: _actionRibbonTitleStyle),
+      ribbonWidthFactor: _actionRibbonWidthFactor,
+      body: body,
+      bodyPadding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
     );
   }
 
@@ -749,7 +582,7 @@ class RulebookStancePanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < paragraphs.length; i++) ...[
-            Text(paragraphs[i], style: _stanceBodyStyle),
+            rulebookActionOptionParagraph(paragraphs[i], _stanceBodyStyle),
             if (i < paragraphs.length - 1) const SizedBox(height: 8),
           ],
           const SizedBox(height: 10),
@@ -791,7 +624,7 @@ class RulebookStancePanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < items.length; i++) ...[
-            Text(items[i].text, style: _stanceBodyStyle),
+            rulebookActionOptionParagraph(items[i].text, _stanceBodyStyle),
             if (i < items.length - 1) const SizedBox(height: 8),
           ],
           const SizedBox(height: 10),
@@ -807,7 +640,10 @@ class RulebookStancePanel extends StatelessWidget {
             text: TextSpan(
               style: _stanceBodyStyle,
               children: [
-                TextSpan(text: items[i].text),
+                ...rulebookActionOptionInlineSpans(
+                  items[i].text,
+                  _stanceBodyStyle,
+                ),
                 const TextSpan(text: ' '),
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,
@@ -822,35 +658,10 @@ class RulebookStancePanel extends StatelessWidget {
     );
   }
 
-  List<String> _splitParagraphs(String text) {
-    final t = text.replaceAll('\r', '').trim();
-    if (t.isEmpty) return const [];
-    return t
-        .split(RegExp(r'\n\s*\n+'))
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toList();
-  }
-
   String _trimStyleSuffix(String name) =>
       name.replaceAll(RegExp(r'\s+Style$'), '');
   String _trimFormSuffix(String name) =>
       name.replaceAll(RegExp(r'\s+Form$'), '');
-
-  String _styleRangeLabel(RuleStyle? style, RuleSkill? skill) {
-    if (style == null) return 'Range: —';
-    final r = style.range.trim();
-    if (r.isNotEmpty) return 'Range: $r';
-    final merged = skill != null && skill.description.trim().isNotEmpty
-        ? skill.description
-        : '${style.basicInfo}\n${style.marginNotes}';
-    final m = RegExp(
-      r'Range:\s*([^\n]+)',
-      caseSensitive: false,
-    ).firstMatch(merged);
-    if (m != null) return 'Range: ${m.group(1)!.trim()}';
-    return 'Range: —';
-  }
 
   String _styleActionHeading(RuleStyle? style, RuleSkill? skill) {
     if (style == null) return 'Style Action';

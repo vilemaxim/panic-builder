@@ -1523,6 +1523,7 @@
       "sourcePage": "Chapter 4",
       "description": "Your Actions may apply to one extra target within range.\n\nWhen you add Blaster Form to a Style, increase that Style's maximum range by 1.",
       "passive": "Your Actions may apply to one extra target within range.\n\nWhen you add Blaster Form to a Style, increase that Style's maximum range by 1.",
+      "maxRange": 1,
       "dice": [
         8,
         8,
@@ -1555,6 +1556,20 @@
       "sourcePage": "Chapter 4",
       "description": "When you add Control Form to a Style, choose one: increase max range by 3; or set min range to 1.\n\nControl Token: When an enemy within range takes an Action, spend 1 to negate it or 2 to redirect it. Once per turn.",
       "passive": "When you add Control Form to a Style, choose one: increase max range by 3; or set min range to 1.\n\nControl Token: When an enemy within range takes an Action, spend 1 to negate it or 2 to redirect it. Once per turn.",
+      "choices": [
+        {
+          "id": "control_max_plus_3",
+          "text": "Increase that Style's maximum range by 3.",
+          "helpText": "When you add Control Form to a Style, choose one:\n* Increase that Style's maximum range by 3.\n* Set that Style's minimum range to 1.",
+          "maxRange": 3
+        },
+        {
+          "id": "control_min_to_1",
+          "text": "Set that Style's minimum range to 1.",
+          "helpText": "When you add Control Form to a Style, choose one:\n* Increase that Style's maximum range by 3.\n* Set that Style's minimum range to 1.",
+          "absoluteMin": 1
+        }
+      ],
       "dice": [
         10,
         8,
@@ -1882,7 +1897,8 @@
       "id": "skill_form_blaster",
       "name": "Basically Magic",
       "description": "You have an ability that's beyond normal, like lycanthrope, telekinesis, fire magic, or a collection of gadgets. When you take this skill, write down what kind of power you have.",
-      "associatedForm": "form_blaster"
+      "associatedForm": "form_blaster",
+      "playerNoteMaxChars": 30
     },
     {
       "id": "skill_form_control",

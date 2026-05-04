@@ -1,6 +1,7 @@
 import '../data/rules_models.dart';
 import 'character.dart';
 import 'hero_type_kind.dart';
+import 'skills_state.dart';
 import 'stance.dart';
 
 /// Max length for the custom final skill label (rules suggest two words).
@@ -96,26 +97,27 @@ class CharacterPolicies {
         : '';
 
     List<String> pool = switch (hero) {
-      HeroTypeKind.focused => padded[0].isEmpty
-          ? const []
-          : rules.stylesForArchetype(padded[0]).map((s) => s.id).toList(),
+      HeroTypeKind.focused =>
+        padded[0].isEmpty
+            ? const []
+            : rules.stylesForArchetype(padded[0]).map((s) => s.id).toList(),
       HeroTypeKind.fused => () {
-          final out = <String>[];
-          if (padded[0].isNotEmpty) {
-            out.addAll(rules.stylesForArchetype(padded[0]).map((s) => s.id));
-          }
-          if (padded.length > 1 && padded[1].isNotEmpty) {
-            out.addAll(rules.stylesForArchetype(padded[1]).map((s) => s.id));
-          }
-          return out;
-        }(),
+        final out = <String>[];
+        if (padded[0].isNotEmpty) {
+          out.addAll(rules.stylesForArchetype(padded[0]).map((s) => s.id));
+        }
+        if (padded.length > 1 && padded[1].isNotEmpty) {
+          out.addAll(rules.stylesForArchetype(padded[1]).map((s) => s.id));
+        }
+        return out;
+      }(),
       HeroTypeKind.frantic =>
         stanceIndex >= padded.length || padded[stanceIndex].isEmpty
             ? const <String>[]
             : rules
-                .stylesForArchetype(padded[stanceIndex])
-                .map((s) => s.id)
-                .toList(),
+                  .stylesForArchetype(padded[stanceIndex])
+                  .map((s) => s.id)
+                  .toList(),
     };
 
     // Fused: two stances cannot both be filled from the same archetype — the third
@@ -290,7 +292,14 @@ class CharacterPolicies {
 
     for (final st in stances) {
       if (rules.styleById(st.styleId) == null) return 'Invalid style.';
-      if (rules.formById(st.formId) == null) return 'Invalid form.';
+      final form = rules.formById(st.formId);
+      if (form == null) return 'Invalid form.';
+      if (form.choices.isNotEmpty) {
+        final cid = st.formChoiceId?.trim() ?? '';
+        if (!form.choices.any((c) => c.id == cid)) {
+          return 'For ${form.name}, pick the rule option for each stance that uses it.';
+        }
+      }
     }
 
     final archIds = paddedArchetypeIds(hero, archetypeIds);
@@ -388,10 +397,64 @@ class CharacterPolicies {
       }
     }
 
+    final noteErr = _validateSkillPlayerNotes(skills);
+    if (noteErr != null) return noteErr;
+
     final tw = skills.twoWordSkill.trim();
     if (tw.isEmpty) return 'Enter your two-word skill.';
     if (tw.length > kCustomHeroSkillMaxChars) {
       return 'Skill name must be $kCustomHeroSkillMaxChars characters or fewer.';
+    }
+    return null;
+  }
+
+  String? _validateSkillPlayerNotes(SkillsState skills) {
+    final seen = <String>{};
+    for (var i = 0; i < 3; i++) {
+      for (var j = 0; j < 3; j++) {
+        if (j >= skills.skillsByStance[i].length) continue;
+        final id = skills.skillsByStance[i][j];
+        if (id.isEmpty || id == 'skill_placeholder' || !seen.add(id)) {
+          continue;
+        }
+        final sk = rules.skillById(id);
+        final max = sk?.playerNoteMaxChars;
+        if (sk == null || max == null || max <= 0) continue;
+        final note = (skills.skillPlayerNotes[id] ?? '').trim();
+        if (note.isEmpty) {
+          return 'Add a short note for ${sk.name} (up to $max characters).';
+        }
+        if (note.length > max) {
+          return '${sk.name} note must be $max characters or fewer.';
+        }
+      }
+    }
+    return null;
+  }
+
+  /// Field-level validation for optional skill notes (see [RuleSkill.playerNoteMaxChars]).
+  String? validateSkillPlayerNote(Character c, String skillId) {
+    final skills = c.skillsState;
+    if (skills == null) return null;
+    final sk = rules.skillById(skillId);
+    final max = sk?.playerNoteMaxChars;
+    if (sk == null || max == null || max <= 0) return null;
+    var present = false;
+    for (var i = 0; i < 3; i++) {
+      for (var j = 0; j < 3; j++) {
+        if (j < skills.skillsByStance[i].length &&
+            skills.skillsByStance[i][j] == skillId) {
+          present = true;
+        }
+      }
+    }
+    if (!present) return null;
+    final note = (skills.skillPlayerNotes[skillId] ?? '').trim();
+    if (note.isEmpty) {
+      return 'Add a short note for ${sk.name} (up to $max characters).';
+    }
+    if (note.length > max) {
+      return '${sk.name} note must be $max characters or fewer.';
     }
     return null;
   }

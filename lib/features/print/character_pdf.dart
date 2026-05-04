@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../data/rulebook_style_range.dart';
 import '../../data/rules_models.dart';
+import '../../data/stance_form_display.dart';
 import '../../domain/character.dart';
 import '../../domain/hero_type_kind.dart';
 import '../character_sheet/character_sheet_presenter.dart';
-import '../character_sheet/widgets/form_dice_catalog.dart' show formDicePoolForForm;
+import '../character_sheet/widgets/form_dice_catalog.dart'
+    show formDicePoolForForm;
 
 /// Keeps stance title + range out of the skewed ribbon corner (two-line header).
 const double _kStanceTitleRibbonDiagonalReservePdf = 46;
@@ -21,20 +24,21 @@ RuleSkill? _pdfResolvedStyleSkill(RuleStyle? st, MergedRules rules) {
   return rules.skillById(id);
 }
 
-/// Matches [RulebookStancePanel._styleRangeLabel].
-String _pdfStyleRangeLabel(RuleStyle? style, RuleSkill? skill) {
-  if (style == null) return 'Range: --';
-  final r = style.range.trim();
-  if (r.isNotEmpty) return 'Range: $r';
-  final merged = skill != null && skill.description.trim().isNotEmpty
-      ? skill.description
-      : '${style.basicInfo}\n${style.marginNotes}';
-  final m = RegExp(
-    r'Range:\s*([^\n]+)',
-    caseSensitive: false,
-  ).firstMatch(merged);
-  if (m != null) return 'Range: ${m.group(1)?.trim() ?? ''}';
-  return 'Range: --';
+/// Matches [formatStanceRangeSubtitle] on the stance panel.
+String _pdfStyleRangeLabel(
+  RuleStyle? style,
+  RuleSkill? skill,
+  RuleForm? form,
+  String formTagForParen,
+  RuleFormChoice? selectedFormChoice,
+) {
+  return formatStanceRangeSubtitle(
+    style,
+    skill,
+    form,
+    formTagForParen,
+    selectedFormChoice: selectedFormChoice,
+  );
 }
 
 abstract final class _PdfPalette {
@@ -52,24 +56,24 @@ abstract final class _PdfPalette {
   static const PdfColor stanceBody = PdfColor.fromInt(0xFFEFF2B8);
   static const PdfColor stanceActionBg = PdfColor.fromInt(0xFFC5E5D5);
   static const PdfColor stanceActionTitle = PdfColor.fromInt(0xFF177E2B);
+
   /// Lighter accent for inner side boards (ribbons stay [_PdfPalette.stanceActionTitle]).
   static const PdfColor stanceActionBoard = PdfColor.fromInt(0xFF42AB63);
   static const PdfColor stanceRail = PdfColor.fromInt(0xFFF5D96D);
 
   /// Frantic style-only cards ([RulebookStylePalette]).
-  static const PdfColor franticStyleRibbon = PdfColor.fromInt(0xFFE53935);
-  static const PdfColor franticStyleRail = PdfColor.fromInt(0xFFFF7961);
-  static const PdfColor franticStyleBody = PdfColor.fromInt(0xFFFFEBEE);
+  static const PdfColor franticStyleRibbon = PdfColor.fromInt(0xFFFF2524);
+  static const PdfColor franticStyleRail = PdfColor.fromInt(0xFFFF4546);
+  static const PdfColor franticStyleBody = PdfColor.fromInt(0xFFFDA28B);
 
   /// Frantic form-only cards ([RulebookFormPalette]).
-  static const PdfColor franticFormRibbon = PdfColor.fromInt(0xFF1565C0);
-  static const PdfColor franticFormRail = PdfColor.fromInt(0xFF64B5F6);
-  static const PdfColor franticFormBody = PdfColor.fromInt(0xFFE3F2FD);
+  static const PdfColor franticFormRibbon = PdfColor.fromInt(0xFF527AFE);
+  static const PdfColor franticFormRail = PdfColor.fromInt(0xFF839CFF);
+  static const PdfColor franticFormBody = PdfColor.fromInt(0xFFD2C7FF);
 
   /// Header copy on saturated ribbons (style/form PDF strips).
   static const PdfColor saturatedRibbonInk = PdfColor.fromInt(0xFFFFFFFF);
-  static const PdfColor saturatedRibbonMuted =
-      PdfColor.fromInt(0xE6FFFFFF);
+  static const PdfColor saturatedRibbonMuted = PdfColor.fromInt(0xE6FFFFFF);
 }
 
 const double _kOuterMargin = 14;
@@ -89,13 +93,17 @@ const double _kInnerBoardW = 10;
 const double _kInnerBoardEdgeInset = 8;
 
 /// Text clears thick inner boards plus edge inset.
-double get _kInnerBoardTextPaddingLR => 10 + _kInnerBoardW + _kInnerBoardEdgeInset;
+double get _kInnerBoardTextPaddingLR =>
+    10 + _kInnerBoardW + _kInnerBoardEdgeInset;
 
 /// Pdf ribbon height (~rulebook skill tiles, scaled for half-letter).
 const double _kSkillRibbonHeightPdf = 22;
 
 /// Keeps labels out of the skewed corner (mirrors `_skillRibbonDiagonalReserve`).
 const double _kSkillRibbonDiagonalReservePdf = 30;
+
+/// Matches in-app rulebook ribbons ([RulebookTemplateSubSection.ribbonWidthFactor]): ~80% of column width.
+const double _kSubRibbonWidthFraction = 0.8;
 
 /// Right pad inside name banner so wrapped text clears the diagonal (~`_bannerTrailingReserveForDiagonal`).
 const double _kBannerTrailingReservePdf = 62;
@@ -161,7 +169,9 @@ pw.Widget pdfInnerBoardedBody({
   pw.Widget? header,
 }) {
   final textInset =
-      _kInnerBoardEdgeInset + _kInnerBoardW + 10; // mirrors prior Padding LR gap
+      _kInnerBoardEdgeInset +
+      _kInnerBoardW +
+      10; // mirrors prior Padding LR gap
   return pw.Container(
     width: double.infinity,
     color: backgroundColor,
@@ -203,11 +213,7 @@ pw.Widget pdfFilledVerticalBar({
   required double width,
   required PdfColor color,
 }) {
-  return pw.Container(
-    width: width,
-    color: color,
-    child: pw.SizedBox.expand(),
-  );
+  return pw.Container(width: width, color: color, child: pw.SizedBox.expand());
 }
 
 @visibleForTesting
@@ -505,8 +511,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
 
         final maxW = cons?.maxWidth ?? double.infinity;
         final colW = maxW.isFinite ? maxW : _stanceOrCharacterHalfWidth();
-        final ribbonFrac = ht == HeroTypeKind.frantic ? 0.6 : 0.75;
-        final ribbonW = colW * ribbonFrac;
+        final ribbonW = colW * _kSubRibbonWidthFraction;
         return pw.Container(
           color: _PdfPalette.purpleBg,
           child: pw.Align(
@@ -516,9 +521,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
               child: _PdfSkewLeftRibbon(
                 fillColor: _PdfPalette.purpleBand,
                 child: pw.ConstrainedBox(
-                  constraints: pw.BoxConstraints(
-                    maxWidth: ribbonW,
-                  ),
+                  constraints: pw.BoxConstraints(maxWidth: ribbonW),
                   child: pw.Padding(
                     padding: const pw.EdgeInsets.fromLTRB(
                       8 + _kRailTextInset,
@@ -659,7 +662,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       builder: (ctx, cons) {
         final maxW = cons?.maxWidth ?? double.infinity;
         final colW = maxW.isFinite ? maxW : _stanceOrCharacterHalfWidth();
-        final ribbonW = colW * 0.6;
+        final ribbonW = colW * _kSubRibbonWidthFraction;
         return pw.Container(
           color: _PdfPalette.purpleBg,
           child: pw.Align(
@@ -1088,8 +1091,6 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     final styleRule = rules.styleById(stance?.styleId);
     final formRule = rules.formById(stance?.formId);
     final styleSkill = _pdfResolvedStyleSkill(styleRule, rules);
-    final rangeLabel = _pdfStyleRangeLabel(styleRule, styleSkill);
-    final dicePool = formDicePoolForForm(formRule);
 
     final styleLabel = styleRule == null
         ? '(Pick a Style)'
@@ -1100,7 +1101,35 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     final formLabel = formRule == null
         ? '(Pick a Form)'
         : trimFormSuffix(formRaw);
+    final formChoiceResolved = formRule != null
+        ? ruleFormChoiceById(formRule, stance?.formChoiceId)
+        : null;
+    final rangeLabel = _pdfStyleRangeLabel(
+      styleRule,
+      styleSkill,
+      formRule,
+      formRule == null ? '' : trimFormSuffix(formRaw),
+      formChoiceResolved,
+    );
+    final dicePool = formDicePoolForForm(formRule);
+
     final header = '$styleLabel $formLabel';
+
+    final formPassiveLines = <String>[];
+    if (formRule != null) {
+      var lines = formPassiveParagraphsForDisplay(
+        formRule,
+        stance?.formChoiceId,
+        fullChoiceText: c.heroType == HeroTypeKind.frantic,
+      );
+      if (lines.isEmpty) {
+        final passiveLine = formRule.passive.trim().isNotEmpty
+            ? formRule.passive.trim()
+            : formRule.description.trim();
+        lines = splitParagraphs(passiveLine);
+      }
+      formPassiveLines.addAll(lines);
+    }
 
     final passives = <({String text, String badge})>[
       if (styleRule != null)
@@ -1111,10 +1140,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
         ))
           (text: p, badge: styleLabel),
       if (formRule != null)
-        for (final p in splitParagraphs(
-          formRule.passive.isNotEmpty ? formRule.passive : formRule.description,
-        ))
-          (text: p, badge: formLabel),
+        for (final p in formPassiveLines) (text: p, badge: formLabel),
     ];
 
     final actions = <({String title, String body, String badge})>[];
@@ -1228,7 +1254,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
           return pw.Align(
             alignment: pw.Alignment.centerLeft,
             child: pw.SizedBox(
-              width: colW * 0.75,
+              width: colW * _kSubRibbonWidthFraction,
               height: _kSkillRibbonHeightPdf + 4,
               child: _PdfSkewLeftRibbon(
                 fillColor: _PdfPalette.stanceActionTitle,
@@ -1306,19 +1332,13 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
           left: 0,
           top: 0,
           bottom: 0,
-          child: pdfFilledVerticalBar(
-            width: _kRailW,
-            color: railColor,
-          ),
+          child: pdfFilledVerticalBar(width: _kRailW, color: railColor),
         ),
         pw.Positioned(
           right: 0,
           top: 0,
           bottom: 0,
-          child: pdfFilledVerticalBar(
-            width: _kRailW,
-            color: railColor,
-          ),
+          child: pdfFilledVerticalBar(width: _kRailW, color: railColor),
         ),
       ],
     );
@@ -1330,7 +1350,8 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     List<int> dicePool,
     List<({String text, String badge})> passives,
     List<({String title, String body, String badge})> actions,
-  }) stanceSlotPdfFromPageData(
+  })
+  stanceSlotPdfFromPageData(
     ({
       String header,
       String rangeLabel,
@@ -1369,14 +1390,23 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     List<int> dicePool,
     List<({String text, String badge})> passives,
     List<({String title, String body, String badge})> actions,
-  }) franticStyleSlotPdfData(int stanceIndex) {
-    final stance =
-        stanceIndex < c.stances.length ? c.stances[stanceIndex] : null;
+  })
+  franticStyleSlotPdfData(int stanceIndex) {
+    final stance = stanceIndex < c.stances.length
+        ? c.stances[stanceIndex]
+        : null;
     final styleRule = rules.styleById(stance?.styleId);
     final styleSkill = _pdfResolvedStyleSkill(styleRule, rules);
-    final rangeLabel = _pdfStyleRangeLabel(styleRule, styleSkill);
-    final styleLabel =
-        styleRule == null ? '(Pick a Style)' : trimStyleSuffix(styleRule.name);
+    final rangeLabel = _pdfStyleRangeLabel(
+      styleRule,
+      styleSkill,
+      null,
+      '',
+      null,
+    );
+    final styleLabel = styleRule == null
+        ? '(Pick a Style)'
+        : trimStyleSuffix(styleRule.name);
 
     final passives = <({String text, String badge})>[];
     final actions = <({String title, String body, String badge})>[];
@@ -1391,8 +1421,9 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
           }
         }
         for (final a in styleRule.actions) {
-          final heading =
-              a.heading.trim().isNotEmpty ? a.heading.trim() : styleLabel;
+          final heading = a.heading.trim().isNotEmpty
+              ? a.heading.trim()
+              : styleLabel;
           final body = splitParagraphs(a.description).join('\n\n');
           if (body.isNotEmpty) {
             actions.add((title: heading, body: body, badge: styleLabel));
@@ -1411,10 +1442,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     }
 
     if (passives.isEmpty && actions.isEmpty) {
-      passives.add((
-        text: 'Pick a style on the Style tab.',
-        badge: 'Style',
-      ));
+      passives.add((text: 'Pick a style on the Style tab.', badge: 'Style'));
     }
 
     return (
@@ -1432,38 +1460,46 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     List<int> dicePool,
     List<({String text, String badge})> passives,
     List<({String title, String body, String badge})> actions,
-  }) franticFormSlotPdfData(int stanceIndex) {
-    final stance =
-        stanceIndex < c.stances.length ? c.stances[stanceIndex] : null;
+  })
+  franticFormSlotPdfData(int stanceIndex) {
+    final stance = stanceIndex < c.stances.length
+        ? c.stances[stanceIndex]
+        : null;
     final formRule = rules.formById(stance?.formId);
-    final formRaw =
-        stance?.formDisplayName.trim().isNotEmpty == true
-            ? stance!.formDisplayName.trim()
-            : (formRule?.name ?? '');
-    final formLabel =
-        formRule == null ? '(Pick a Form)' : trimFormSuffix(formRaw);
+    final formRaw = stance?.formDisplayName.trim().isNotEmpty == true
+        ? stance!.formDisplayName.trim()
+        : (formRule?.name ?? '');
+    final formLabel = formRule == null
+        ? '(Pick a Form)'
+        : trimFormSuffix(formRaw);
     final dicePool = formDicePoolForForm(formRule);
 
     final passives = <({String text, String badge})>[];
     final actions = <({String title, String body, String badge})>[];
 
     if (formRule != null) {
-      final passiveLine =
-          formRule.passive.trim().isNotEmpty
-              ? formRule.passive.trim()
-              : (formRule.actions.isNotEmpty
-                  ? formRule.description.trim()
-                  : '');
+      final passiveLine = formRule.passive.trim().isNotEmpty
+          ? formRule.passive.trim()
+          : (formRule.actions.isNotEmpty ? formRule.description.trim() : '');
       final structured = passiveLine.isNotEmpty || formRule.actions.isNotEmpty;
       if (structured) {
         if (passiveLine.isNotEmpty) {
-          for (final p in splitParagraphs(passiveLine)) {
+          var lines = formPassiveParagraphsForDisplay(
+            formRule,
+            stance?.formChoiceId,
+            fullChoiceText: true,
+          );
+          if (lines.isEmpty) {
+            lines = splitParagraphs(passiveLine);
+          }
+          for (final p in lines) {
             passives.add((text: p, badge: formLabel));
           }
         }
         for (final a in formRule.actions) {
-          final heading =
-              a.heading.trim().isNotEmpty ? a.heading.trim() : formLabel;
+          final heading = a.heading.trim().isNotEmpty
+              ? a.heading.trim()
+              : formLabel;
           final body = splitParagraphs(a.description).join('\n\n');
           if (body.isNotEmpty) {
             actions.add((title: heading, body: body, badge: formLabel));
@@ -1495,10 +1531,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     }
 
     if (passives.isEmpty && actions.isEmpty && formRule == null) {
-      passives.add((
-        text: 'Pick a form on the Forms tab.',
-        badge: 'Form',
-      ));
+      passives.add((text: 'Pick a form on the Forms tab.', badge: 'Form'));
     }
 
     return (
@@ -1547,7 +1580,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
           builder: (ctx, cons) {
             final maxW = cons?.maxWidth ?? double.infinity;
             final colW = maxW.isFinite ? maxW : _stanceOrCharacterHalfWidth();
-            final ribbonW = colW * 0.75;
+            final ribbonW = colW * _kSubRibbonWidthFraction;
             final dice = dicePool;
             final ribbon = pw.SizedBox(
               width: ribbonW,
@@ -1597,10 +1630,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
               width: colW,
               child: pw.Stack(
                 children: [
-                  pw.Align(
-                    alignment: pw.Alignment.centerLeft,
-                    child: ribbon,
-                  ),
+                  pw.Align(alignment: pw.Alignment.centerLeft, child: ribbon),
                   pw.Positioned(
                     top: 4,
                     right: _kStanceDiceHeaderRightInset,
@@ -1653,7 +1683,8 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       List<int> dicePool,
       List<({String text, String badge})> passives,
       List<({String title, String body, String badge})> actions,
-    }) slot,
+    })
+    slot,
   }) {
     return pw.Container(
       color: bodyFill,

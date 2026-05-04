@@ -29,8 +29,10 @@ Future<void> showArchetypePickerSheet(
     return;
   }
 
-  final initialPicks =
-      policies.paddedArchetypeIds(heroType, initialArchetypeIds);
+  final initialPicks = policies.paddedArchetypeIds(
+    heroType,
+    initialArchetypeIds,
+  );
 
   await showDialog<void>(
     context: context,
@@ -41,8 +43,9 @@ Future<void> showArchetypePickerSheet(
         builder: (context, setState) {
           final screenW = MediaQuery.sizeOf(context).width;
           final contentWidth = (screenW - 48).clamp(280.0, 560.0);
-          final slotPick =
-              picks[editSlotIndex].isEmpty ? null : picks[editSlotIndex];
+          final slotPick = picks[editSlotIndex].isEmpty
+              ? null
+              : picks[editSlotIndex];
           final theme = Theme.of(context);
           final allowed = <RuleArchetype>[];
           final disallowed = <RuleArchetype>[];
@@ -70,8 +73,7 @@ Future<void> showArchetypePickerSheet(
 
           Widget archetypeTile(RuleArchetype a, String? ruleViolation) {
             final complexity = a.complexity.clamp(1, 3);
-            final stars =
-                '${'★' * complexity}${'☆' * (3 - complexity)}';
+            final stars = '${'★' * complexity}${'☆' * (3 - complexity)}';
             return RadioListTile<String>(
               value: a.id,
               groupValue: slotPick,
@@ -85,9 +87,7 @@ Future<void> showArchetypePickerSheet(
                     RuleViolationTriangle(message: ruleViolation),
                     const SizedBox(width: 6),
                   ],
-                  Expanded(
-                    child: Text('${a.name} ($stars)'),
-                  ),
+                  Expanded(child: Text('${a.name} ($stars)')),
                   _archetypeInfoIcon(context, a),
                 ],
               ),
@@ -128,10 +128,7 @@ Future<void> showArchetypePickerSheet(
                   editSlotIndex,
                   a.id,
                 );
-                return archetypeTile(
-                  a,
-                  msg ?? 'Archetypes must be distinct.',
-                );
+                return archetypeTile(a, msg ?? 'Archetypes must be distinct.');
               }),
             ],
           ];

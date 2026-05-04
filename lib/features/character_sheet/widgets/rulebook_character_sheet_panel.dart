@@ -6,8 +6,10 @@ import '../../../domain/character_policies.dart';
 import '../../../domain/character_rule_overlay.dart';
 import '../../../domain/hero_type_kind.dart';
 import '../character_sheet_presenter.dart';
+import '../character_skills_ui.dart';
 import 'rule_violation_marker.dart';
 import 'rulebook_ribbon_clipper.dart';
+import 'skill_player_notes_section.dart';
 
 /// Optional tap targets on the banner: name, hero type, build, archetypes.
 class RulebookSheetIdentityHandlers {
@@ -21,6 +23,7 @@ class RulebookSheetIdentityHandlers {
   final ValueChanged<String>? onCharacterName;
   final VoidCallback? onHeroType;
   final VoidCallback? onPickBuild;
+
   /// Slot index 0..n-1; banner segment determines which archetype is edited.
   final ValueChanged<int>? onPickArchetype;
 }
@@ -30,15 +33,19 @@ class RulebookSheetSkillHandlers {
   const RulebookSheetSkillHandlers({
     this.onReplaceStanceSkill,
     this.onEditTwoWordSkill,
+    this.onSkillPlayerNote,
   });
 
   /// Stance index 0–2; replaces [skillsByStance][i][0] with a skill from rules.
   final ValueChanged<int>? onReplaceStanceSkill;
   final VoidCallback? onEditTwoWordSkill;
+
+  /// [value] is the raw field text; parent may trim before persisting.
+  final void Function(String skillId, String value)? onSkillPlayerNote;
 }
 
-/// Rulebook-style panel: yellow field, orange rails on the **sides only**,
-/// brown name ribbon + orange skill tags (left column / right column geometry from source sheets).
+/// Rulebook-style panel: main rails + title ribbon, then skill “sub-columns”
+/// (simple left/right sloped ribbons), then build/archetype.
 class RulebookCharacterSheetPanel extends StatelessWidget {
   const RulebookCharacterSheetPanel({
     super.key,
@@ -53,27 +60,40 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
   final RulebookSheetIdentityHandlers? identityHandlers;
   final RulebookSheetSkillHandlers? skillHandlers;
 
-  static const Color _yellowBg = Color(0xFFFFF2B8);
-  static const Color _orangeRail = Color(0xFFE87722);
-  static const Color _pillOrange = Color(0xFFE86921);
-  static const Color _bannerBrown = Color(0xFFB8722E);
-  static const Color _purpleBand = Color(0xFF5C376B);
-  static const Color _purpleBg = Color(0xFFEADDF5);
+  // Character name / hero type palette.
+  static const Color _yellowBg = Color(0xFFFFFF93);
+  static const Color _orangeRail = Color(0xFFFD7E3F);
+  static const Color _bannerBrown = Color(0xFFA66500);
+
+  // Skill “simple sub-column” palette (ribbon-only).
+  static const Color _pillOrange = Color(0xFFEC5B00);
+
+  // Build / archetype “sub” palette (ribbon + well + rails).
+  static const Color _purpleBand = Color(0xFF724073);
+  static const Color _purpleBg = Color(0xFFE99FFE);
+  static const Color _purpleRail = Color(0xFFB6A6FE);
 
   static const double _railW = 12;
 
   static const double _bannerNameFontSize = 28;
+
   /// Hero-type line: smaller than name, still readable next to larger name.
   static const double _bannerSubtitleFontSize = 20;
+
   /// Skill/build/archetype labels, slightly larger for readability.
   static const double _skillFontSize = 15;
+
   /// Fits two lines of [_skillFontSize] with tight vertical padding.
   static const double _skillRibbonHeight = 38;
 
   /// Keeps label text out of the clipped diagonal (~skew ≈ ribbon height).
   static const double _skillRibbonDiagonalReserve = _skillRibbonHeight + 12;
+
   /// Vertical rhythm between stacked ribbon rows.
   static const double _ribbonGap = 5;
+
+  /// Skew-cut purple sub-ribbons (build / archetype): span ~80% of the column, like stance action ribbons.
+  static const double _subRibbonWidthFactor = 0.8;
 
   /// Reserve at trailing edge so text clears the ~45° diagonal (skew ≈ ribbon height).
   /// Uses two-line estimate so wrapping/long subtitles stay inside the clip after softWrap.
@@ -129,14 +149,19 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     final skillH = skillHandlers;
     final c = character;
     final policies = CharacterPolicies(rules);
+    final skillsSnap = ensureSkillsState(c, rules);
     final archViolations = CharacterRuleOverlay.archetypeSlotViolations(
       policies,
       c,
     );
-    final skillPillViolation =
-        CharacterRuleOverlay.stanceSkillPillViolation(policies, c);
-    final twoWordPillViolation =
-        CharacterRuleOverlay.twoWordSkillPillViolation(policies, c);
+    final skillPillViolation = CharacterRuleOverlay.stanceSkillPillViolation(
+      policies,
+      c,
+    );
+    final twoWordPillViolation = CharacterRuleOverlay.twoWordSkillPillViolation(
+      policies,
+      c,
+    );
     final displayName = character.characterName.trim().isEmpty
         ? 'Unnamed hero'
         : character.characterName.trim();
@@ -186,8 +211,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                       }
                     },
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 2,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -222,8 +249,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                   child: InkWell(
                     onTap: onHero,
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 2,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -259,10 +288,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 8,
               runSpacing: 6,
-              children: [
-                nameSegment(),
-                heroTypeSegment(),
-              ],
+              children: [nameSegment(), heroTypeSegment()],
             ),
           ),
         );
@@ -270,11 +296,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
         return Align(
           alignment: Alignment.centerLeft,
           child: ClipPath(
-            clipper: const LeftRibbonClipper(topRightRadius: kRulebookRibbonCornerRadius),
-            child: ColoredBox(
-              color: _bannerBrown,
-              child: bannerContent,
+            clipper: const LeftRibbonClipper(
+              topRightRadius: kRulebookRibbonCornerRadius,
             ),
+            child: ColoredBox(color: _bannerBrown, child: bannerContent),
           ),
         );
       },
@@ -316,8 +341,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                   child: InkWell(
                     onTap: onBuild,
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 2,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -357,8 +384,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                   child: InkWell(
                     onTap: () => onArch(slotIndex),
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 2,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -405,7 +434,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                   Flexible(child: buildSegment()),
                   const SizedBox(width: 8),
                   if (ht == HeroTypeKind.frantic)
-                    const Flexible(child: Text('Frantic Hero', style: subtitleStyle))
+                    const Flexible(
+                      child: Text('Frantic Hero', style: subtitleStyle),
+                    )
                   else if (ht == HeroTypeKind.fused) ...[
                     Flexible(
                       child: archetypeSegment(
@@ -420,7 +451,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                       child: Text(
                         '/',
-                        style: subtitleStyle.copyWith(fontWeight: FontWeight.w600),
+                        style: subtitleStyle.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                     Flexible(
@@ -436,8 +469,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                     Flexible(
                       child: archetypeSegment(
                         0,
-                        ruleViolationHint:
-                            archViolations.isNotEmpty ? archViolations[0] : null,
+                        ruleViolationHint: archViolations.isNotEmpty
+                            ? archViolations[0]
+                            : null,
                       ),
                     ),
                 ],
@@ -446,19 +480,18 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
           ),
         );
 
-        final ribbonBar = ColoredBox(
-          color: _purpleBand,
-          child: ribbonInner,
-        );
+        final ribbonBar = ColoredBox(color: _purpleBand, child: ribbonInner);
         return ColoredBox(
           color: _purpleBg,
           child: Align(
             alignment: Alignment.centerLeft,
             child: ClipPath(
-              clipper: const LeftRibbonClipper(topRightRadius: kRulebookRibbonCornerRadius),
+              clipper: const LeftRibbonClipper(
+                topRightRadius: kRulebookRibbonCornerRadius,
+              ),
               child: ht == HeroTypeKind.frantic
                   ? SizedBox(
-                      width: layoutW * 0.6,
+                      width: layoutW * _subRibbonWidthFactor,
                       child: ribbonBar,
                     )
                   : IntrinsicWidth(child: ribbonBar),
@@ -492,11 +525,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                     builder: (context, constraints) => _leftRibbonOrange(
                       pills[0],
                       maxWidth: constraints.maxWidth,
-                      onEdit: _stanceSkillEdit(
-                        skillH,
-                        c,
-                        0,
-                      ),
+                      onEdit: _stanceSkillEdit(skillH, c, 0),
                       ruleViolationHint: skillPillViolation,
                     ),
                   ),
@@ -507,11 +536,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                     builder: (context, constraints) => _rightRibbonOrange(
                       pills[1],
                       maxWidth: constraints.maxWidth,
-                      onEdit: _stanceSkillEdit(
-                        skillH,
-                        c,
-                        1,
-                      ),
+                      onEdit: _stanceSkillEdit(skillH, c, 1),
                       ruleViolationHint: skillPillViolation,
                     ),
                   ),
@@ -527,11 +552,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                     builder: (context, constraints) => _leftRibbonOrange(
                       pills[2],
                       maxWidth: constraints.maxWidth,
-                      onEdit: _stanceSkillEdit(
-                        skillH,
-                        c,
-                        2,
-                      ),
+                      onEdit: _stanceSkillEdit(skillH, c, 2),
                       ruleViolationHint: skillPillViolation,
                     ),
                   ),
@@ -549,9 +570,18 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                 ),
               ],
             ),
+            SkillPlayerNotesSection(
+              character: c,
+              rules: rules,
+              policies: policies,
+              skillsState: skillsSnap,
+              onSkillPlayerNote: skillH?.onSkillPlayerNote,
+            ),
             const SizedBox(height: _ribbonGap),
             if (character.heroType == HeroTypeKind.frantic &&
-                rules.sheetPresentation.franticHeroStanceRules.trim().isNotEmpty) ...[
+                rules.sheetPresentation.franticHeroStanceRules
+                    .trim()
+                    .isNotEmpty) ...[
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
                 child: Text(
@@ -568,7 +598,13 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
             archetypeRibbon,
             Container(
               width: double.infinity,
-              color: _purpleBg,
+              decoration: const BoxDecoration(
+                color: _purpleBg,
+                border: Border(
+                  left: BorderSide(color: _purpleRail, width: 6),
+                  right: BorderSide(color: _purpleRail, width: 6),
+                ),
+              ),
               padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
               child: _archetypeAbilityContent(),
             ),
@@ -578,8 +614,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                 _franticBuildArchetypeArea(
                   i,
                   presenter,
-                  ruleViolationHint:
-                      i < archViolations.length ? archViolations[i] : null,
+                  ruleViolationHint: i < archViolations.length
+                      ? archViolations[i]
+                      : null,
                 ),
               ],
             ],
@@ -610,17 +647,21 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       color: _purpleBg,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final ribbonW = constraints.maxWidth * 0.6;
+          final ribbonW = constraints.maxWidth * _subRibbonWidthFactor;
           return Align(
             alignment: Alignment.centerLeft,
             child: ClipPath(
-              clipper: const LeftRibbonClipper(topRightRadius: kRulebookRibbonCornerRadius),
+              clipper: const LeftRibbonClipper(
+                topRightRadius: kRulebookRibbonCornerRadius,
+              ),
               child: SizedBox(
                 width: ribbonW,
                 child: ColoredBox(
                   color: _purpleBand,
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(minHeight: _skillRibbonHeight),
+                    constraints: const BoxConstraints(
+                      minHeight: _skillRibbonHeight,
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
                       child: Row(
@@ -658,8 +699,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                                           Icon(
                                             Icons.edit_outlined,
                                             size: 24,
-                                            color: Colors.white
-                                                .withValues(alpha: 0.88),
+                                            color: Colors.white.withValues(
+                                              alpha: 0.88,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -688,7 +730,13 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
         ribbon,
         Container(
           width: double.infinity,
-          color: _purpleBg,
+          decoration: const BoxDecoration(
+            color: _purpleBg,
+            border: Border(
+              left: BorderSide(color: _purpleRail, width: 6),
+              right: BorderSide(color: _purpleRail, width: 6),
+            ),
+          ),
           padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
           child: _franticSlotAbilityContent(slotIndex),
         ),
@@ -704,7 +752,8 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     if (slotId.isNotEmpty) {
       final arch = rules.archetypeById(slotId);
       if (arch != null) {
-        final rawAbility = (arch.abilitiesByHeroType[HeroTypeKind.frantic.name] ?? '').trim();
+        final rawAbility =
+            (arch.abilitiesByHeroType[HeroTypeKind.frantic.name] ?? '').trim();
         final ability = _normalizeAbilityText(rawAbility);
         entries.add((
           name: arch.name,
@@ -713,7 +762,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       }
     }
     if (entries.isEmpty) {
-      return _archetypeHint('Pick an archetype for this stance to view its ability.');
+      return _archetypeHint(
+        'Pick an archetype for this stance to view its ability.',
+      );
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -762,17 +813,17 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       }
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          intro,
-          _archetypeHint('Pick a build to view its ability.'),
-        ],
+        children: [intro, _archetypeHint('Pick a build to view its ability.')],
       );
     }
     final entries = <({String name, String ability})>[];
     final build = rules.buildById(character.buildId);
     final buildDescription = (build?.description ?? '').trim();
     if (build != null && buildDescription.isNotEmpty) {
-      entries.add((name: build.name, ability: _normalizeAbilityText(buildDescription)));
+      entries.add((
+        name: build.name,
+        ability: _normalizeAbilityText(buildDescription),
+      ));
     }
     for (final id in character.archetypeIds) {
       if (id.isEmpty) continue;
@@ -782,12 +833,16 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       final ability = _normalizeAbilityText(rawAbility);
       entries.add((
         name: arch.name,
-        ability: ability.isEmpty ? 'No ${heroType.name} ability text found.' : ability,
+        ability: ability.isEmpty
+            ? 'No ${heroType.name} ability text found.'
+            : ability,
       ));
     }
     if (entries.isEmpty) {
       if (character.archetypeIds.where((e) => e.isNotEmpty).isEmpty) {
-        return _archetypeHint('Pick an archetype to view its ${heroType.name} ability.');
+        return _archetypeHint(
+          'Pick an archetype to view its ${heroType.name} ability.',
+        );
       }
       return _archetypeHint('No archetype ability text available.');
     }
@@ -833,7 +888,8 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       if (current.isNotEmpty) {
         final prev = current.toString().trimRight();
         final startsNewThought =
-            RegExp(r'[.!?]"?$').hasMatch(prev) && RegExp(r'^[A-Z(]').hasMatch(line);
+            RegExp(r'[.!?]"?$').hasMatch(prev) &&
+            RegExp(r'^[A-Z(]').hasMatch(line);
         if (startsNewThought) {
           blocks.add(prev);
           current.clear();
@@ -849,7 +905,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     return blocks.join('\n\n');
   }
 
-  List<Widget> _abilityParagraphsWithBadge(String ability, String archetypeName) {
+  List<Widget> _abilityParagraphsWithBadge(
+    String ability,
+    String archetypeName,
+  ) {
     final parts = ability
         .split(RegExp(r'\n\s*\n+'))
         .map((p) => p.trim())
@@ -870,7 +929,10 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               WidgetSpan(
                 alignment: PlaceholderAlignment.middle,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: _purpleBand,
                     borderRadius: BorderRadius.circular(4),
@@ -906,7 +968,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       width: maxWidth,
       height: _skillRibbonHeight,
       child: ClipPath(
-        clipper: const LeftRibbonClipper(topRightRadius: kRulebookRibbonCornerRadius),
+        clipper: const LeftRibbonClipper(
+          topRightRadius: kRulebookRibbonCornerRadius,
+        ),
         child: ColoredBox(
           color: _pillOrange,
           child: Align(
@@ -973,7 +1037,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       width: maxWidth,
       height: _skillRibbonHeight,
       child: ClipPath(
-        clipper: const RightRibbonClipper(bottomLeftRadius: kRulebookRibbonCornerRadius),
+        clipper: const RightRibbonClipper(
+          bottomLeftRadius: kRulebookRibbonCornerRadius,
+        ),
         child: ColoredBox(
           color: _pillOrange,
           child: Align(
@@ -1031,12 +1097,12 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
   }
 
   TextStyle _pillStyle() => TextStyle(
-        color: Colors.white,
-        fontWeight: FontWeight.w700,
-        fontSize: _skillFontSize,
-        height: 1.2,
-        shadows: [
-          Shadow(color: Colors.black.withValues(alpha: 0.22), blurRadius: 1.5),
-        ],
-      );
+    color: Colors.white,
+    fontWeight: FontWeight.w700,
+    fontSize: _skillFontSize,
+    height: 1.2,
+    shadows: [
+      Shadow(color: Colors.black.withValues(alpha: 0.22), blurRadius: 1.5),
+    ],
+  );
 }

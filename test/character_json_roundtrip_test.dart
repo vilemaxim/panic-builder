@@ -24,9 +24,22 @@ void main() {
       buildId: 'tough',
       archetypeIds: const ['iron_palm', 'ghost_thread'],
       stances: const [
-        Stance(styleId: 'style_iron_root', formId: 'form_01', formDisplayName: 'Ox Gate'),
-        Stance(styleId: 'style_iron_ram', formId: 'form_02', formDisplayName: 'Crane Perch'),
-        Stance(styleId: 'style_ghost_smoke', formId: 'form_03', formDisplayName: 'Tiger Crossing'),
+        Stance(
+          styleId: 'style_iron_root',
+          formId: 'form_01',
+          formDisplayName: 'Ox Gate',
+          formChoiceId: 'control_max_plus_3',
+        ),
+        Stance(
+          styleId: 'style_iron_ram',
+          formId: 'form_02',
+          formDisplayName: 'Crane Perch',
+        ),
+        Stance(
+          styleId: 'style_ghost_smoke',
+          formId: 'form_03',
+          formDisplayName: 'Tiger Crossing',
+        ),
       ],
       skillsState: const SkillsState(
         skillsByStance: [
@@ -35,6 +48,7 @@ void main() {
           ['skill_rush', 'skill_rend', 'skill_intimidate'],
         ],
         twoWordSkill: 'Iron Flow',
+        skillPlayerNotes: {'skill_form_blaster': 'Fire tricks'},
       ),
       xpEarned: 5,
       xpSpent: 2,
@@ -46,16 +60,25 @@ void main() {
           note: 'example',
         ),
       ],
-      superUnlock: const SuperUnlock(superId: 'super_linebreaker', customLabel: null),
+      superUnlock: const SuperUnlock(
+        superId: 'super_linebreaker',
+        customLabel: null,
+      ),
     );
 
-    final json = jsonDecode(jsonEncode(original.toJson())) as Map<String, dynamic>;
+    final json =
+        jsonDecode(jsonEncode(original.toJson())) as Map<String, dynamic>;
     final round = Character.fromJson(json);
 
     expect(round.id, original.id);
     expect(round.heroType, original.heroType);
     expect(round.stances.length, 3);
+    expect(round.stances.first.formChoiceId, 'control_max_plus_3');
     expect(round.skillsState?.twoWordSkill, 'Iron Flow');
+    expect(
+      round.skillsState?.skillPlayerNotes['skill_form_blaster'],
+      'Fire tricks',
+    );
     expect(round.advancements.length, 1);
     expect(round.superUnlock?.superId, 'super_linebreaker');
   });

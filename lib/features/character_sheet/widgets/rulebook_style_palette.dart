@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 /// and [bodyBackground].
 abstract final class RulebookStylePalette {
   /// **Main ribbon** — bright red header band (white title text).
-  static const Color ribbon = Color(0xFFE53935);
+  static const Color ribbon = Color(0xFFFF2524);
 
   /// **Left/right borders** (“boards”) — a step lighter than [ribbon].
-  static const Color lateralRail = Color(0xFFFF7961);
+  static const Color lateralRail = Color(0xFFFF4546);
 
-  /// **Main text background** — lighter still behind passive copy.
-  static const Color bodyBackground = Color(0xFFFFEBEE);
+  /// **Main text background** — coral wash behind passive copy.
+  static const Color bodyBackground = Color(0xFFFDA28B);
 }

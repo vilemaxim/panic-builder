@@ -17,6 +17,7 @@ import '../character_sheet/widgets/hero_type_picker_sheet.dart';
 import '../character_sheet/widgets/rulebook_character_sheet_panel.dart';
 import '../character_sheet/widgets/frantic_form_section.dart';
 import '../character_sheet/widgets/rulebook_stance_chrome.dart';
+import '../character_sheet/widgets/form_choice_dialog.dart';
 import '../character_sheet/widgets/rulebook_stance_panel.dart';
 import '../character_sheet/widgets/stance_picker_dialogs.dart';
 
@@ -264,6 +265,20 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
             onReplaceStanceSkill: (stanceIndex) =>
                 _openReplaceStanceSkill(rules, stanceIndex),
             onEditTwoWordSkill: _openTwoWordSkill,
+            onSkillPlayerNote: (skillId, value) {
+              final cur = ref.read(creationSessionProvider);
+              final base = ensureSkillsState(cur, rules);
+              final m = Map<String, String>.from(base.skillPlayerNotes);
+              final t = value.trim();
+              if (t.isEmpty) {
+                m.remove(skillId);
+              } else {
+                m[skillId] = t;
+              }
+              ref.read(creationSessionProvider.notifier).setSkills(
+                    base.copyWith(skillPlayerNotes: m),
+                  );
+            },
           ),
         ),
         const SizedBox(height: 16),
@@ -311,6 +326,8 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
               s != null && s.formDisplayName.trim().isNotEmpty
                   ? s.formDisplayName
                   : null,
+          formChoiceId: s?.formChoiceId,
+          heroType: c.heroType,
           onPickStyle: () => _openStanceStylePick(rules, policies, idx),
           onPickForm: () => _openStanceFormPick(rules, policies, idx),
           ruleViolationHint:
@@ -368,6 +385,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
       style: style,
       form: null,
       rules: rules,
+      heroType: c.heroType,
       onPickStyle: () => _openStanceStylePick(rules, policies, idx),
       onPickForm: null,
       ruleViolationHint:
@@ -424,6 +442,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
           s != null && s.formDisplayName.trim().isNotEmpty
               ? s.formDisplayName
               : null,
+      formChoiceId: s?.formChoiceId,
       onPickForm: () => _openStanceFormPick(rules, policies, idx),
       ruleViolationHint:
           CharacterRuleOverlay.stanceRowViolation(policies, c, idx),
@@ -517,7 +536,12 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
       initialStyleId: cur?.styleId,
       onApply: (styleId) async {
         final draft = _stancesPadded(c);
-        draft[idx] = Stance(styleId: styleId, formId: '', formDisplayName: '');
+        draft[idx] = Stance(
+          styleId: styleId,
+          formId: '',
+          formDisplayName: '',
+          formChoiceId: null,
+        );
         ref.read(creationSessionProvider.notifier).setStances(draft);
       },
     );
@@ -571,11 +595,22 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
 
     if (!mounted || pickedLabel == null) return;
 
+    String? choiceId;
+    if (pickedForm.choices.isNotEmpty) {
+      choiceId = await showFormRuleChoicesDialog(
+        context,
+        form: pickedForm,
+        initialChoiceId: cur.formId == formId ? cur.formChoiceId : null,
+      );
+      if (choiceId == null || !mounted) return;
+    }
+
     final draft = _stancesPadded(ref.read(creationSessionProvider));
     draft[idx] = Stance(
       styleId: cur.styleId,
       formId: formId,
       formDisplayName: pickedLabel.trim(),
+      formChoiceId: choiceId,
     );
     ref.read(creationSessionProvider.notifier).setStances(draft);
   }

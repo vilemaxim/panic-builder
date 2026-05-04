@@ -6,7 +6,8 @@ import 'package:panic_at_the_dojo/data/rules_models.dart';
 
 void main() {
   test('patch overrides build and adds supers', () {
-    final base = jsonDecode('''
+    final base =
+        jsonDecode('''
     {
       "version": 1,
       "builds": [
@@ -14,9 +15,11 @@ void main() {
       ],
       "supers": []
     }
-    ''') as Map<String, dynamic>;
+    ''')
+            as Map<String, dynamic>;
 
-    final patch = jsonDecode('''
+    final patch =
+        jsonDecode('''
     {
       "builds": [
         {"id": "balanced", "name": "Balanced", "description": "patched", "maxHp": 11, "hpBars": 3, "totalBars": 6}
@@ -25,7 +28,8 @@ void main() {
         {"id": "super_a", "name": "Super A", "description": "d", "sourceBook": "Patch", "sourcePage": "1"}
       ]
     }
-    ''') as Map<String, dynamic>;
+    ''')
+            as Map<String, dynamic>;
 
     final merged = mergeRulesJson(base, patch);
     final rules = MergedRules.fromJson(merged);
@@ -37,7 +41,8 @@ void main() {
   });
 
   test('patch merges style skillId and append-only skills', () {
-    final base = jsonDecode('''
+    final base =
+        jsonDecode('''
     {
       "version": 1,
       "styles": [
@@ -47,9 +52,11 @@ void main() {
         {"id": "skill_existing", "name": "Existing", "description": ""}
       ]
     }
-    ''') as Map<String, dynamic>;
+    ''')
+            as Map<String, dynamic>;
 
-    final patch = jsonDecode('''
+    final patch =
+        jsonDecode('''
     {
       "styles": [
         {"id": "s1", "skillId": "skill_style_s1"}
@@ -58,7 +65,8 @@ void main() {
         {"id": "skill_style_s1", "name": "Strike", "description": "Full rules."}
       ]
     }
-    ''') as Map<String, dynamic>;
+    ''')
+            as Map<String, dynamic>;
 
     final merged = mergeRulesJson(base, patch);
     final rules = MergedRules.fromJson(merged);
@@ -87,6 +95,7 @@ void main() {
       'forms': <dynamic>[],
       'skills': [
         {'id': 'k1', 'name': 'N\r', 'description': 'd\r\ne'},
+        {'id': 'k2', 'name': 'M', 'description': 'x', 'playerNoteMaxChars': 30},
       ],
       'supers': <dynamic>[],
     });
@@ -98,5 +107,39 @@ void main() {
     final k = rules.skillById('k1')!;
     expect(k.name, 'N');
     expect(k.description, 'd\ne');
+    expect(rules.skillById('k2')?.playerNoteMaxChars, 30);
+  });
+
+  test('RuleForm parses choices with range fields', () {
+    final rules = MergedRules.fromJson({
+      'version': 1,
+      'heroTypes': <dynamic>[],
+      'builds': <dynamic>[],
+      'archetypes': <dynamic>[],
+      'styles': <dynamic>[],
+      'forms': [
+        {
+          'id': 'form_x',
+          'name': 'X Form',
+          'altNames': <String>[],
+          'skillIds': <String>[],
+          'choices': [
+            {
+              'id': 'a',
+              'text': 'Line A',
+              'helpText': 'Full rules A',
+              'maxRange': 2,
+            },
+            {'id': 'b', 'text': 'Line B', 'absoluteMin': 1},
+          ],
+        },
+      ],
+      'supers': <dynamic>[],
+    });
+    final f = rules.formById('form_x')!;
+    expect(f.choices.length, 2);
+    expect(f.choices[0].helpText, 'Full rules A');
+    expect(f.choices[0].maxRange, 2);
+    expect(f.choices[1].absoluteMin, 1);
   });
 }

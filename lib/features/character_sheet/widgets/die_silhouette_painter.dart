@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 
 /// Draws a recognizable die silhouette for stance dice chips (avoids broken raster placeholders).
 class DieSilhouettePainter extends CustomPainter {
-  DieSilhouettePainter({
-    required this.silhouetteSides,
-    required this.label,
-  }) : assert({4, 6, 8, 10}.contains(silhouetteSides));
+  DieSilhouettePainter({required this.silhouetteSides, required this.label})
+    : assert({4, 6, 8, 10}.contains(silhouetteSides));
 
   /// Shape family: 4 / 6 / 8 / 10 only.
   final int silhouetteSides;
@@ -30,10 +28,7 @@ class DieSilhouettePainter extends CustomPainter {
         ..shader = const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            Color(0xFFF0F4F8),
-          ],
+          colors: [Colors.white, Color(0xFFF0F4F8)],
         ).createShader(rect),
     );
     canvas.drawPath(
@@ -58,10 +53,7 @@ class DieSilhouettePainter extends CustomPainter {
     )..layout();
     tp.paint(
       canvas,
-      Offset(
-        (w - tp.width) / 2,
-        (h - tp.height) / 2 - h * 0.02,
-      ),
+      Offset((w - tp.width) / 2, (h - tp.height) / 2 - h * 0.02),
     );
   }
 
@@ -76,7 +68,11 @@ class DieSilhouettePainter extends CustomPainter {
           ..lineTo(r.left, r.bottom)
           ..close();
       case 6:
-        final rr = RRect.fromRectXY(r, r.shortestSide * 0.14, r.shortestSide * 0.14);
+        final rr = RRect.fromRectXY(
+          r,
+          r.shortestSide * 0.14,
+          r.shortestSide * 0.14,
+        );
         return Path()..addRRect(rr);
       case 8:
         return Path()
@@ -95,7 +91,11 @@ class DieSilhouettePainter extends CustomPainter {
           ..close();
         return kite;
       default:
-        throw ArgumentError.value(sides, 'silhouetteSides', 'expected 4, 6, 8, or 10');
+        throw ArgumentError.value(
+          sides,
+          'silhouetteSides',
+          'expected 4, 6, 8, or 10',
+        );
     }
   }
 

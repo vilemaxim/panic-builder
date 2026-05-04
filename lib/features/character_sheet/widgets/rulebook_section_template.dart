@@ -40,18 +40,15 @@ import 'rulebook_ribbon_clipper.dart';
 /// **Left / right borders** — lateral stroke around the **main** track.
 @immutable
 class RulebookTemplateLateralBorder {
-  const RulebookTemplateLateralBorder({
-    required this.color,
-    this.width = 6,
-  });
+  const RulebookTemplateLateralBorder({required this.color, this.width = 6});
 
   final Color color;
   final double width;
 
   Border get border => Border(
-        left: BorderSide(color: color, width: width),
-        right: BorderSide(color: color, width: width),
-      );
+    left: BorderSide(color: color, width: width),
+    right: BorderSide(color: color, width: width),
+  );
 }
 
 /// Styling for a skew-cut ribbon (**main ribbon** or **sub ribbon**).
@@ -78,7 +75,7 @@ class RulebookTemplateSubSection {
     required this.background,
     required this.ribbonStyle,
     required this.ribbonTitle,
-    this.ribbonWidthFactor = 0.75,
+    this.ribbonWidthFactor = 0.8,
     this.ribbonSubtitle,
     this.body,
     this.upperRight,
@@ -114,6 +111,7 @@ class RulebookSectionTemplateModel {
     this.upperRight,
     this.titleRibbonFlex = 4,
     this.upperRightFlex = 1,
+    this.mainRibbonWidthFactor = 0.8,
     this.subSections = const [],
   });
 
@@ -127,16 +125,14 @@ class RulebookSectionTemplateModel {
   final Widget? upperRight;
   final int titleRibbonFlex;
   final int upperRightFlex;
+  final double mainRibbonWidthFactor;
   final List<RulebookTemplateSubSection> subSections;
 }
 
 /// Renders [RulebookSectionTemplateModel] using the same structural ideas as
 /// [RulebookStancePanel] (skew ribbons, lateral rails, optional accessory column).
 class RulebookSectionTemplate extends StatelessWidget {
-  const RulebookSectionTemplate({
-    super.key,
-    required this.model,
-  });
+  const RulebookSectionTemplate({super.key, required this.model});
 
   final RulebookSectionTemplateModel model;
 
@@ -159,10 +155,7 @@ class RulebookSectionTemplate extends StatelessWidget {
         children: [
           _mainHeaderRow(context, m),
           if (m.mainBody != null)
-            Padding(
-              padding: m.mainBodyPadding,
-              child: m.mainBody!,
-            ),
+            Padding(padding: m.mainBodyPadding, child: m.mainBody!),
           if (m.mainBody != null && m.subSections.isNotEmpty)
             const SizedBox(height: 8),
           for (var i = 0; i < m.subSections.length; i++) ...[
@@ -179,63 +172,71 @@ class RulebookSectionTemplate extends StatelessWidget {
     final diceRow = m.upperRight;
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: diceRow == null ? 1 : m.titleRibbonFlex,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: ClipPath(
-                  clipper: const LeftRibbonClipper(
-                    topRightRadius: kRulebookRibbonCornerRadius,
-                  ),
-                  child: ColoredBox(
-                    color: rs.fill,
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(minHeight: rs.minHeight),
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          rs.padding.left,
-                          rs.padding.top,
-                          rs.diagonalReserve,
-                          rs.padding.bottom,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            m.mainRibbonTitle,
-                            if (m.mainRibbonSubtitle != null) ...[
-                              const SizedBox(height: 6),
-                              DefaultTextStyle(
-                                style: _defaultSubtitleStyle,
-                                child: m.mainRibbonSubtitle!,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
+        final maxOuterW =
+            constraints.maxWidth.isFinite && constraints.maxWidth > 8
+            ? constraints.maxWidth
+            : MediaQuery.sizeOf(context).width;
+        final ribbonW = maxOuterW * m.mainRibbonWidthFactor;
+        final ribbon = Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: ribbonW,
+            child: ClipPath(
+              clipper: const LeftRibbonClipper(
+                topRightRadius: kRulebookRibbonCornerRadius,
+              ),
+              child: ColoredBox(
+                color: rs.fill,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: rs.minHeight),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      rs.padding.left,
+                      rs.padding.top,
+                      rs.diagonalReserve,
+                      rs.padding.bottom,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        m.mainRibbonTitle,
+                        if (m.mainRibbonSubtitle != null) ...[
+                          const SizedBox(height: 6),
+                          DefaultTextStyle(
+                            style: _defaultSubtitleStyle,
+                            child: m.mainRibbonSubtitle!,
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
-            if (diceRow != null)
-              Expanded(
-                flex: m.upperRightFlex,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8, right: 4),
-                  child: Align(
+          ),
+        );
+        if (diceRow == null) {
+          return ribbon;
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: m.titleRibbonFlex, child: ribbon),
+            Expanded(
+              flex: m.upperRightFlex,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8, right: 4),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
                     alignment: Alignment.centerRight,
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      alignment: Alignment.centerRight,
-                      child: diceRow,
-                    ),
+                    child: diceRow,
                   ),
                 ),
               ),
+            ),
           ],
         );
       },
@@ -267,11 +268,7 @@ class _SubSectionBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _subRibbonRow(context, s),
-          if (s.body != null)
-            Padding(
-              padding: s.bodyPadding,
-              child: s.body!,
-            ),
+          if (s.body != null) Padding(padding: s.bodyPadding, child: s.body!),
         ],
       ),
     );
@@ -281,7 +278,8 @@ class _SubSectionBlock extends StatelessWidget {
     final upper = s.upperRight;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final maxOuterW = constraints.maxWidth.isFinite && constraints.maxWidth > 8
+        final maxOuterW =
+            constraints.maxWidth.isFinite && constraints.maxWidth > 8
             ? constraints.maxWidth
             : MediaQuery.sizeOf(context).width;
         final ribbonW = maxOuterW * s.ribbonWidthFactor;
@@ -298,10 +296,7 @@ class _SubSectionBlock extends StatelessWidget {
             textDirection: Directionality.of(context),
           )..layout(maxWidth: maxTextW);
           textHeight = tp.height;
-          final ribbonH = math.max(
-            44.0,
-            textHeight + padT + padB,
-          );
+          final ribbonH = math.max(44.0, textHeight + padT + padB);
           final neededReserve = ribbonH + 14;
           final upperBound = math.max(
             ribbonW - padL - 40,
@@ -360,10 +355,7 @@ class _SubSectionBlock extends StatelessWidget {
         return Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: s.titleRibbonFlex,
-              child: ribbonSized,
-            ),
+            Expanded(flex: s.titleRibbonFlex, child: ribbonSized),
             Expanded(
               flex: s.upperRightFlex,
               child: Padding(
