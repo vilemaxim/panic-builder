@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
@@ -9,7 +11,21 @@ import '../character_sheet_presenter.dart';
 import '../character_skills_ui.dart';
 import 'rule_violation_marker.dart';
 import 'rulebook_ribbon_clipper.dart';
+import 'rulebook_section_template.dart';
 import 'skill_player_notes_section.dart';
+
+/// Responsive name / hero-type line sizes for the sheet banner.
+class _BannerTypography {
+  const _BannerTypography({
+    required this.nameSize,
+    required this.subtitleSize,
+    required this.editIconSize,
+  });
+
+  final double nameSize;
+  final double subtitleSize;
+  final double editIconSize;
+}
 
 /// Optional tap targets on the banner: name, hero type, build, archetypes.
 class RulebookSheetIdentityHandlers {
@@ -65,6 +81,11 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
   static const Color _orangeRail = Color(0xFFFD7E3F);
   static const Color _bannerBrown = Color(0xFFA66500);
 
+  /// Main sheet lateral rails: same class and default width as stance/form
+  /// sections ([RulebookTemplateLateralBorder.width] == 6).
+  static const RulebookTemplateLateralBorder _sheetMainLateralBorder =
+      RulebookTemplateLateralBorder(color: _orangeRail);
+
   // Skill “simple sub-column” palette (ribbon-only).
   static const Color _pillOrange = Color(0xFFEC5B00);
 
@@ -73,12 +94,37 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
   static const Color _purpleBg = Color(0xFFE99FFE);
   static const Color _purpleRail = Color(0xFFB6A6FE);
 
-  static const double _railW = 12;
-
-  static const double _bannerNameFontSize = 28;
-
-  /// Hero-type line: smaller than name, still readable next to larger name.
-  static const double _bannerSubtitleFontSize = 20;
+  /// Name / hero-type banner: scales down on narrow layouts (floor ~14sp subtitle
+  /// keeps body-like readability; below ~12sp hurts scanability on phones).
+  static _BannerTypography _bannerTypography(double layoutWidth) {
+    final w = layoutWidth;
+    if (w >= 520) {
+      return const _BannerTypography(
+        nameSize: 28,
+        subtitleSize: 20,
+        editIconSize: 22,
+      );
+    }
+    if (w >= 440) {
+      return const _BannerTypography(
+        nameSize: 23,
+        subtitleSize: 17,
+        editIconSize: 21,
+      );
+    }
+    if (w >= 380) {
+      return const _BannerTypography(
+        nameSize: 20,
+        subtitleSize: 15,
+        editIconSize: 20,
+      );
+    }
+    return const _BannerTypography(
+      nameSize: 18,
+      subtitleSize: 14,
+      editIconSize: 18,
+    );
+  }
 
   /// Skill/build/archetype labels, slightly larger for readability.
   static const double _skillFontSize = 15;
@@ -96,13 +142,16 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
   static const double _subRibbonWidthFactor = 0.8;
 
   /// Reserve at trailing edge so text clears the ~45° diagonal (skew ≈ ribbon height).
-  /// Uses two-line estimate so wrapping/long subtitles stay inside the clip after softWrap.
-  static double _bannerTrailingReserveForDiagonal(BuildContext context) {
+  /// Single-line banner: height follows the taller of the two text lines.
+  static double _bannerTrailingReserveForDiagonal(
+    BuildContext context, {
+    required double nameFontSize,
+    required double subtitleFontSize,
+  }) {
     final scale = MediaQuery.textScalerOf(context).scale(1.0);
     const verticalPad = 28.0; // matches banner EdgeInsets vertical 14+14
-    const mainLine = _bannerNameFontSize * 1.15;
-    const subLine = _bannerSubtitleFontSize * 1.15;
-    return scale * (verticalPad + mainLine + subLine);
+    final lineH = math.max(nameFontSize, subtitleFontSize) * 1.15;
+    return scale * (verticalPad + lineH);
   }
 
   VoidCallback? _stanceSkillEdit(
@@ -173,23 +222,38 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
         final layoutW = constraints.maxWidth.isFinite
             ? constraints.maxWidth
             : MediaQuery.sizeOf(context).width;
+        final typo = _bannerTypography(layoutW);
         final onName = handlers?.onCharacterName;
         final onHero = handlers?.onHeroType;
-        const nameStyle = TextStyle(
+        final nameStyle = TextStyle(
           color: Colors.white,
-          fontSize: _bannerNameFontSize,
+          fontSize: typo.nameSize,
           fontWeight: FontWeight.w700,
           height: 1.15,
         );
-        const subtitleStyle = TextStyle(
+        final subtitleStyle = TextStyle(
           color: Colors.white,
-          fontSize: _bannerSubtitleFontSize,
+          fontSize: typo.subtitleSize,
           fontWeight: FontWeight.w500,
           fontStyle: FontStyle.italic,
           height: 1.15,
         );
+        final trailing = _bannerTrailingReserveForDiagonal(
+          context,
+          nameFontSize: typo.nameSize,
+          subtitleFontSize: typo.subtitleSize,
+        );
+        final leftPad = layoutW < 360 ? 12.0 : 16.0;
+        final rightBase = layoutW < 360 ? 12.0 : 18.0;
 
         Widget nameSegment() {
+          final text = Text(
+            displayName,
+            style: nameStyle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+          );
           if (onName != null) {
             return Semantics(
               button: true,
@@ -216,13 +280,12 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                         horizontal: 2,
                       ),
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(displayName, style: nameStyle),
-                          const SizedBox(width: 6),
+                          Expanded(child: text),
+                          SizedBox(width: layoutW < 400 ? 4 : 6),
                           Icon(
                             Icons.edit_outlined,
-                            size: 24,
+                            size: typo.editIconSize,
                             color: Colors.white.withValues(alpha: 0.92),
                           ),
                         ],
@@ -233,10 +296,17 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               ),
             );
           }
-          return Text(displayName, style: nameStyle);
+          return text;
         }
 
         Widget heroTypeSegment() {
+          final text = Text(
+            subtitle,
+            style: subtitleStyle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            softWrap: false,
+          );
           if (onHero != null) {
             return Semantics(
               button: true,
@@ -254,13 +324,12 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                         horizontal: 2,
                       ),
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(subtitle, style: subtitleStyle),
-                          const SizedBox(width: 6),
+                          Expanded(child: text),
+                          SizedBox(width: layoutW < 400 ? 4 : 6),
                           Icon(
                             Icons.edit_outlined,
-                            size: 24,
+                            size: typo.editIconSize,
                             color: Colors.white.withValues(alpha: 0.88),
                           ),
                         ],
@@ -271,25 +340,24 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               ),
             );
           }
-          return Text(subtitle, style: subtitleStyle);
+          return text;
         }
 
+        /// One horizontal line: name (flex 5) · hero type (flex 4). Ellipsis if tight.
+        final identityBlock = Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 5, child: nameSegment()),
+            SizedBox(width: layoutW < 400 ? 6 : 8),
+            Expanded(flex: 4, child: heroTypeSegment()),
+          ],
+        );
+
         final bannerContent = Padding(
-          padding: EdgeInsets.fromLTRB(
-            16,
-            14,
-            18 + _bannerTrailingReserveForDiagonal(context),
-            14,
-          ),
+          padding: EdgeInsets.fromLTRB(leftPad, 14, rightBase + trailing, 14),
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: layoutW),
-            child: Wrap(
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 8,
-              runSpacing: 6,
-              children: [nameSegment(), heroTypeSegment()],
-            ),
+            child: identityBlock,
           ),
         );
 
@@ -503,12 +571,9 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: _yellowBg,
-        border: Border(
-          left: BorderSide(color: _orangeRail, width: _railW),
-          right: BorderSide(color: _orangeRail, width: _railW),
-        ),
+        border: _sheetMainLateralBorder.border,
       ),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12),

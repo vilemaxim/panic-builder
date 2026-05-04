@@ -60,6 +60,19 @@ class _RoutedAppState extends ConsumerState<RoutedApp> {
       title: 'Panic at the Dojo — Character Builder',
       theme: ref.watch(appThemeProvider),
       routerConfig: _router,
+      builder: (context, child) {
+        if (child == null) return const SizedBox.shrink();
+        // Bottom + horizontal insets for home indicator / notches. Top is false so
+        // [AppBar] layouts are not double-padded below the status bar.
+        return SafeArea(
+          top: false,
+          left: true,
+          right: true,
+          bottom: true,
+          minimum: EdgeInsets.zero,
+          child: child,
+        );
+      },
     );
   }
 }
@@ -154,6 +167,11 @@ final appThemeProvider = Provider<ThemeData>((ref) {
         borderSide: const BorderSide(color: gold, width: 2),
       ),
       labelStyle: const TextStyle(color: ink, fontWeight: FontWeight.w600),
+    ),
+    tooltipTheme: const TooltipThemeData(
+      triggerMode: TooltipTriggerMode.longPress,
+      waitDuration: Duration(milliseconds: 450),
+      showDuration: Duration(seconds: 5),
     ),
   );
 });

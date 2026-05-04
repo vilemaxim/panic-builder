@@ -162,12 +162,21 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
 
     return rulesAsync.when(
       loading: () => const Scaffold(
-        body: AppAsyncLoading(message: 'Loading rules…'),
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          left: false,
+          right: false,
+          child: AppAsyncLoading(message: 'Loading rules…'),
+        ),
       ),
       error: (e, _) => Scaffold(
-        body: AppAsyncError(
-          error: e,
-          title: 'Could not load rules',
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          left: false,
+          right: false,
+          child: AppAsyncError(error: e, title: 'Could not load rules'),
         ),
       ),
       data: (rules) {
@@ -182,6 +191,8 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
             appBar: AppBar(
               title: const Text('Character Sheet Builder'),
               bottom: TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
                 tabs: frantic
                     ? const [
                         Tab(text: 'Character'),
@@ -244,7 +255,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
   ) {
     final session = ref.read(creationSessionProvider.notifier);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
       children: [
         RulebookCharacterSheetPanel(
           character: c,
@@ -275,29 +286,41 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
               } else {
                 m[skillId] = t;
               }
-              ref.read(creationSessionProvider.notifier).setSkills(
-                    base.copyWith(skillPlayerNotes: m),
-                  );
+              ref
+                  .read(creationSessionProvider.notifier)
+                  .setSkills(base.copyWith(skillPlayerNotes: m));
             },
           ),
         ),
-        const SizedBox(height: 16),
-        FilledButton(
-          onPressed: () async {
-            final session = ref.read(creationSessionProvider);
-            final err = policies.validateCreationComplete(session);
-            if (err != null) {
-              final saveAnyway = await _confirmSaveDespiteIncompleteRules(err);
-              if (!saveAnyway || !mounted) return;
-            }
-            final toSave =
-                ref.read(creationSessionProvider).copyWith(updatedAt: DateTime.now());
-            await ref.read(characterStorageProvider).upsert(toSave);
-            ref.invalidate(charactersListProvider);
-            if (!mounted) return;
-            context.go('/character/${toSave.id}');
-          },
-          child: const Text('Save Character'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () async {
+                  final session = ref.read(creationSessionProvider);
+                  final err = policies.validateCreationComplete(session);
+                  if (err != null) {
+                    final saveAnyway = await _confirmSaveDespiteIncompleteRules(
+                      err,
+                    );
+                    if (!saveAnyway || !mounted) return;
+                  }
+                  final toSave = ref
+                      .read(creationSessionProvider)
+                      .copyWith(updatedAt: DateTime.now());
+                  await ref.read(characterStorageProvider).upsert(toSave);
+                  ref.invalidate(charactersListProvider);
+                  if (!mounted) return;
+                  context.go('/character/${toSave.id}');
+                },
+                child: const Text('Save Character'),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -322,16 +345,18 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
           style: style,
           form: form,
           rules: rules,
-          formDisplayLabel:
-              s != null && s.formDisplayName.trim().isNotEmpty
-                  ? s.formDisplayName
-                  : null,
+          formDisplayLabel: s != null && s.formDisplayName.trim().isNotEmpty
+              ? s.formDisplayName
+              : null,
           formChoiceId: s?.formChoiceId,
           heroType: c.heroType,
           onPickStyle: () => _openStanceStylePick(rules, policies, idx),
           onPickForm: () => _openStanceFormPick(rules, policies, idx),
-          ruleViolationHint:
-              CharacterRuleOverlay.stanceRowViolation(policies, c, idx),
+          ruleViolationHint: CharacterRuleOverlay.stanceRowViolation(
+            policies,
+            c,
+            idx,
+          ),
         ),
       ],
     );
@@ -388,8 +413,11 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
       heroType: c.heroType,
       onPickStyle: () => _openStanceStylePick(rules, policies, idx),
       onPickForm: null,
-      ruleViolationHint:
-          CharacterRuleOverlay.stanceRowViolation(policies, c, idx),
+      ruleViolationHint: CharacterRuleOverlay.stanceRowViolation(
+        policies,
+        c,
+        idx,
+      ),
     );
   }
 
@@ -402,8 +430,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (hint != null)
-          _infoBanner(icon: Icons.info_outline, message: hint),
+        if (hint != null) _infoBanner(icon: Icons.info_outline, message: hint),
         for (var idx = 0; idx < 3; idx++) ...[
           if (idx > 0) const SizedBox(height: 20),
           _franticFormSlotHeading(c, rules, idx),
@@ -438,14 +465,16 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     return FranticFormSection(
       form: form,
       rules: rules,
-      formDisplayLabel:
-          s != null && s.formDisplayName.trim().isNotEmpty
-              ? s.formDisplayName
-              : null,
+      formDisplayLabel: s != null && s.formDisplayName.trim().isNotEmpty
+          ? s.formDisplayName
+          : null,
       formChoiceId: s?.formChoiceId,
       onPickForm: () => _openStanceFormPick(rules, policies, idx),
-      ruleViolationHint:
-          CharacterRuleOverlay.stanceRowViolation(policies, c, idx),
+      ruleViolationHint: CharacterRuleOverlay.stanceRowViolation(
+        policies,
+        c,
+        idx,
+      ),
     );
   }
 
@@ -494,10 +523,9 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
   List<Stance> _stancesPadded(Character c) {
     return List<Stance>.generate(
       3,
-      (i) =>
-          i < c.stances.length
-              ? c.stances[i]
-              : const Stance(styleId: '', formId: '', formDisplayName: ''),
+      (i) => i < c.stances.length
+          ? c.stances[i]
+          : const Stance(styleId: '', formId: '', formDisplayName: ''),
     );
   }
 
@@ -657,14 +685,10 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     if (rules == null) return;
     final c = ref.read(creationSessionProvider);
     final base = ensureSkillsState(c, rules);
-    final v = await showTwoWordSkillDialog(
-      context,
-      initial: base.twoWordSkill,
-    );
+    final v = await showTwoWordSkillDialog(context, initial: base.twoWordSkill);
     if (v == null || !mounted) return;
-    ref.read(creationSessionProvider.notifier).setSkills(
-          base.copyWith(twoWordSkill: v),
-        );
+    ref
+        .read(creationSessionProvider.notifier)
+        .setSkills(base.copyWith(twoWordSkill: v));
   }
 }
-

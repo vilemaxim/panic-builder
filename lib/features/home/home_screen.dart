@@ -18,15 +18,35 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Panic at the Dojo'),
-            Text(
-              'Character Builder · 1st Edition',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.normal),
-            ),
-          ],
+        title: Builder(
+          builder: (context) {
+            final narrow = MediaQuery.sizeOf(context).width < 420;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Panic at the Dojo',
+                  style: TextStyle(
+                    fontFamily: 'serif',
+                    fontSize: narrow ? 20 : 24,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF2F2418),
+                  ),
+                ),
+                Text(
+                  'Character Builder · 1st Edition',
+                  style: TextStyle(
+                    fontSize: narrow ? 11.5 : 13,
+                    fontWeight: FontWeight.normal,
+                    color: const Color(0xFF2F2418),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            );
+          },
         ),
       ),
       body: Center(
@@ -37,8 +57,10 @@ class HomeScreen extends ConsumerWidget {
               padding: EdgeInsets.all(24),
               child: AppAsyncLoading(message: 'Loading characters…'),
             ),
-            error: (e, _) =>
-                AppAsyncError(error: e, title: 'Could not load saved characters'),
+            error: (e, _) => AppAsyncError(
+              error: e,
+              title: 'Could not load saved characters',
+            ),
             data: (characters) {
               return ListView(
                 padding: const EdgeInsets.all(20),

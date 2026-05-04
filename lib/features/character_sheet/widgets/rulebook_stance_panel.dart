@@ -7,6 +7,7 @@ import '../../../domain/hero_type_kind.dart';
 import 'form_dice_catalog.dart';
 import 'rule_violation_marker.dart';
 import 'rulebook_action_option_text.dart';
+import 'rulebook_ribbon_header_typography.dart';
 import 'rulebook_section_template.dart';
 import 'rulebook_stance_chrome.dart';
 import 'stance_rules_tooltip.dart';
@@ -97,10 +98,9 @@ class RulebookStancePanel extends StatelessWidget {
         ? 'Form'
         : _trimFormSuffix(rawFormLabel);
     final styleSkill = _resolvedStyleSkill(style, rules);
-    final resolvedChoice =
-        effectiveForm != null && formChoiceId != null
-            ? ruleFormChoiceById(effectiveForm, formChoiceId)
-            : null;
+    final resolvedChoice = effectiveForm != null && formChoiceId != null
+        ? ruleFormChoiceById(effectiveForm, formChoiceId)
+        : null;
     final rangeText = formatStanceRangeSubtitle(
       style,
       styleSkill,
@@ -116,10 +116,33 @@ class RulebookStancePanel extends StatelessWidget {
       fullFormChoicePassive: heroType == HeroTypeKind.frantic,
     );
 
-    final styleActionWidgets = _styleActionSections(style, styleSkill, styleDm);
+    final layoutW = MediaQuery.sizeOf(context).width;
+    final ribbonTypo = RulebookRibbonHeaderTypography.forWidth(layoutW);
+    final headerTitleStyle = chrome.headerTitleStyle.copyWith(
+      fontSize: ribbonTypo.titleFontSize,
+      height: 1.0,
+    );
+    final rangeStyle = chrome.rangeLineStyle.copyWith(
+      fontSize: ribbonTypo.rangeFontSize,
+      height: 1.15,
+    );
+    final actionRibbonTitleStyle = layoutW < 420
+        ? _actionRibbonTitleStyle.copyWith(fontSize: 18, height: 1.2)
+        : _actionRibbonTitleStyle;
+    final styleActionWidgets = _styleActionSections(
+      style,
+      styleSkill,
+      styleDm,
+      actionRibbonTitleStyle: actionRibbonTitleStyle,
+    );
     final formActionWidgets = styleOnly
         ? const <RulebookTemplateSubSection>[]
-        : _formActionSections(effectiveForm, formDm, formCitationBadge);
+        : _formActionSections(
+            effectiveForm,
+            formDm,
+            formCitationBadge,
+            actionRibbonTitleStyle: actionRibbonTitleStyle,
+          );
     final hasActionsBelow =
         styleActionWidgets.isNotEmpty || formActionWidgets.isNotEmpty;
     final notes = style?.marginNotes.trim() ?? '';
@@ -145,8 +168,11 @@ class RulebookStancePanel extends StatelessWidget {
         styleOnly: styleOnly,
         chrome: chrome,
         ruleViolationHint: ruleViolationHint,
+        headerStyle: headerTitleStyle,
+        editIconSize: ribbonTypo.editIconSize,
+        layoutWidth: layoutW,
       ),
-      mainRibbonSubtitle: Text(rangeText, style: chrome.rangeLineStyle),
+      mainRibbonSubtitle: Text(rangeText, style: rangeStyle),
       upperRight: styleOnly
           ? null
           : Row(
@@ -183,40 +209,69 @@ class RulebookStancePanel extends StatelessWidget {
     required bool styleOnly,
     required RulebookStanceChrome chrome,
     String? ruleViolationHint,
+    required TextStyle headerStyle,
+    required double editIconSize,
+    required double layoutWidth,
   }) {
     final titleRuleHint = ruleViolationHint;
-    return Wrap(
-      spacing: 14,
-      runSpacing: 10,
-      crossAxisAlignment: WrapCrossAlignment.center,
+    final gutter = layoutWidth < 400 ? 6.0 : 8.0;
+    final styleTooltip = style == null
+        ? 'Tap to pick a style for this stance. Full rules text appears once you choose.'
+        : stanceStyleRulesBody(style!, rules);
+    final formTooltip = form == null
+        ? 'Pick a style first, then tap here to choose a form.'
+        : rules != null
+        ? stanceFormRulesBody(form!, rules!)
+        : _formTooltipWithoutRules(form!);
+
+    Widget styleCell() {
+      return Tooltip(
+        message: styleTooltip,
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.all(10),
+        preferBelow: true,
+        waitDuration: const Duration(milliseconds: 200),
+        child: _editableHeaderPart(
+          styleName,
+          onPickStyle,
+          chrome,
+          headerStyle,
+          editIconSize,
+        ),
+      );
+    }
+
+    Widget formCell() {
+      return Tooltip(
+        message: formTooltip,
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.all(10),
+        preferBelow: true,
+        waitDuration: const Duration(milliseconds: 200),
+        child: _editableHeaderPart(
+          formName,
+          onPickForm,
+          chrome,
+          headerStyle,
+          editIconSize,
+        ),
+      );
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (titleRuleHint != null) ...[
           RuleViolationTriangle(message: titleRuleHint),
           const SizedBox(width: 4),
         ],
-        Tooltip(
-          message: style == null
-              ? 'Tap to pick a style for this stance. Full rules text appears once you choose.'
-              : stanceStyleRulesBody(style!, rules),
-          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          padding: const EdgeInsets.all(10),
-          preferBelow: true,
-          waitDuration: const Duration(milliseconds: 200),
-          child: _editableHeaderPart(styleName, onPickStyle, chrome),
-        ),
-        if (!styleOnly)
-          Tooltip(
-            message: form == null
-                ? 'Pick a style first, then tap here to choose a form.'
-                : rules != null
-                ? stanceFormRulesBody(form!, rules!)
-                : _formTooltipWithoutRules(form!),
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            padding: const EdgeInsets.all(10),
-            preferBelow: true,
-            waitDuration: const Duration(milliseconds: 200),
-            child: _editableHeaderPart(formName, onPickForm, chrome),
-          ),
+        if (styleOnly)
+          Expanded(child: styleCell())
+        else ...[
+          Expanded(flex: 5, child: styleCell()),
+          SizedBox(width: gutter),
+          Expanded(flex: 4, child: formCell()),
+        ],
       ],
     );
   }
@@ -294,8 +349,9 @@ class RulebookStancePanel extends StatelessWidget {
           passiveParagraphs = splitRuleParagraphs(passiveLine);
         }
       } else {
-        passiveParagraphs =
-            passiveLine.isEmpty ? const [] : splitRuleParagraphs(passiveLine);
+        passiveParagraphs = passiveLine.isEmpty
+            ? const []
+            : splitRuleParagraphs(passiveLine);
       }
       return (
         passiveParagraphs: passiveParagraphs,
@@ -356,8 +412,9 @@ class RulebookStancePanel extends StatelessWidget {
       List<RuleFormAction> actions,
       String? fallbackBody,
     })
-    dm,
-  ) {
+    dm, {
+    required TextStyle actionRibbonTitleStyle,
+  }) {
     if (st == null) return const [];
     final badge = _trimStyleSuffix(st.name);
     final sections = <RulebookTemplateSubSection>[];
@@ -369,7 +426,13 @@ class RulebookStancePanel extends StatelessWidget {
       final body = paras.isEmpty
           ? const SizedBox.shrink()
           : _paragraphsWithSource(paras, badge, singleCitation: true);
-      sections.add(_actionSubSection(title: title, body: body));
+      sections.add(
+        _actionSubSection(
+          title: title,
+          body: body,
+          titleStyle: actionRibbonTitleStyle,
+        ),
+      );
     }
     final fb = dm.fallbackBody;
     if (fb != null && fb.isNotEmpty) {
@@ -381,6 +444,7 @@ class RulebookStancePanel extends StatelessWidget {
             badge,
             singleCitation: true,
           ),
+          titleStyle: actionRibbonTitleStyle,
         ),
       );
     }
@@ -395,8 +459,9 @@ class RulebookStancePanel extends StatelessWidget {
       List<({String text, String badge})>? fallbackAttributed,
     })
     dm,
-    String formBadge,
-  ) {
+    String formBadge, {
+    required TextStyle actionRibbonTitleStyle,
+  }) {
     if (f == null) return const [];
     final sections = <RulebookTemplateSubSection>[];
     for (final a in dm.actions) {
@@ -407,7 +472,13 @@ class RulebookStancePanel extends StatelessWidget {
       final body = paras.isEmpty
           ? const SizedBox.shrink()
           : _paragraphsWithSource(paras, formBadge, singleCitation: true);
-      sections.add(_actionSubSection(title: title, body: body));
+      sections.add(
+        _actionSubSection(
+          title: title,
+          body: body,
+          titleStyle: actionRibbonTitleStyle,
+        ),
+      );
     }
     final fb = dm.fallbackAttributed;
     if (fb != null && fb.isNotEmpty) {
@@ -415,6 +486,7 @@ class RulebookStancePanel extends StatelessWidget {
         _actionSubSection(
           title: _formActionHeading(f),
           body: _attributedParagraphBadges(fb, singleCitation: true),
+          titleStyle: actionRibbonTitleStyle,
         ),
       );
     }
@@ -496,22 +568,32 @@ class RulebookStancePanel extends StatelessWidget {
     String text,
     VoidCallback? onTap,
     RulebookStanceChrome chrome,
+    TextStyle headerStyle,
+    double editIconSize,
   ) {
-    final headerStyle = chrome.headerTitleStyle;
+    final label = Text(
+      text,
+      style: headerStyle,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      softWrap: false,
+    );
     if (onTap == null) {
-      return Text(text, style: headerStyle, softWrap: true);
+      return label;
     }
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        child: Wrap(
-          spacing: 6,
-          runSpacing: 4,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        child: Row(
           children: [
-            Text(text, style: headerStyle, softWrap: true),
-            Icon(Icons.edit_outlined, size: 24, color: chrome.headerIconColor),
+            Expanded(child: label),
+            SizedBox(width: editIconSize >= 22 ? 6 : 4),
+            Icon(
+              Icons.edit_outlined,
+              size: editIconSize,
+              color: chrome.headerIconColor,
+            ),
           ],
         ),
       ),
@@ -521,6 +603,7 @@ class RulebookStancePanel extends StatelessWidget {
   RulebookTemplateSubSection _actionSubSection({
     required String title,
     required Widget body,
+    required TextStyle titleStyle,
   }) {
     return RulebookTemplateSubSection(
       lateralBorder: RulebookTemplateLateralBorder(
@@ -538,7 +621,7 @@ class RulebookStancePanel extends StatelessWidget {
           8,
         ),
       ),
-      ribbonTitle: Text(title, softWrap: true, style: _actionRibbonTitleStyle),
+      ribbonTitle: Text(title, softWrap: true, style: titleStyle),
       ribbonWidthFactor: _actionRibbonWidthFactor,
       body: body,
       bodyPadding: const EdgeInsets.fromLTRB(14, 10, 14, 12),

@@ -6,6 +6,7 @@ import 'form_dice_catalog.dart';
 import 'rule_violation_marker.dart';
 import 'rulebook_action_option_text.dart';
 import 'rulebook_form_palette.dart';
+import 'rulebook_ribbon_header_typography.dart';
 import 'rulebook_section_template.dart';
 import 'rulebook_stance_chrome.dart';
 
@@ -47,6 +48,8 @@ class FranticFormSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final layoutW = MediaQuery.sizeOf(context).width;
+    final ribbonTypo = RulebookRibbonHeaderTypography.forWidth(layoutW);
     final chrome = RulebookStanceChrome.stance;
     final dm = _formDisplayModel(
       form,
@@ -89,7 +92,7 @@ class FranticFormSection extends StatelessWidget {
         diagonalReserve: 66,
         padding: EdgeInsets.fromLTRB(12, 10, 66, 10),
       ),
-      mainRibbonTitle: _ribbonTitle(titleText),
+      mainRibbonTitle: _ribbonTitle(titleText, ribbonTypo, layoutW),
       upperRight: diceRow,
       mainBody: mainBody,
       subSections: subs,
@@ -98,26 +101,36 @@ class FranticFormSection extends StatelessWidget {
     return RulebookSectionTemplate(model: model);
   }
 
-  Widget _ribbonTitle(String text) {
-    const style = TextStyle(
-      fontSize: 36,
+  Widget _ribbonTitle(
+    String text,
+    RulebookRibbonHeaderTypography typo,
+    double layoutWidth,
+  ) {
+    final style = TextStyle(
+      fontSize: typo.titleFontSize,
       fontWeight: FontWeight.w800,
       height: 1.0,
       color: Colors.white,
     );
     final hint = ruleViolationHint;
     final tap = onPickForm;
+    final label = Text(
+      text,
+      style: style,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      softWrap: false,
+    );
     if (tap == null) {
       if (hint == null) {
-        return Text(text, style: style, softWrap: true);
+        return label;
       }
-      return Wrap(
-        spacing: 8,
-        runSpacing: 6,
-        crossAxisAlignment: WrapCrossAlignment.center,
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           RuleViolationTriangle(message: hint),
-          Text(text, style: style, softWrap: true),
+          const SizedBox(width: 6),
+          Expanded(child: label),
         ],
       );
     }
@@ -125,17 +138,20 @@ class FranticFormSection extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: tap,
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 6,
-          crossAxisAlignment: WrapCrossAlignment.center,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (hint != null) ...[
               RuleViolationTriangle(message: hint),
-              const SizedBox(width: 2),
+              const SizedBox(width: 4),
             ],
-            Text(text, style: style, softWrap: true),
-            const Icon(Icons.edit_outlined, size: 24, color: Color(0xE6FFFFFF)),
+            Expanded(child: label),
+            SizedBox(width: layoutWidth < 400 ? 4 : 6),
+            Icon(
+              Icons.edit_outlined,
+              size: typo.editIconSize,
+              color: const Color(0xE6FFFFFF),
+            ),
           ],
         ),
       ),
@@ -396,8 +412,9 @@ _formDisplayModel(
         passiveParagraphs = splitRuleParagraphs(passiveLine);
       }
     } else {
-      passiveParagraphs =
-          passiveLine.isEmpty ? const [] : splitRuleParagraphs(passiveLine);
+      passiveParagraphs = passiveLine.isEmpty
+          ? const []
+          : splitRuleParagraphs(passiveLine);
     }
     return (
       passiveParagraphs: passiveParagraphs,
@@ -447,4 +464,3 @@ String _formActionHeading(RuleForm form) {
   final words = _trimFormSuffix(form.name);
   return '$words Action';
 }
-

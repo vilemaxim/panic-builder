@@ -60,10 +60,26 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
     final rulesAsync = ref.watch(mergedRulesProvider);
 
     return asyncChar.when(
-      loading: () =>
-          const Scaffold(body: AppAsyncLoading(message: 'Loading character…')),
+      loading: () => const Scaffold(
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          left: false,
+          right: false,
+          child: AppAsyncLoading(message: 'Loading character…'),
+        ),
+      ),
       error: (e, _) => Scaffold(
-        body: AppAsyncError(error: e, title: 'Could not load this character'),
+        body: SafeArea(
+          top: true,
+          bottom: false,
+          left: false,
+          right: false,
+          child: AppAsyncError(
+            error: e,
+            title: 'Could not load this character',
+          ),
+        ),
       ),
       data: (c) {
         if (c == null) {
@@ -79,10 +95,23 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
         }
 
         return rulesAsync.when(
-          loading: () =>
-              const Scaffold(body: AppAsyncLoading(message: 'Loading rules…')),
+          loading: () => const Scaffold(
+            body: SafeArea(
+              top: true,
+              bottom: false,
+              left: false,
+              right: false,
+              child: AppAsyncLoading(message: 'Loading rules…'),
+            ),
+          ),
           error: (e, _) => Scaffold(
-            body: AppAsyncError(error: e, title: 'Could not load rules'),
+            body: SafeArea(
+              top: true,
+              bottom: false,
+              left: false,
+              right: false,
+              child: AppAsyncError(error: e, title: 'Could not load rules'),
+            ),
           ),
           data: (rules) {
             final pol = policiesFor(rules);
@@ -100,7 +129,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                 ],
               ),
               body: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
                 children: [
                   RulebookCharacterSheetPanel(
                     character: c,
@@ -205,204 +234,247 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    c.heroType == HeroTypeKind.frantic ? 'Styles' : 'Stances',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  ...List.generate(c.stances.length, (i) {
-                    final st = c.stances[i];
-                    final style = rules.styleById(st.styleId);
-                    final form = rules.formById(st.formId);
-                    final frantic = c.heroType == HeroTypeKind.frantic;
-                    if (frantic && style != null) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: RulebookStancePanel(
-                          chrome: RulebookStanceChrome.franticStyle,
-                          styleOnly: true,
-                          style: style,
-                          form: null,
-                          rules: rules,
-                          heroType: c.heroType,
-                          ruleViolationHint:
-                              CharacterRuleOverlay.stanceRowViolation(
-                                pol,
-                                c,
-                                i,
-                              ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 16),
+                        Text(
+                          c.heroType == HeroTypeKind.frantic
+                              ? 'Styles'
+                              : 'Stances',
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                      );
-                    }
-                    if (style != null && form != null) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            RulebookStancePanel(
-                              style: style,
-                              form: form,
-                              rules: rules,
-                              formDisplayLabel: st.formDisplayName.trim().isEmpty
-                                  ? null
-                                  : st.formDisplayName,
-                              formChoiceId: st.formChoiceId,
-                              heroType: c.heroType,
-                              ruleViolationHint:
-                                  CharacterRuleOverlay.stanceRowViolation(
-                                    pol,
-                                    c,
-                                    i,
-                                  ),
-                            ),
-                            if (form.choices.isNotEmpty) ...[
-                              const SizedBox(height: 8),
-                              OutlinedButton.icon(
-                                onPressed: () =>
-                                    _openFormRuleChoiceForStance(rules, c, i),
-                                icon: const Icon(Icons.checklist),
-                                label: Text('${form.name} rule option…'),
-                              ),
-                            ],
-                          ],
-                        ),
-                      );
-                    }
-                    return Card(
-                      child: ListTile(
-                        title: Text('Stance ${i + 1}: ${st.formDisplayName}'),
-                        subtitle: Text(
-                          '${style?.name ?? st.styleId} · ${form?.name ?? st.formId}',
-                        ),
-                      ),
-                    );
-                  }),
-                  if (c.heroType == HeroTypeKind.frantic) ...[
-                    const SizedBox(height: 16),
-                    Text(
-                      'Forms',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    ...List.generate(c.stances.length, (i) {
-                      final st = c.stances[i];
-                      final formRule = rules.formById(st.formId);
-                      final archId = i < c.archetypeIds.length
-                          ? c.archetypeIds[i]
-                          : '';
-                      final arch = archId.isNotEmpty
-                          ? rules.archetypeById(archId)
-                          : null;
-                      final slotName = arch?.name.trim();
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom: i < c.stances.length - 1 ? 16 : 0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              slotName != null && slotName.isNotEmpty
-                                  ? 'Form ${i + 1} · $slotName'
-                                  : 'Form ${i + 1}',
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.w700),
-                            ),
-                            const SizedBox(height: 8),
-                            FranticFormSection(
-                              form: formRule,
-                              rules: rules,
-                              formDisplayLabel:
-                                  st.formDisplayName.trim().isEmpty
-                                  ? null
-                                  : st.formDisplayName,
-                              formChoiceId: st.formChoiceId,
-                              ruleViolationHint:
-                                  CharacterRuleOverlay.stanceRowViolation(
-                                    pol,
-                                    c,
-                                    i,
-                                  ),
-                            ),
-                            if (formRule != null &&
-                                formRule.choices.isNotEmpty) ...[
-                              const SizedBox(height: 8),
-                              OutlinedButton.icon(
-                                onPressed: () =>
-                                    _openFormRuleChoiceForStance(rules, c, i),
-                                icon: const Icon(Icons.checklist),
-                                label: Text('${formRule.name} rule option…'),
-                              ),
-                            ],
-                          ],
-                        ),
-                      );
-                    }),
-                  ],
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      Tooltip(
-                        message:
-                            'Most edits save when you change them. Tap to refresh the saved copy timestamp on this device.',
-                        child: FilledButton(
-                          onPressed: () async {
-                            final updated = c.copyWith(
-                              updatedAt: DateTime.now(),
-                            );
-                            await _persist(updated);
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Saved.')),
-                            );
-                          },
-                          child: const Text('Save'),
-                        ),
-                      ),
-                      OutlinedButton(
-                        onPressed: () async {
-                          final current = c.copyWith(updatedAt: DateTime.now());
-                          try {
-                            final bytes = await buildCharacterPdfBytes(
-                              current,
-                              rules,
-                            );
-                            if (!context.mounted) return;
-                            await Printing.sharePdf(
-                              bytes: bytes,
-                              filename: _pdfFileName(current),
-                            );
-                          } catch (e) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Could not share PDF. Try Preview PDF in the toolbar. (${e.toString()})',
-                                ),
+                        const SizedBox(height: 8),
+                        ...List.generate(c.stances.length, (i) {
+                          final st = c.stances[i];
+                          final style = rules.styleById(st.styleId);
+                          final form = rules.formById(st.formId);
+                          final frantic = c.heroType == HeroTypeKind.frantic;
+                          if (frantic && style != null) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: RulebookStancePanel(
+                                chrome: RulebookStanceChrome.franticStyle,
+                                styleOnly: true,
+                                style: style,
+                                form: null,
+                                rules: rules,
+                                heroType: c.heroType,
+                                ruleViolationHint:
+                                    CharacterRuleOverlay.stanceRowViolation(
+                                      pol,
+                                      c,
+                                      i,
+                                    ),
                               ),
                             );
                           }
-                        },
-                        child: const Text('Share PDF'),
-                      ),
-                      OutlinedButton(
-                        onPressed: () => _exportJson(c),
-                        child: const Text('Export JSON'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    onPressed: () {
-                      ref.read(creationSessionProvider.notifier).reset();
-                      context.go('/create');
-                    },
-                    child: const Text('Start another character'),
+                          if (style != null && form != null) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  RulebookStancePanel(
+                                    style: style,
+                                    form: form,
+                                    rules: rules,
+                                    formDisplayLabel:
+                                        st.formDisplayName.trim().isEmpty
+                                        ? null
+                                        : st.formDisplayName,
+                                    formChoiceId: st.formChoiceId,
+                                    heroType: c.heroType,
+                                    ruleViolationHint:
+                                        CharacterRuleOverlay.stanceRowViolation(
+                                          pol,
+                                          c,
+                                          i,
+                                        ),
+                                  ),
+                                  if (form.choices.isNotEmpty) ...[
+                                    const SizedBox(height: 8),
+                                    OutlinedButton.icon(
+                                      onPressed: () =>
+                                          _openFormRuleChoiceForStance(
+                                            rules,
+                                            c,
+                                            i,
+                                          ),
+                                      icon: const Icon(Icons.checklist),
+                                      label: Text('${form.name} rule option…'),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            );
+                          }
+                          return Card(
+                            child: ListTile(
+                              title: Text(
+                                'Stance ${i + 1}: ${st.formDisplayName}',
+                              ),
+                              subtitle: Text(
+                                '${style?.name ?? st.styleId} · ${form?.name ?? st.formId}',
+                              ),
+                            ),
+                          );
+                        }),
+                        if (c.heroType == HeroTypeKind.frantic) ...[
+                          const SizedBox(height: 16),
+                          Text(
+                            'Forms',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: 8),
+                          ...List.generate(c.stances.length, (i) {
+                            final st = c.stances[i];
+                            final formRule = rules.formById(st.formId);
+                            final archId = i < c.archetypeIds.length
+                                ? c.archetypeIds[i]
+                                : '';
+                            final arch = archId.isNotEmpty
+                                ? rules.archetypeById(archId)
+                                : null;
+                            final slotName = arch?.name.trim();
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                bottom: i < c.stances.length - 1 ? 16 : 0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    slotName != null && slotName.isNotEmpty
+                                        ? 'Form ${i + 1} · $slotName'
+                                        : 'Form ${i + 1}',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.w700),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  FranticFormSection(
+                                    form: formRule,
+                                    rules: rules,
+                                    formDisplayLabel:
+                                        st.formDisplayName.trim().isEmpty
+                                        ? null
+                                        : st.formDisplayName,
+                                    formChoiceId: st.formChoiceId,
+                                    ruleViolationHint:
+                                        CharacterRuleOverlay.stanceRowViolation(
+                                          pol,
+                                          c,
+                                          i,
+                                        ),
+                                  ),
+                                  if (formRule != null &&
+                                      formRule.choices.isNotEmpty) ...[
+                                    const SizedBox(height: 8),
+                                    OutlinedButton.icon(
+                                      onPressed: () =>
+                                          _openFormRuleChoiceForStance(
+                                            rules,
+                                            c,
+                                            i,
+                                          ),
+                                      icon: const Icon(Icons.checklist),
+                                      label: Text(
+                                        '${formRule.name} rule option…',
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                        const SizedBox(height: 16),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 12,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Tooltip(
+                              message:
+                                  'Most edits save as you go. Save records the timestamp of the copy on this device.',
+                              child: FilledButton(
+                                onPressed: () async {
+                                  final updated = c.copyWith(
+                                    updatedAt: DateTime.now(),
+                                  );
+                                  await _persist(updated);
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Saved.'),
+                                      behavior: SnackBarBehavior.floating,
+                                    ),
+                                  );
+                                },
+                                child: const Text('Save'),
+                              ),
+                            ),
+                            OutlinedButton(
+                              onPressed: () async {
+                                final current = c.copyWith(
+                                  updatedAt: DateTime.now(),
+                                );
+                                try {
+                                  final bytes = await buildCharacterPdfBytes(
+                                    current,
+                                    rules,
+                                  );
+                                  if (!context.mounted) return;
+                                  await Printing.sharePdf(
+                                    bytes: bytes,
+                                    filename: _pdfFileName(current),
+                                  );
+                                } catch (e) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Could not share PDF. Try Preview PDF in the toolbar. (${e.toString()})',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text('Share PDF'),
+                            ),
+                            OutlinedButton(
+                              onPressed: () => _exportJson(c),
+                              child: const Text('Export JSON'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Most edits save as you go. Save updates the timestamp '
+                          'of the copy stored on this device.',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.72),
+                                height: 1.35,
+                              ),
+                        ),
+                        const SizedBox(height: 12),
+                        OutlinedButton(
+                          onPressed: () {
+                            ref.read(creationSessionProvider.notifier).reset();
+                            context.go('/create');
+                          },
+                          child: const Text('Start another character'),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -436,9 +508,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
     if (latest == null) return;
     final draft = List<Stance>.from(latest.stances);
     draft[stanceIndex] = draft[stanceIndex].copyWith(formChoiceId: id);
-    await _persist(
-      latest.copyWith(stances: draft, updatedAt: DateTime.now()),
-    );
+    await _persist(latest.copyWith(stances: draft, updatedAt: DateTime.now()));
   }
 
   Future<void> _openReplaceStanceSkill(

@@ -79,8 +79,8 @@ abstract final class _PdfPalette {
 const double _kOuterMargin = 14;
 const double _halfGap = 8;
 
-/// Matches rulebook rails (`RulebookCharacterSheetPanel._railW`).
-const double _kRailW = 12;
+/// Matches main sheet lateral rails ([RulebookTemplateLateralBorder] default width).
+const double _kRailW = 6;
 const double _kRailTextInset = _kRailW + 4;
 
 /// Stance title dice: keep chips inside the column (past yellow rail + breathing room).
