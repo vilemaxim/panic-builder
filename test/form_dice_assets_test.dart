@@ -23,8 +23,8 @@ void main() {
         missing,
         isEmpty,
         reason:
-            'Keep optional dice PNGs on disk for branding/web tooling; stance dice '
-            'render as painted silhouettes via formDieChip.\n${missing.join('\n')}',
+            'Keep dice PNGs on disk; [formDieChip] loads them for form / stance cards.\n'
+            '${missing.join('\n')}',
       );
     },
   );

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
-import 'die_silhouette_painter.dart';
 
 /// Fallback dice when [RuleForm.dice] is empty (e.g. tests); matches printed form cards.
 const Map<String, List<int>> kFormDicePoolByFormId = {
@@ -19,7 +18,7 @@ const Map<String, List<int>> kFormDicePoolByFormId = {
   'form_zen': [7, 5, 3, 1],
 };
 
-/// Raster dice icons under `assets/icons/dice/` (optional branding); stance UI paints vectors instead.
+/// Raster dice icons under `assets/icons/dice/` (used by [formDieChip] on form / stance cards).
 const List<String> kBundledDiceIconAssetPaths = [
   'assets/icons/dice/d4.png',
   'assets/icons/dice/d6.png',
@@ -45,19 +44,49 @@ List<int> formDicePoolForForm(RuleForm? form) {
   return const [];
 }
 
-/// Stance-sheet die: painted silhouette for d4/d6/d8/d10 families; odd sizes use nearest shape + label.
+/// Asset path for the bundled d4 / d6 / d8 / d10 icon matching [sides] (must be 4, 6, 8, or 10).
+String bundledDiceIconAsset(int sides) {
+  assert({4, 6, 8, 10}.contains(sides), 'bundled icons only cover d4–d10');
+  return 'assets/icons/dice/d$sides.png';
+}
+
+/// Stance / form die: [assets/icons/dice] PNG; odd face counts use the nearest shape and show [sides] on top.
 Widget formDieChip(int sides, {double size = 44}) {
-  final silhouette = ({4, 6, 8, 10}.contains(sides))
+  final canonical = ({4, 6, 8, 10}.contains(sides))
       ? sides
       : canonicalDiceSidesForProxy(sides);
+  final needsFaceLabel = sides != canonical;
   return SizedBox(
     width: size,
     height: size,
-    child: CustomPaint(
-      painter: DieSilhouettePainter(
-        silhouetteSides: silhouette,
-        label: '$sides',
-      ),
+    child: Stack(
+      alignment: Alignment.center,
+      fit: StackFit.expand,
+      children: [
+        Padding(
+          padding: EdgeInsets.all(size * 0.06),
+          child: Image.asset(
+            bundledDiceIconAsset(canonical),
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.medium,
+            semanticLabel: 'd$sides',
+          ),
+        ),
+        if (needsFaceLabel)
+          Text(
+            '$sides',
+            style: TextStyle(
+              color: const Color(0xE6000000),
+              fontSize: size * (sides >= 10 ? 0.24 : 0.3),
+              fontWeight: FontWeight.w800,
+              height: 1,
+              shadows: const [
+                Shadow(color: Color(0xCCFFFFFF), blurRadius: 3),
+                Shadow(color: Color(0x66FFFFFF), blurRadius: 1),
+              ],
+            ),
+          ),
+      ],
     ),
   );
 }

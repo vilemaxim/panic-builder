@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../data/rules_models.dart';
 import '../../../domain/character_policies.dart';
 import '../../../domain/hero_type_kind.dart';
+import 'picker_presentation.dart';
 import 'rule_violation_marker.dart';
 
 Future<void> showArchetypePickerSheet(
@@ -34,19 +35,15 @@ Future<void> showArchetypePickerSheet(
     initialArchetypeIds,
   );
 
-  await showDialog<void>(
+  final picks = List<String>.from(initialPicks);
+  await showPickerAdaptive<void>(
     context: context,
-    barrierDismissible: true,
-    builder: (dialogContext) {
-      final picks = List<String>.from(initialPicks);
-      return StatefulBuilder(
-        builder: (context, setState) {
-          final screenW = MediaQuery.sizeOf(context).width;
-          final contentWidth = (screenW - 48).clamp(280.0, 560.0);
-          final slotPick = picks[editSlotIndex].isEmpty
-              ? null
-              : picks[editSlotIndex];
-          final theme = Theme.of(context);
+    title: const Text('Choose Archetype'),
+    buildScrollableBody: (innerContext, setState) {
+      final slotPick = picks[editSlotIndex].isEmpty
+          ? null
+          : picks[editSlotIndex];
+      final theme = Theme.of(innerContext);
           final allowed = <RuleArchetype>[];
           final disallowed = <RuleArchetype>[];
           for (final a in rules.archetypes) {
@@ -74,23 +71,40 @@ Future<void> showArchetypePickerSheet(
           Widget archetypeTile(RuleArchetype a, String? ruleViolation) {
             final complexity = a.complexity.clamp(1, 3);
             final stars = '${'★' * complexity}${'☆' * (3 - complexity)}';
-            return RadioListTile<String>(
-              value: a.id,
-              groupValue: slotPick,
-              onChanged: (v) {
-                if (v == null) return;
-                setState(() => picks[editSlotIndex] = v);
-              },
-              title: Row(
-                children: [
-                  if (ruleViolation != null) ...[
-                    RuleViolationTriangle(message: ruleViolation),
-                    const SizedBox(width: 6),
-                  ],
-                  Expanded(child: Text('${a.name} ($stars)')),
-                  _archetypeInfoIcon(context, a),
-                ],
+            final line = '${a.name} ($stars)';
+            return ListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
               ),
+              visualDensity: VisualDensity.compact,
+              leading: Radio<String>(
+                value: a.id,
+                groupValue: slotPick,
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => picks[editSlotIndex] = v);
+                },
+              ),
+              title: ruleViolation != null
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RuleViolationTriangle(message: ruleViolation),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            line,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Text(line, maxLines: 2, overflow: TextOverflow.ellipsis),
+              trailing: _archetypeInfoIcon(innerContext, a),
+              onTap: () => setState(() => picks[editSlotIndex] = a.id),
             );
           }
 
@@ -133,54 +147,48 @@ Future<void> showArchetypePickerSheet(
             ],
           ];
 
-          return AlertDialog(
-            title: const Text('Choose Archetype'),
-            content: SizedBox(
-              width: contentWidth,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: columnChildren,
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: const Text('Cancel'),
-              ),
-              FilledButton(
-                onPressed: slotPick == null
-                    ? null
-                    : () async {
-                        final err = policies.validateArchetypeSlotPick(
-                          heroType,
-                          picks,
-                          slotPick,
-                          editSlotIndex,
-                        );
-                        if (err != null) {
-                          onValidationError?.call(err);
-                          return;
-                        }
-                        await onApply(List<String>.from(picks));
-                        if (dialogContext.mounted) {
-                          Navigator.pop(dialogContext);
-                        }
-                      },
-                child: const Text('Apply'),
-              ),
-            ],
-          );
-        },
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: columnChildren,
       );
+    },
+    buildActions: (routeContext, setState) {
+      final slot = picks[editSlotIndex].isEmpty ? null : picks[editSlotIndex];
+      return [
+        TextButton(
+          onPressed: () => Navigator.pop(routeContext),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: slot == null
+              ? null
+              : () async {
+                  final err = policies.validateArchetypeSlotPick(
+                    heroType,
+                    picks,
+                    slot,
+                    editSlotIndex,
+                  );
+                  if (err != null) {
+                    onValidationError?.call(err);
+                    return;
+                  }
+                  await onApply(List<String>.from(picks));
+                  if (routeContext.mounted) {
+                    Navigator.pop(routeContext);
+                  }
+                },
+          child: const Text('Apply'),
+        ),
+      ];
     },
   );
 }
 
 Widget _archetypeInfoIcon(BuildContext context, RuleArchetype a) {
   final text = _archetypeTooltipDescription(a);
+  final scheme = Theme.of(context).colorScheme;
   return Tooltip(
     margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     padding: const EdgeInsets.all(10),
@@ -207,7 +215,17 @@ Widget _archetypeInfoIcon(BuildContext context, RuleArchetype a) {
       color: const Color(0xFF1E1B16),
       borderRadius: BorderRadius.circular(8),
     ),
-    child: const Icon(Icons.info_outline, size: 18),
+    child: Semantics(
+      label: 'Archetype details',
+      child: Padding(
+        padding: const EdgeInsetsDirectional.only(end: 4),
+        child: Icon(
+          Icons.info_outline,
+          size: 20,
+          color: scheme.onSurface.withValues(alpha: 0.65),
+        ),
+      ),
+    ),
   );
 }
 

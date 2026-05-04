@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
+import 'picker_presentation.dart';
 
 /// Picks a [RuleFormChoice.id] when [form.choices] is non-empty.
 Future<String?> showFormRuleChoicesDialog(
@@ -9,92 +10,71 @@ Future<String?> showFormRuleChoicesDialog(
   String? initialChoiceId,
 }) async {
   if (form.choices.isEmpty) return null;
-  return showDialog<String>(
+  final initial = initialChoiceId?.trim();
+  late String selected;
+  if (initial != null && form.choices.any((c) => c.id == initial)) {
+    selected = initial;
+  } else {
+    selected = form.choices.first.id;
+  }
+  return showPickerAdaptive<String>(
     context: context,
-    barrierDismissible: true,
-    builder: (ctx) {
-      return _FormChoiceDialogBody(
-        form: form,
-        initialChoiceId: initialChoiceId,
+    title: Text(
+      '${form.name.trim()}: choose a rule',
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    ),
+    buildScrollableBody: (innerContext, setState) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final c in form.choices)
+            ListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
+              ),
+              visualDensity: VisualDensity.compact,
+              leading: Radio<String>(
+                value: c.id,
+                groupValue: selected,
+                onChanged: (v) {
+                  if (v != null) setState(() => selected = v);
+                },
+              ),
+              title: Text(
+                c.text.trim().isEmpty ? c.id : c.text.trim(),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              subtitle: c.helpText != null && c.helpText!.trim().isNotEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        c.helpText!.trim(),
+                        style: Theme.of(innerContext).textTheme.bodySmall,
+                        maxLines: 6,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
+                  : null,
+              onTap: () => setState(() => selected = c.id),
+            ),
+        ],
       );
     },
-  );
-}
-
-class _FormChoiceDialogBody extends StatefulWidget {
-  const _FormChoiceDialogBody({
-    required this.form,
-    this.initialChoiceId,
-  });
-
-  final RuleForm form;
-  final String? initialChoiceId;
-
-  @override
-  State<_FormChoiceDialogBody> createState() => _FormChoiceDialogBodyState();
-}
-
-class _FormChoiceDialogBodyState extends State<_FormChoiceDialogBody> {
-  late String? _selected;
-
-  @override
-  void initState() {
-    super.initState();
-    final initial = widget.initialChoiceId?.trim();
-    if (initial != null &&
-        widget.form.choices.any((c) => c.id == initial)) {
-      _selected = initial;
-    } else {
-      _selected = widget.form.choices.first.id;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final f = widget.form;
-    return AlertDialog(
-      title: Text('${f.name.trim()}: choose a rule'),
-      content: SizedBox(
-        width: 520,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (final c in f.choices)
-                RadioListTile<String>(
-                  value: c.id,
-                  groupValue: _selected,
-                  onChanged: (v) => setState(() => _selected = v),
-                  title: Text(
-                    c.text.trim().isEmpty ? c.id : c.text.trim(),
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  subtitle:
-                      c.helpText != null && c.helpText!.trim().isNotEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Text(
-                                c.helpText!.trim(),
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            )
-                          : null,
-                ),
-            ],
-          ),
-        ),
+    buildActions: (routeContext, setState) => [
+      TextButton(
+        onPressed: () => Navigator.pop(routeContext),
+        child: const Text('Cancel'),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.pop(context, _selected),
-          child: const Text('OK'),
-        ),
-      ],
-    );
-  }
+      FilledButton(
+        onPressed: () => Navigator.pop(routeContext, selected),
+        child: const Text('OK'),
+      ),
+    ],
+  );
 }

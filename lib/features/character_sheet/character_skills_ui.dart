@@ -4,6 +4,8 @@ import '../../data/rules_models.dart';
 import '../../domain/character.dart';
 import '../../domain/character_policies.dart';
 import '../../domain/skills_state.dart';
+import 'widgets/picker_dialog_chrome.dart';
+import 'widgets/picker_presentation.dart';
 
 /// Unique skills referenced by any form’s `skillIds` (the in-play form skill pool).
 List<RuleSkill> skillsGrantedByForms(MergedRules rules) {
@@ -112,91 +114,166 @@ Future<String?> showPickSkillFromRulesDialog(
   final all = skillsGrantedByForms(rules);
   final ctrl = TextEditingController();
   try {
-    return await showDialog<String>(
-      context: context,
-      barrierDismissible: true,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (ctx, setState) {
-            final q = ctrl.text.trim().toLowerCase();
-            final filtered = q.isEmpty
-                ? all
-                : all.where((s) {
-                    final name = s.name.toLowerCase();
-                    final desc = s.description.toLowerCase();
-                    final id = s.id.toLowerCase();
-                    return name.contains(q) ||
-                        desc.contains(q) ||
-                        id.contains(q);
-                  }).toList();
-            return AlertDialog(
-              title: const Text('Choose skill'),
-              content: SizedBox(
-                width: 520,
-                height: 420,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextField(
-                      controller: ctrl,
-                      decoration: const InputDecoration(
-                        hintText: 'Search by name or description…',
-                        isDense: true,
-                      ),
-                      onChanged: (_) => setState(() {}),
+    Widget skillPickerColumn(
+      BuildContext popRouteContext,
+      BuildContext innerContext,
+      StateSetter setState,
+    ) {
+      final q = ctrl.text.trim().toLowerCase();
+      final filtered = q.isEmpty
+          ? all
+          : all.where((s) {
+              final name = s.name.toLowerCase();
+              final desc = s.description.toLowerCase();
+              final id = s.id.toLowerCase();
+              return name.contains(q) ||
+                  desc.contains(q) ||
+                  id.contains(q);
+            }).toList();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: ctrl,
+            decoration: const InputDecoration(
+              hintText: 'Search by name or description…',
+              isDense: true,
+            ),
+            onChanged: (_) => setState(() {}),
+          ),
+          const SizedBox(height: 12),
+          Expanded(
+            child: filtered.isEmpty
+                ? Center(
+                    child: Text(
+                      all.isEmpty
+                          ? 'No skills listed on forms in the rules data.'
+                          : 'No matches.',
+                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
-                    Expanded(
-                      child: filtered.isEmpty
-                          ? Center(
-                              child: Text(
-                                all.isEmpty
-                                    ? 'No skills listed on forms in the rules data.'
-                                    : 'No matches.',
-                                textAlign: TextAlign.center,
-                              ),
-                            )
-                          : ListView.builder(
-                              itemCount: filtered.length,
-                              itemBuilder: (context, i) {
-                                final s = filtered[i];
-                                final selected = s.id == currentSkillId;
-                                final desc = s.description.trim();
-                                return ListTile(
-                                  selected: selected,
-                                  title: Text(
-                                    s.name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  subtitle: Padding(
-                                    padding: const EdgeInsets.only(top: 4),
-                                    child: Text(
-                                      desc.isEmpty ? '—' : desc,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodySmall,
-                                      maxLines: 5,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  isThreeLine: true,
-                                  onTap: () =>
-                                      Navigator.pop(dialogContext, s.id),
-                                );
-                              },
-                            ),
+                  )
+                : ListView.builder(
+                    itemCount: filtered.length,
+                    itemBuilder: (context, i) {
+                      final s = filtered[i];
+                      final selected = s.id == currentSkillId;
+                      final desc = s.description.trim();
+                      return ListTile(
+                        dense: true,
+                        visualDensity: VisualDensity.compact,
+                        selected: selected,
+                        title: Text(
+                          s.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            desc.isEmpty ? '—' : desc,
+                            style: Theme.of(context).textTheme.bodySmall,
+                            maxLines: 4,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        isThreeLine: true,
+                        onTap: () => Navigator.pop(popRouteContext, s.id),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      );
+    }
+
+    if (!usePickerBottomSheet(context)) {
+      return await showDialog<String>(
+        context: context,
+        barrierDismissible: true,
+        builder: (dialogContext) {
+          return StatefulBuilder(
+            builder: (ctx, setState) {
+              final mq = MediaQuery.sizeOf(ctx);
+              final dialogW = (mq.width - 48).clamp(280.0, 560.0);
+              final dialogH = (mq.height * 0.62).clamp(280.0, 520.0);
+              return withPickerDialogChrome(
+                ctx,
+                AlertDialog(
+                  title: const Text('Choose skill'),
+                  content: SizedBox(
+                    width: dialogW,
+                    height: dialogH,
+                    child: skillPickerColumn(dialogContext, ctx, setState),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: const Text('Cancel'),
                     ),
                   ],
                 ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('Cancel'),
+              );
+            },
+          );
+        },
+      );
+    }
+
+    return await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      showDragHandle: true,
+      builder: (routeContext) {
+        return StatefulBuilder(
+          builder: (ctx, setState) {
+            final mq = MediaQuery.of(ctx);
+            final sheetH = mq.size.height * 0.88;
+            final titleStyle =
+                Theme.of(ctx).dialogTheme.titleTextStyle ??
+                Theme.of(ctx).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    );
+            return withPickerDialogChrome(
+              context,
+              Padding(
+                padding: EdgeInsets.only(bottom: mq.viewInsets.bottom),
+                child: SizedBox(
+                  height: sheetH,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(24, 8, 24, 8),
+                        child: DefaultTextStyle.merge(
+                          style: titleStyle,
+                          child: const Text('Choose skill'),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                          child: skillPickerColumn(routeContext, ctx, setState),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () => Navigator.pop(routeContext),
+                            child: const Text('Cancel'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             );
           },
         );
@@ -238,78 +315,79 @@ Future<String?> showTwoWordSkillDialog(
   final ctrl = TextEditingController(text: initial);
   String? error;
   try {
-    return await showDialog<String>(
+    return await showPickerAdaptive<String>(
       context: context,
-      barrierDismissible: true,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) {
-          return AlertDialog(
-            title: const Text('Two-word skill'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'The rules suggest a two-word name (e.g. Iron Palm). '
-                  'You can use any label up to $kCustomHeroSkillMaxChars characters.',
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: ctrl,
-                  autofocus: true,
-                  maxLength: kCustomHeroSkillMaxChars,
-                  decoration: InputDecoration(
-                    errorText: error,
-                    hintText: 'e.g. Iron Palm',
-                  ),
-                  textInputAction: TextInputAction.done,
-                  onSubmitted: (_) {
-                    final v = ctrl.text.trim();
-                    if (v.isEmpty) {
-                      setState(() {
-                        error = 'Enter a skill name.';
-                      });
-                      return;
-                    }
-                    if (v.length > kCustomHeroSkillMaxChars) {
-                      setState(() {
-                        error = 'At most $kCustomHeroSkillMaxChars characters.';
-                      });
-                      return;
-                    }
-                    Navigator.pop(ctx, v);
-                  },
-                ),
-              ],
+      title: const Text('Two-word skill'),
+      buildScrollableBody: (innerContext, setState) {
+        void trySubmit() {
+          final v = ctrl.text.trim();
+          if (v.isEmpty) {
+            setState(() {
+              error = 'Enter a skill name.';
+            });
+            return;
+          }
+          if (v.length > kCustomHeroSkillMaxChars) {
+            setState(() {
+              error = 'At most $kCustomHeroSkillMaxChars characters.';
+            });
+            return;
+          }
+          Navigator.pop(innerContext, v);
+        }
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'The rules suggest a two-word name (e.g. Iron Palm). '
+              'You can use any label up to $kCustomHeroSkillMaxChars characters.',
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Cancel'),
+            const SizedBox(height: 12),
+            TextField(
+              controller: ctrl,
+              autofocus: true,
+              maxLength: kCustomHeroSkillMaxChars,
+              decoration: InputDecoration(
+                errorText: error,
+                hintText: 'e.g. Iron Palm',
               ),
-              FilledButton(
-                onPressed: () {
-                  final v = ctrl.text.trim();
-                  if (v.isEmpty) {
-                    setState(() {
-                      error = 'Enter a skill name.';
-                    });
-                    return;
-                  }
-                  if (v.length > kCustomHeroSkillMaxChars) {
-                    setState(() {
-                      error = 'At most $kCustomHeroSkillMaxChars characters.';
-                    });
-                    return;
-                  }
-                  Navigator.pop(ctx, v);
-                },
-                child: const Text('Save'),
-              ),
-            ],
-          );
-        },
-      ),
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => trySubmit(),
+            ),
+          ],
+        );
+      },
+      buildActions: (routeContext, setState) {
+        void trySubmit() {
+          final v = ctrl.text.trim();
+          if (v.isEmpty) {
+            setState(() {
+              error = 'Enter a skill name.';
+            });
+            return;
+          }
+          if (v.length > kCustomHeroSkillMaxChars) {
+            setState(() {
+              error = 'At most $kCustomHeroSkillMaxChars characters.';
+            });
+            return;
+          }
+          Navigator.pop(routeContext, v);
+        }
+
+        return [
+          TextButton(
+            onPressed: () => Navigator.pop(routeContext),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: trySubmit,
+            child: const Text('Save'),
+          ),
+        ];
+      },
     );
   } finally {
     ctrl.dispose();

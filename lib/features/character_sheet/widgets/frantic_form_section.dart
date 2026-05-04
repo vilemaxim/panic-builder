@@ -37,12 +37,6 @@ class FranticFormSection extends StatelessWidget {
   /// Hover tooltip when this form choice breaks printed stance rules.
   final String? ruleViolationHint;
 
-  static const TextStyle _bodyStyle = TextStyle(
-    color: Colors.black,
-    fontSize: 22,
-    height: 1.2,
-  );
-
   static const double _diceChipSize = 66;
   static const double _diceSpacing = 8;
 
@@ -50,6 +44,17 @@ class FranticFormSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final layoutW = MediaQuery.sizeOf(context).width;
     final ribbonTypo = RulebookRibbonHeaderTypography.forWidth(layoutW);
+    final wellBodyStyle = TextStyle(
+      color: Colors.black,
+      fontSize: ribbonTypo.stanceWellBodyFontSize,
+      height: 1.35,
+    );
+    final actionRibbonTitleStyle = TextStyle(
+      color: Colors.white,
+      fontSize: ribbonTypo.actionRibbonTitleFontSize,
+      fontWeight: FontWeight.w800,
+      height: 1.25,
+    );
     final chrome = RulebookStanceChrome.stance;
     final dm = _formDisplayModel(
       form,
@@ -69,17 +74,24 @@ class FranticFormSection extends StatelessWidget {
 
     final diceRow = _diceUpperRight(form);
 
-    final passiveWidgets = _buildPassiveWidgets(dm, badge);
+    final passiveWidgets = _buildPassiveWidgets(dm, badge, wellBodyStyle);
     final mainBody =
         passiveWidgets ??
         (form == null
             ? Text(
                 'Tap the title above to choose a form after picking a style.',
-                style: _bodyStyle.copyWith(color: Colors.black54),
+                style: wellBodyStyle.copyWith(color: Colors.black54),
               )
             : null);
 
-    final subs = _buildActionSubSections(dm, form, badge, chrome);
+    final subs = _buildActionSubSections(
+      dm,
+      form,
+      badge,
+      chrome,
+      wellBodyStyle: wellBodyStyle,
+      actionRibbonTitleStyle: actionRibbonTitleStyle,
+    );
 
     final model = RulebookSectionTemplateModel(
       mainLateralBorder: const RulebookTemplateLateralBorder(
@@ -181,6 +193,7 @@ class FranticFormSection extends StatelessWidget {
     })
     dm,
     String badge,
+    TextStyle wellBodyStyle,
   ) {
     final paras = dm.passiveParagraphs;
     if (paras.isEmpty) return null;
@@ -188,7 +201,7 @@ class FranticFormSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (var i = 0; i < paras.length; i++) ...[
-          Text(paras[i], style: _bodyStyle),
+          Text(paras[i], style: wellBodyStyle),
           if (i < paras.length - 1) const SizedBox(height: 8),
         ],
         const SizedBox(height: 10),
@@ -206,8 +219,10 @@ class FranticFormSection extends StatelessWidget {
     dm,
     RuleForm? f,
     String badge,
-    RulebookStanceChrome chrome,
-  ) {
+    RulebookStanceChrome chrome, {
+    required TextStyle wellBodyStyle,
+    required TextStyle actionRibbonTitleStyle,
+  }) {
     if (f == null) return const [];
     final out = <RulebookTemplateSubSection>[];
 
@@ -229,13 +244,18 @@ class FranticFormSection extends StatelessWidget {
       final paras = splitRuleParagraphs(a.description.trim());
       final body = paras.isEmpty
           ? const SizedBox.shrink()
-          : _paragraphsWithSource(paras, badge, singleCitation: true);
+          : _paragraphsWithSource(
+              paras,
+              badge,
+              singleCitation: true,
+              wellBodyStyle: wellBodyStyle,
+            );
       out.add(
         RulebookTemplateSubSection(
           lateralBorder: lateral,
           background: chrome.actionDescriptionBg,
           ribbonStyle: ribbonStyle,
-          ribbonTitle: Text(title),
+          ribbonTitle: Text(title, style: actionRibbonTitleStyle),
           ribbonWidthFactor: 0.8,
           body: body,
         ),
@@ -249,9 +269,16 @@ class FranticFormSection extends StatelessWidget {
           lateralBorder: lateral,
           background: chrome.actionDescriptionBg,
           ribbonStyle: ribbonStyle,
-          ribbonTitle: Text(_formActionHeading(f)),
+          ribbonTitle: Text(
+            _formActionHeading(f),
+            style: actionRibbonTitleStyle,
+          ),
           ribbonWidthFactor: 0.8,
-          body: _attributedParagraphBadges(fb, singleCitation: true),
+          body: _attributedParagraphBadges(
+            fb,
+            singleCitation: true,
+            wellBodyStyle: wellBodyStyle,
+          ),
         ),
       );
     }
@@ -282,6 +309,7 @@ class FranticFormSection extends StatelessWidget {
     List<String> paragraphs,
     String source, {
     required bool singleCitation,
+    required TextStyle wellBodyStyle,
   }) {
     if (paragraphs.isEmpty) return const SizedBox.shrink();
     if (singleCitation) {
@@ -289,7 +317,7 @@ class FranticFormSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < paragraphs.length; i++) ...[
-            rulebookActionOptionParagraph(paragraphs[i], _bodyStyle),
+            rulebookActionOptionParagraph(paragraphs[i], wellBodyStyle),
             if (i < paragraphs.length - 1) const SizedBox(height: 8),
           ],
           const SizedBox(height: 10),
@@ -303,7 +331,7 @@ class FranticFormSection extends StatelessWidget {
         for (var i = 0; i < paragraphs.length; i++) ...[
           RichText(
             text: TextSpan(
-              style: _bodyStyle,
+              style: wellBodyStyle,
               children: [
                 TextSpan(text: paragraphs[i]),
                 const TextSpan(text: ' '),
@@ -323,6 +351,7 @@ class FranticFormSection extends StatelessWidget {
   Widget _attributedParagraphBadges(
     List<({String text, String badge})> items, {
     required bool singleCitation,
+    required TextStyle wellBodyStyle,
   }) {
     if (items.isEmpty) return const SizedBox.shrink();
     final badgeLabel = items.first.badge;
@@ -331,7 +360,7 @@ class FranticFormSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < items.length; i++) ...[
-            rulebookActionOptionParagraph(items[i].text, _bodyStyle),
+            rulebookActionOptionParagraph(items[i].text, wellBodyStyle),
             if (i < items.length - 1) const SizedBox(height: 8),
           ],
           const SizedBox(height: 10),
@@ -345,9 +374,12 @@ class FranticFormSection extends StatelessWidget {
         for (var i = 0; i < items.length; i++) ...[
           RichText(
             text: TextSpan(
-              style: _bodyStyle,
+              style: wellBodyStyle,
               children: [
-                ...rulebookActionOptionInlineSpans(items[i].text, _bodyStyle),
+                ...rulebookActionOptionInlineSpans(
+                  items[i].text,
+                  wellBodyStyle,
+                ),
                 const TextSpan(text: ' '),
                 WidgetSpan(
                   alignment: PlaceholderAlignment.middle,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/rules_models.dart';
+import 'picker_presentation.dart';
 
 String _buildTooltipMessage(RuleBuild b) {
   final desc = b.description.trim();
@@ -15,64 +16,72 @@ Future<void> showBuildPickerSheet(
   required String? initialBuildId,
   required Future<void> Function(String? buildId) onApply,
 }) async {
-  String? selected = initialBuildId;
-  await showDialog<void>(
+  var selected = initialBuildId;
+  await showPickerAdaptive<void>(
     context: context,
-    barrierDismissible: true,
-    builder: (dialogContext) => StatefulBuilder(
-      builder: (context, setState) {
-        final screenW = MediaQuery.sizeOf(context).width;
-        final contentWidth = (screenW - 48).clamp(280.0, 560.0);
-        return AlertDialog(
-          title: const Text('Choose Build'),
-          content: SizedBox(
-            width: contentWidth,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...rules.builds.map(
-                    (b) => RadioListTile<String>(
-                      value: b.id,
-                      groupValue: selected,
-                      onChanged: (v) {
-                        if (v == null) return;
-                        setState(() => selected = v);
-                      },
-                      title: Row(
-                        children: [
-                          Expanded(child: Text(b.name)),
-                          Tooltip(
-                            message: _buildTooltipMessage(b),
-                            child: const Icon(Icons.info_outline, size: 18),
-                          ),
-                        ],
-                      ),
+    title: const Text('Choose Build'),
+    buildScrollableBody: (innerContext, setState) {
+      final theme = Theme.of(innerContext);
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ...rules.builds.map(
+            (b) => ListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
+              ),
+              visualDensity: VisualDensity.compact,
+              leading: Radio<String>(
+                value: b.id,
+                groupValue: selected,
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => selected = v);
+                },
+              ),
+              title: Text(
+                b.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              trailing: Tooltip(
+                message: _buildTooltipMessage(b),
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(end: 4),
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 20,
+                    color: theme.colorScheme.onSurface.withValues(
+                      alpha: 0.65,
                     ),
                   ),
-                ],
+                ),
               ),
+              onTap: () => setState(() => selected = b.id),
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: selected == null
-                  ? null
-                  : () async {
-                      await onApply(selected);
-                      if (dialogContext.mounted) {
-                        Navigator.pop(dialogContext);
-                      }
-                    },
-              child: const Text('Apply'),
-            ),
-          ],
-        );
-      },
-    ),
+        ],
+      );
+    },
+    buildActions: (routeContext, setState) => [
+      TextButton(
+        onPressed: () => Navigator.pop(routeContext),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: selected == null
+            ? null
+            : () async {
+                await onApply(selected);
+                if (routeContext.mounted) {
+                  Navigator.pop(routeContext);
+                }
+              },
+        child: const Text('Apply'),
+      ),
+    ],
   );
 }

@@ -337,10 +337,13 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     final form = s == null ? null : rules.formById(s.formId);
     final stanceHint = _stanceTabPrerequisiteMessage(c, policies);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
       children: [
         if (stanceHint != null)
-          _infoBanner(icon: Icons.info_outline, message: stanceHint),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _infoBanner(icon: Icons.info_outline, message: stanceHint),
+          ),
         RulebookStancePanel(
           style: style,
           form: form,
@@ -369,13 +372,19 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
   ) {
     final stanceHint = _stanceTabPrerequisiteMessage(c, policies);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
       children: [
         if (stanceHint != null)
-          _infoBanner(icon: Icons.info_outline, message: stanceHint),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _infoBanner(icon: Icons.info_outline, message: stanceHint),
+          ),
         for (var idx = 0; idx < 3; idx++) ...[
           if (idx > 0) const SizedBox(height: 20),
-          _franticStyleSlotHeading(c, rules, idx),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _franticStyleSlotHeading(c, rules, idx),
+          ),
           const SizedBox(height: 8),
           _franticStyleSlotPanel(c, rules, policies, idx),
         ],
@@ -428,12 +437,19 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
   ) {
     final hint = _formsTabPrerequisiteMessage(c, policies);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
       children: [
-        if (hint != null) _infoBanner(icon: Icons.info_outline, message: hint),
+        if (hint != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _infoBanner(icon: Icons.info_outline, message: hint),
+          ),
         for (var idx = 0; idx < 3; idx++) ...[
           if (idx > 0) const SizedBox(height: 20),
-          _franticFormSlotHeading(c, rules, idx),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _franticFormSlotHeading(c, rules, idx),
+          ),
           const SizedBox(height: 8),
           _franticFormSlotPanel(c, rules, policies, idx),
         ],

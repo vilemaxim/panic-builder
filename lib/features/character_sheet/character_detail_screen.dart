@@ -115,6 +115,160 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
           ),
           data: (rules) {
             final pol = policiesFor(rules);
+            final franticHero = c.heroType == HeroTypeKind.frantic;
+            final stanceRowWidgets = <Widget>[];
+            for (var i = 0; i < c.stances.length; i++) {
+              final st = c.stances[i];
+              final style = rules.styleById(st.styleId);
+              final form = rules.formById(st.formId);
+              if (franticHero && style != null) {
+                stanceRowWidgets.add(
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: RulebookStancePanel(
+                      chrome: RulebookStanceChrome.franticStyle,
+                      styleOnly: true,
+                      style: style,
+                      form: null,
+                      rules: rules,
+                      heroType: c.heroType,
+                      ruleViolationHint:
+                          CharacterRuleOverlay.stanceRowViolation(pol, c, i),
+                    ),
+                  ),
+                );
+              } else if (style != null && form != null) {
+                stanceRowWidgets.add(
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        RulebookStancePanel(
+                          style: style,
+                          form: form,
+                          rules: rules,
+                          formDisplayLabel: st.formDisplayName.trim().isEmpty
+                              ? null
+                              : st.formDisplayName,
+                          formChoiceId: st.formChoiceId,
+                          heroType: c.heroType,
+                          ruleViolationHint:
+                              CharacterRuleOverlay.stanceRowViolation(
+                                pol,
+                                c,
+                                i,
+                              ),
+                        ),
+                        if (form.choices.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: OutlinedButton.icon(
+                              onPressed: () =>
+                                  _openFormRuleChoiceForStance(rules, c, i),
+                              icon: const Icon(Icons.checklist),
+                              label: Text('${form.name} rule option…'),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                stanceRowWidgets.add(
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                    child: Card(
+                      child: ListTile(
+                        title: Text(
+                          'Stance ${i + 1}: ${st.formDisplayName}',
+                        ),
+                        subtitle: Text(
+                          '${style?.name ?? st.styleId} · ${form?.name ?? st.formId}',
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }
+            }
+
+            final franticFormWidgets = <Widget>[];
+            if (franticHero) {
+              franticFormWidgets.add(const SizedBox(height: 16));
+              franticFormWidgets.add(
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Forms',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                ),
+              );
+              franticFormWidgets.add(const SizedBox(height: 8));
+              for (var i = 0; i < c.stances.length; i++) {
+                final st = c.stances[i];
+                final formRule = rules.formById(st.formId);
+                final archId = i < c.archetypeIds.length ? c.archetypeIds[i] : '';
+                final arch = archId.isNotEmpty
+                    ? rules.archetypeById(archId)
+                    : null;
+                final slotName = arch?.name.trim();
+                franticFormWidgets.add(
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: i < c.stances.length - 1 ? 16 : 0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(
+                            slotName != null && slotName.isNotEmpty
+                                ? 'Form ${i + 1} · $slotName'
+                                : 'Form ${i + 1}',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        FranticFormSection(
+                          form: formRule,
+                          rules: rules,
+                          formDisplayLabel: st.formDisplayName.trim().isEmpty
+                              ? null
+                              : st.formDisplayName,
+                          formChoiceId: st.formChoiceId,
+                          ruleViolationHint:
+                              CharacterRuleOverlay.stanceRowViolation(
+                                pol,
+                                c,
+                                i,
+                              ),
+                        ),
+                        if (formRule != null &&
+                            formRule.choices.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: OutlinedButton.icon(
+                              onPressed: () =>
+                                  _openFormRuleChoiceForStance(rules, c, i),
+                              icon: const Icon(Icons.checklist),
+                              label: Text('${formRule.name} rule option…'),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                );
+              }
+            }
+
             return Scaffold(
               appBar: AppBar(
                 title: Text(
@@ -242,157 +396,21 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                       children: [
                         const SizedBox(height: 16),
                         Text(
-                          c.heroType == HeroTypeKind.frantic
-                              ? 'Styles'
-                              : 'Stances',
+                          franticHero ? 'Styles' : 'Stances',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                         const SizedBox(height: 8),
-                        ...List.generate(c.stances.length, (i) {
-                          final st = c.stances[i];
-                          final style = rules.styleById(st.styleId);
-                          final form = rules.formById(st.formId);
-                          final frantic = c.heroType == HeroTypeKind.frantic;
-                          if (frantic && style != null) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: RulebookStancePanel(
-                                chrome: RulebookStanceChrome.franticStyle,
-                                styleOnly: true,
-                                style: style,
-                                form: null,
-                                rules: rules,
-                                heroType: c.heroType,
-                                ruleViolationHint:
-                                    CharacterRuleOverlay.stanceRowViolation(
-                                      pol,
-                                      c,
-                                      i,
-                                    ),
-                              ),
-                            );
-                          }
-                          if (style != null && form != null) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  RulebookStancePanel(
-                                    style: style,
-                                    form: form,
-                                    rules: rules,
-                                    formDisplayLabel:
-                                        st.formDisplayName.trim().isEmpty
-                                        ? null
-                                        : st.formDisplayName,
-                                    formChoiceId: st.formChoiceId,
-                                    heroType: c.heroType,
-                                    ruleViolationHint:
-                                        CharacterRuleOverlay.stanceRowViolation(
-                                          pol,
-                                          c,
-                                          i,
-                                        ),
-                                  ),
-                                  if (form.choices.isNotEmpty) ...[
-                                    const SizedBox(height: 8),
-                                    OutlinedButton.icon(
-                                      onPressed: () =>
-                                          _openFormRuleChoiceForStance(
-                                            rules,
-                                            c,
-                                            i,
-                                          ),
-                                      icon: const Icon(Icons.checklist),
-                                      label: Text('${form.name} rule option…'),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            );
-                          }
-                          return Card(
-                            child: ListTile(
-                              title: Text(
-                                'Stance ${i + 1}: ${st.formDisplayName}',
-                              ),
-                              subtitle: Text(
-                                '${style?.name ?? st.styleId} · ${form?.name ?? st.formId}',
-                              ),
-                            ),
-                          );
-                        }),
-                        if (c.heroType == HeroTypeKind.frantic) ...[
-                          const SizedBox(height: 16),
-                          Text(
-                            'Forms',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                          const SizedBox(height: 8),
-                          ...List.generate(c.stances.length, (i) {
-                            final st = c.stances[i];
-                            final formRule = rules.formById(st.formId);
-                            final archId = i < c.archetypeIds.length
-                                ? c.archetypeIds[i]
-                                : '';
-                            final arch = archId.isNotEmpty
-                                ? rules.archetypeById(archId)
-                                : null;
-                            final slotName = arch?.name.trim();
-                            return Padding(
-                              padding: EdgeInsets.only(
-                                bottom: i < c.stances.length - 1 ? 16 : 0,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  Text(
-                                    slotName != null && slotName.isNotEmpty
-                                        ? 'Form ${i + 1} · $slotName'
-                                        : 'Form ${i + 1}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.w700),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  FranticFormSection(
-                                    form: formRule,
-                                    rules: rules,
-                                    formDisplayLabel:
-                                        st.formDisplayName.trim().isEmpty
-                                        ? null
-                                        : st.formDisplayName,
-                                    formChoiceId: st.formChoiceId,
-                                    ruleViolationHint:
-                                        CharacterRuleOverlay.stanceRowViolation(
-                                          pol,
-                                          c,
-                                          i,
-                                        ),
-                                  ),
-                                  if (formRule != null &&
-                                      formRule.choices.isNotEmpty) ...[
-                                    const SizedBox(height: 8),
-                                    OutlinedButton.icon(
-                                      onPressed: () =>
-                                          _openFormRuleChoiceForStance(
-                                            rules,
-                                            c,
-                                            i,
-                                          ),
-                                      icon: const Icon(Icons.checklist),
-                                      label: Text(
-                                        '${formRule.name} rule option…',
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            );
-                          }),
-                        ],
+                      ],
+                    ),
+                  ),
+                  ...stanceRowWidgets,
+                  ...franticFormWidgets,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                         const SizedBox(height: 16),
                         Wrap(
                           spacing: 12,

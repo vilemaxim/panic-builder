@@ -3,12 +3,13 @@
 ## UI & visual
 
 - [ ] Make it look better on mobile
+- [ ] Use asset backgrounds and banners (extracted from the rules PDF) in the UI so it looks more like the game.
 
 ## Character sheet
 
 - [ ] Add an **extended character sheet** option with skill descriptions, other calculated states, Supers, etc.
 - [ ] Allow spending XP points
-- [ ] If an ability from a stance would effect things on that stance, like range or dice, incorperate that into the stance directy.
+- [x] If an ability from a stance would effect things on that stance, like range or dice, incorperate that into the stance directy.
 - [ ] Pull dice images from the rule book and add them to stances and forms.
 
 ## Villains

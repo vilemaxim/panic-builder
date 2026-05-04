@@ -21,6 +21,12 @@ void main() {
               'ships raster dice (directory-only registration omitted them).',
         );
       }
+      expect(
+        pubspec.contains('- assets/images/branding/panic_at_the_dojo_logo.png'),
+        isTrue,
+        reason:
+            'Home screen shows the wordmark; list it explicitly under flutter.assets.',
+      );
     },
   );
 

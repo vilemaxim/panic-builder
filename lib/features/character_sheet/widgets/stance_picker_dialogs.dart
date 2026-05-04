@@ -5,6 +5,7 @@ import '../../../domain/character_policies.dart';
 import '../../../domain/hero_type_kind.dart';
 import '../../../domain/stance.dart';
 import 'rule_violation_marker.dart';
+import 'picker_presentation.dart';
 import 'stance_rules_tooltip.dart';
 
 /// Matches stance sheet / PDF trimming of trailing ` Style`.
@@ -57,18 +58,14 @@ Future<void> showStanceStylePickDialog(
   required String? initialStyleId,
   required Future<void> Function(String styleId) onApply,
 }) async {
-  await showDialog<void>(
+  var selected = (initialStyleId != null && initialStyleId.isNotEmpty)
+      ? initialStyleId
+      : null;
+  await showPickerAdaptive<void>(
     context: context,
-    barrierDismissible: true,
-    builder: (dialogContext) {
-      String? selected = (initialStyleId != null && initialStyleId.isNotEmpty)
-          ? initialStyleId
-          : null;
-      return StatefulBuilder(
-        builder: (context, setState) {
-          final screenW = MediaQuery.sizeOf(context).width;
-          final contentWidth = (screenW - 48).clamp(280.0, 560.0);
-          final theme = Theme.of(context);
+    title: const Text('Choose Style'),
+    buildScrollableBody: (innerContext, setState) {
+      final theme = Theme.of(innerContext);
           final allowed = policies.allowedStyleIdsForStance(
             hero: hero,
             archetypeIds: archetypeIds,
@@ -90,33 +87,62 @@ Future<void> showStanceStylePickDialog(
             final archetypeLabel = (arch?.name ?? s.archetypeId).trim();
             final styleLine =
                 '$archetypeLabel: ${_trimStyleSuffixForPicker(s.name)}';
-            return RadioListTile<String>(
-              value: id,
-              groupValue: selected,
-              onChanged: (v) {
-                if (v == null) return;
-                setState(() => selected = v);
-              },
-              title: Row(
-                children: [
-                  if (ruleViolation != null) ...[
-                    RuleViolationTriangle(message: ruleViolation),
-                    const SizedBox(width: 6),
-                  ],
-                  Expanded(child: Text(styleLine)),
-                  Tooltip(
-                    message: stanceStyleRulesBody(s, rules),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    preferBelow: true,
-                    waitDuration: const Duration(milliseconds: 200),
-                    child: const Icon(Icons.info_outline, size: 18),
-                  ),
-                ],
+            return ListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
               ),
+              visualDensity: VisualDensity.compact,
+              leading: Radio<String>(
+                value: id,
+                groupValue: selected,
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => selected = v);
+                },
+              ),
+              title: ruleViolation != null
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RuleViolationTriangle(message: ruleViolation),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            styleLine,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Text(
+                      styleLine,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+              trailing: Tooltip(
+                message: stanceStyleRulesBody(s, rules),
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.all(10),
+                preferBelow: true,
+                waitDuration: const Duration(milliseconds: 200),
+                child: Semantics(
+                  label: 'Style rules details',
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 4),
+                    child: Icon(
+                      Icons.info_outline,
+                      size: 20,
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.65,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () => setState(() => selected = id),
             );
           }
 
@@ -160,39 +186,29 @@ Future<void> showStanceStylePickDialog(
             ],
           ];
 
-          return AlertDialog(
-            title: const Text('Choose Style'),
-            content: SizedBox(
-              width: contentWidth,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: columnChildren,
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: const Text('Cancel'),
-              ),
-              FilledButton(
-                onPressed: selected == null
-                    ? null
-                    : () async {
-                        await onApply(selected!);
-                        if (dialogContext.mounted) {
-                          Navigator.pop(dialogContext);
-                        }
-                      },
-                child: const Text('Apply'),
-              ),
-            ],
-          );
-        },
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: columnChildren,
       );
     },
+    buildActions: (routeContext, setState) => [
+      TextButton(
+        onPressed: () => Navigator.pop(routeContext),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: selected == null
+            ? null
+            : () async {
+                await onApply(selected!);
+                if (routeContext.mounted) {
+                  Navigator.pop(routeContext);
+                }
+              },
+        child: const Text('Apply'),
+      ),
+    ],
   );
 }
 
@@ -211,18 +227,15 @@ Future<String?> showStanceFormPickDialog(
   required int stanceIndex,
   required String? initialFormId,
 }) async {
-  return showDialog<String>(
+  final allFormsSorted = _sortedFormsByName(List<RuleForm>.from(rules.forms));
+  var selected = (initialFormId != null && initialFormId.isNotEmpty)
+      ? initialFormId
+      : null;
+  return showPickerAdaptive<String>(
     context: context,
-    barrierDismissible: true,
-    builder: (dialogContext) {
-      String? selected = (initialFormId != null && initialFormId.isNotEmpty)
-          ? initialFormId
-          : null;
-      return StatefulBuilder(
-        builder: (context, setState) {
-          final screenW = MediaQuery.sizeOf(context).width;
-          final contentWidth = (screenW - 48).clamp(280.0, 560.0);
-          final theme = Theme.of(context);
+    title: const Text('Choose Form'),
+    buildScrollableBody: (innerContext, setState) {
+      final theme = Theme.of(innerContext);
           final cur = stanceIndex < stancesPadded.length
               ? stancesPadded[stanceIndex].formId
               : '';
@@ -232,42 +245,66 @@ Future<String?> showStanceFormPickDialog(
             final fid = stancesPadded[i].formId;
             if (fid.isNotEmpty) usedElsewhere.add(fid);
           }
-          final allForms = _sortedFormsByName(List<RuleForm>.from(rules.forms));
-          final allowed = allForms
+          final allowed = allFormsSorted
               .where((f) => !usedElsewhere.contains(f.id) || f.id == cur)
               .toList();
-          final disallowed = allForms
+          final disallowed = allFormsSorted
               .where((f) => usedElsewhere.contains(f.id) && f.id != cur)
               .toList();
 
           Widget formTile(RuleForm f, String? ruleViolation) {
-            return RadioListTile<String>(
-              value: f.id,
-              groupValue: selected,
-              onChanged: (v) {
-                if (v == null) return;
-                setState(() => selected = v);
-              },
-              title: Row(
-                children: [
-                  if (ruleViolation != null) ...[
-                    RuleViolationTriangle(message: ruleViolation),
-                    const SizedBox(width: 6),
-                  ],
-                  Expanded(child: Text(f.name)),
-                  Tooltip(
-                    message: stanceFormRulesBody(f, rules),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    preferBelow: true,
-                    waitDuration: const Duration(milliseconds: 200),
-                    child: const Icon(Icons.info_outline, size: 18),
-                  ),
-                ],
+            return ListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
               ),
+              visualDensity: VisualDensity.compact,
+              leading: Radio<String>(
+                value: f.id,
+                groupValue: selected,
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => selected = v);
+                },
+              ),
+              title: ruleViolation != null
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RuleViolationTriangle(message: ruleViolation),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            f.name,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Text(f.name, maxLines: 2, overflow: TextOverflow.ellipsis),
+              trailing: Tooltip(
+                message: stanceFormRulesBody(f, rules),
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.all(10),
+                preferBelow: true,
+                waitDuration: const Duration(milliseconds: 200),
+                child: Semantics(
+                  label: 'Form rules details',
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 4),
+                    child: Icon(
+                      Icons.info_outline,
+                      size: 20,
+                      color: theme.colorScheme.onSurface.withValues(
+                        alpha: 0.65,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () => setState(() => selected = f.id),
             );
           }
 
@@ -312,34 +349,24 @@ Future<String?> showStanceFormPickDialog(
             ],
           ];
 
-          return AlertDialog(
-            title: const Text('Choose Form'),
-            content: SizedBox(
-              width: contentWidth,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: columnChildren,
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: const Text('Cancel'),
-              ),
-              FilledButton(
-                onPressed: selected == null || allForms.isEmpty
-                    ? null
-                    : () => Navigator.pop(dialogContext, selected),
-                child: const Text('Apply'),
-              ),
-            ],
-          );
-        },
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: columnChildren,
       );
     },
+    buildActions: (routeContext, setState) => [
+      TextButton(
+        onPressed: () => Navigator.pop(routeContext),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: selected == null || allFormsSorted.isEmpty
+            ? null
+            : () => Navigator.pop(routeContext, selected),
+        child: const Text('Apply'),
+      ),
+    ],
   );
 }
 
@@ -351,66 +378,64 @@ Future<String?> showFormDisplayNamePickDialog(
 }) async {
   if (choices.isEmpty) return form.name.trim();
   final canonical = form.name.trim();
-  return showDialog<String>(
+  String? selected;
+  return showPickerAdaptive<String>(
     context: context,
-    barrierDismissible: true,
-    builder: (dialogContext) {
-      String? selected;
-      return StatefulBuilder(
-        builder: (context, setState) {
-          final screenW = MediaQuery.sizeOf(context).width;
-          final contentWidth = (screenW - 48).clamp(280.0, 520.0);
-          return AlertDialog(
-            title: const Text('Form name on sheet'),
-            content: SizedBox(
-              width: contentWidth,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Choose how this form appears on your character sheet.',
-                      style: Theme.of(dialogContext).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    ...choices.map((label) {
-                      final isCanonical =
-                          label.toLowerCase() == canonical.toLowerCase();
-                      return RadioListTile<String>(
-                        value: label,
-                        groupValue: selected,
-                        onChanged: (v) {
-                          if (v == null) return;
-                          setState(() => selected = v);
-                        },
-                        title: Text(label),
-                        subtitle: Text(
-                          isCanonical ? 'Rulebook name' : 'Alternate name',
-                          style: Theme.of(dialogContext).textTheme.bodySmall,
-                        ),
-                        contentPadding: EdgeInsets.zero,
-                      );
-                    }),
-                  ],
-                ),
+    title: const Text('Form name on sheet'),
+    buildScrollableBody: (innerContext, setState) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Choose how this form appears on your character sheet.',
+            style: Theme.of(innerContext).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 16),
+          ...choices.map((label) {
+            final isCanonical =
+                label.toLowerCase() == canonical.toLowerCase();
+            return ListTile(
+              dense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 2,
               ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: const Text('Cancel'),
+              visualDensity: VisualDensity.compact,
+              leading: Radio<String>(
+                value: label,
+                groupValue: selected,
+                onChanged: (v) {
+                  if (v == null) return;
+                  setState(() => selected = v);
+                },
               ),
-              FilledButton(
-                onPressed: selected == null
-                    ? null
-                    : () => Navigator.pop(dialogContext, selected),
-                child: const Text('Apply'),
+              title: Text(
+                label,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          );
-        },
+              subtitle: Text(
+                isCanonical ? 'Rulebook name' : 'Alternate name',
+                style: Theme.of(innerContext).textTheme.bodySmall,
+              ),
+              onTap: () => setState(() => selected = label),
+            );
+          }),
+        ],
       );
     },
+    buildActions: (routeContext, setState) => [
+      TextButton(
+        onPressed: () => Navigator.pop(routeContext),
+        child: const Text('Cancel'),
+      ),
+      FilledButton(
+        onPressed: selected == null
+            ? null
+            : () => Navigator.pop(routeContext, selected),
+        child: const Text('Apply'),
+      ),
+    ],
   );
 }

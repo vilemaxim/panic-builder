@@ -61,13 +61,6 @@ class RulebookStancePanel extends StatelessWidget {
   /// Matches clipped archetype ribbons; taller than skill pills for 22px titles.
   static const double _actionTitleRibbonMinHeight = 44;
 
-  static const TextStyle _actionRibbonTitleStyle = TextStyle(
-    color: Colors.white,
-    fontSize: 22,
-    fontWeight: FontWeight.w800,
-    height: 1.25,
-  );
-
   /// Title ribbon vs dice column when dice are shown (~80% / ~20%).
   static const int _titleRibbonFlexWithDice = 4;
   static const int _titleDiceFlexWithDice = 1;
@@ -126,14 +119,23 @@ class RulebookStancePanel extends StatelessWidget {
       fontSize: ribbonTypo.rangeFontSize,
       height: 1.15,
     );
-    final actionRibbonTitleStyle = layoutW < 420
-        ? _actionRibbonTitleStyle.copyWith(fontSize: 18, height: 1.2)
-        : _actionRibbonTitleStyle;
+    final wellBodyStyle = TextStyle(
+      color: Colors.black,
+      fontSize: ribbonTypo.stanceWellBodyFontSize,
+      height: 1.35,
+    );
+    final actionRibbonTitleStyle = TextStyle(
+      color: Colors.white,
+      fontSize: ribbonTypo.actionRibbonTitleFontSize,
+      fontWeight: FontWeight.w800,
+      height: 1.25,
+    );
     final styleActionWidgets = _styleActionSections(
       style,
       styleSkill,
       styleDm,
       actionRibbonTitleStyle: actionRibbonTitleStyle,
+      wellBodyStyle: wellBodyStyle,
     );
     final formActionWidgets = styleOnly
         ? const <RulebookTemplateSubSection>[]
@@ -142,6 +144,7 @@ class RulebookStancePanel extends StatelessWidget {
             formDm,
             formCitationBadge,
             actionRibbonTitleStyle: actionRibbonTitleStyle,
+            wellBodyStyle: wellBodyStyle,
           );
     final hasActionsBelow =
         styleActionWidgets.isNotEmpty || formActionWidgets.isNotEmpty;
@@ -193,6 +196,7 @@ class RulebookStancePanel extends StatelessWidget {
         styleDm,
         formDm,
         hasActionsBelow: hasActionsBelow,
+        wellBodyStyle: wellBodyStyle,
       ),
       mainBodyPadding: (hasPassives || !hasActionsBelow)
           ? const EdgeInsets.fromLTRB(14, 12, 14, 14)
@@ -414,6 +418,7 @@ class RulebookStancePanel extends StatelessWidget {
     })
     dm, {
     required TextStyle actionRibbonTitleStyle,
+    required TextStyle wellBodyStyle,
   }) {
     if (st == null) return const [];
     final badge = _trimStyleSuffix(st.name);
@@ -425,7 +430,12 @@ class RulebookStancePanel extends StatelessWidget {
       final paras = splitRuleParagraphs(a.description.trim());
       final body = paras.isEmpty
           ? const SizedBox.shrink()
-          : _paragraphsWithSource(paras, badge, singleCitation: true);
+          : _paragraphsWithSource(
+              paras,
+              badge,
+              singleCitation: true,
+              wellBodyStyle: wellBodyStyle,
+            );
       sections.add(
         _actionSubSection(
           title: title,
@@ -443,6 +453,7 @@ class RulebookStancePanel extends StatelessWidget {
             splitRuleParagraphs(fb),
             badge,
             singleCitation: true,
+            wellBodyStyle: wellBodyStyle,
           ),
           titleStyle: actionRibbonTitleStyle,
         ),
@@ -461,6 +472,7 @@ class RulebookStancePanel extends StatelessWidget {
     dm,
     String formBadge, {
     required TextStyle actionRibbonTitleStyle,
+    required TextStyle wellBodyStyle,
   }) {
     if (f == null) return const [];
     final sections = <RulebookTemplateSubSection>[];
@@ -471,7 +483,12 @@ class RulebookStancePanel extends StatelessWidget {
       final paras = splitRuleParagraphs(a.description.trim());
       final body = paras.isEmpty
           ? const SizedBox.shrink()
-          : _paragraphsWithSource(paras, formBadge, singleCitation: true);
+          : _paragraphsWithSource(
+              paras,
+              formBadge,
+              singleCitation: true,
+              wellBodyStyle: wellBodyStyle,
+            );
       sections.add(
         _actionSubSection(
           title: title,
@@ -485,7 +502,11 @@ class RulebookStancePanel extends StatelessWidget {
       sections.add(
         _actionSubSection(
           title: _formActionHeading(f),
-          body: _attributedParagraphBadges(fb, singleCitation: true),
+          body: _attributedParagraphBadges(
+            fb,
+            singleCitation: true,
+            wellBodyStyle: wellBodyStyle,
+          ),
           titleStyle: actionRibbonTitleStyle,
         ),
       );
@@ -518,6 +539,7 @@ class RulebookStancePanel extends StatelessWidget {
     })
     formDm, {
     required bool hasActionsBelow,
+    required TextStyle wellBodyStyle,
   }) {
     final notes = ruleStyle?.marginNotes.trim() ?? '';
     final stylePass = styleDm.passiveParagraphs;
@@ -533,20 +555,26 @@ class RulebookStancePanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (stylePass.isNotEmpty) ...[
-          _paragraphsWithSource(stylePass, styleCitationBadge),
+          _paragraphsWithSource(
+            stylePass,
+            styleCitationBadge,
+            wellBodyStyle: wellBodyStyle,
+          ),
           if (formPass.isNotEmpty || notes.isNotEmpty)
             const SizedBox(height: 12),
         ],
         if (formPass.isNotEmpty) ...[
-          _paragraphsWithSource(formPass, formCitationBadge),
+          _paragraphsWithSource(
+            formPass,
+            formCitationBadge,
+            wellBodyStyle: wellBodyStyle,
+          ),
           if (notes.isNotEmpty) const SizedBox(height: 12),
         ],
         if (notes.isNotEmpty)
           Text(
             notes,
-            style: const TextStyle(
-              fontSize: 17,
-              height: 1.35,
+            style: wellBodyStyle.copyWith(
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
@@ -628,12 +656,6 @@ class RulebookStancePanel extends StatelessWidget {
     );
   }
 
-  static const TextStyle _stanceBodyStyle = TextStyle(
-    color: Colors.black,
-    fontSize: 22,
-    height: 1.2,
-  );
-
   Widget _stanceSourceBadge(String source) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -656,6 +678,7 @@ class RulebookStancePanel extends StatelessWidget {
     List<String> paragraphs,
     String source, {
     bool singleCitation = false,
+    required TextStyle wellBodyStyle,
   }) {
     if (paragraphs.isEmpty) {
       return const SizedBox.shrink();
@@ -665,7 +688,7 @@ class RulebookStancePanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < paragraphs.length; i++) ...[
-            rulebookActionOptionParagraph(paragraphs[i], _stanceBodyStyle),
+            rulebookActionOptionParagraph(paragraphs[i], wellBodyStyle),
             if (i < paragraphs.length - 1) const SizedBox(height: 8),
           ],
           const SizedBox(height: 10),
@@ -679,7 +702,7 @@ class RulebookStancePanel extends StatelessWidget {
         for (var i = 0; i < paragraphs.length; i++) ...[
           RichText(
             text: TextSpan(
-              style: _stanceBodyStyle,
+              style: wellBodyStyle,
               children: [
                 TextSpan(text: paragraphs[i]),
                 const TextSpan(text: ' '),
@@ -699,6 +722,7 @@ class RulebookStancePanel extends StatelessWidget {
   Widget _attributedParagraphBadges(
     List<({String text, String badge})> items, {
     bool singleCitation = false,
+    required TextStyle wellBodyStyle,
   }) {
     if (items.isEmpty) return const SizedBox.shrink();
     final badgeLabel = items.first.badge;
@@ -707,7 +731,7 @@ class RulebookStancePanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           for (var i = 0; i < items.length; i++) ...[
-            rulebookActionOptionParagraph(items[i].text, _stanceBodyStyle),
+            rulebookActionOptionParagraph(items[i].text, wellBodyStyle),
             if (i < items.length - 1) const SizedBox(height: 8),
           ],
           const SizedBox(height: 10),
@@ -721,11 +745,11 @@ class RulebookStancePanel extends StatelessWidget {
         for (var i = 0; i < items.length; i++) ...[
           RichText(
             text: TextSpan(
-              style: _stanceBodyStyle,
+              style: wellBodyStyle,
               children: [
                 ...rulebookActionOptionInlineSpans(
                   items[i].text,
-                  _stanceBodyStyle,
+                  wellBodyStyle,
                 ),
                 const TextSpan(text: ' '),
                 WidgetSpan(

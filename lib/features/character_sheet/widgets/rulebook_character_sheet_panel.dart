@@ -11,6 +11,7 @@ import '../character_sheet_presenter.dart';
 import '../character_skills_ui.dart';
 import 'rule_violation_marker.dart';
 import 'rulebook_ribbon_clipper.dart';
+import 'rulebook_ribbon_header_typography.dart';
 import 'rulebook_section_template.dart';
 import 'skill_player_notes_section.dart';
 
@@ -94,35 +95,14 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
   static const Color _purpleBg = Color(0xFFE99FFE);
   static const Color _purpleRail = Color(0xFFB6A6FE);
 
-  /// Name / hero-type banner: scales down on narrow layouts (floor ~14sp subtitle
-  /// keeps body-like readability; below ~12sp hurts scanability on phones).
+  /// Name / hero-type banner: same scale as stance / form ribbon headers
+  /// ([RulebookRibbonHeaderTypography]).
   static _BannerTypography _bannerTypography(double layoutWidth) {
-    final w = layoutWidth;
-    if (w >= 520) {
-      return const _BannerTypography(
-        nameSize: 28,
-        subtitleSize: 20,
-        editIconSize: 22,
-      );
-    }
-    if (w >= 440) {
-      return const _BannerTypography(
-        nameSize: 23,
-        subtitleSize: 17,
-        editIconSize: 21,
-      );
-    }
-    if (w >= 380) {
-      return const _BannerTypography(
-        nameSize: 20,
-        subtitleSize: 15,
-        editIconSize: 20,
-      );
-    }
-    return const _BannerTypography(
-      nameSize: 18,
-      subtitleSize: 14,
-      editIconSize: 18,
+    final t = RulebookRibbonHeaderTypography.forWidth(layoutWidth);
+    return _BannerTypography(
+      nameSize: t.titleFontSize,
+      subtitleSize: t.rangeFontSize,
+      editIconSize: t.editIconSize,
     );
   }
 

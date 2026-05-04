@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,33 @@ import 'package:go_router/go_router.dart';
 import '../../app/providers.dart';
 import '../../domain/character.dart';
 import '../../widgets/app_async_feedback.dart';
+
+/// Rulebook wordmark (808×330); shown on the home route.
+class _HomeLogoBanner extends StatelessWidget {
+  const _HomeLogoBanner({required this.maxWidth});
+
+  static const String _asset = 'assets/images/branding/panic_at_the_dojo_logo.png';
+
+  final double maxWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    final h = maxWidth * (330 / 808);
+    return Semantics(
+      label: 'Panic at the Dojo',
+      image: true,
+      child: SizedBox(
+        width: maxWidth,
+        height: math.min(h, 140),
+        child: Image.asset(
+          _asset,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.medium,
+        ),
+      ),
+    );
+  }
+}
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -53,18 +81,42 @@ class HomeScreen extends ConsumerWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 560),
           child: listAsync.when(
-            loading: () => const Padding(
-              padding: EdgeInsets.all(24),
-              child: AppAsyncLoading(message: 'Loading characters…'),
+            loading: () => Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _HomeLogoBanner(maxWidth: math.min(400, MediaQuery.sizeOf(context).width - 48)),
+                  const SizedBox(height: 24),
+                  const AppAsyncLoading(message: 'Loading characters…'),
+                ],
+              ),
             ),
-            error: (e, _) => AppAsyncError(
-              error: e,
-              title: 'Could not load saved characters',
+            error: (e, _) => ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+                Center(
+                  child: _HomeLogoBanner(
+                    maxWidth: math.min(400, MediaQuery.sizeOf(context).width - 40),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                AppAsyncError(
+                  error: e,
+                  title: 'Could not load saved characters',
+                ),
+              ],
             ),
             data: (characters) {
               return ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
+                  Center(
+                    child: _HomeLogoBanner(
+                      maxWidth: math.min(400, MediaQuery.sizeOf(context).width - 40),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(

@@ -58,6 +58,15 @@ void main() {
         expect(f.lengthSync(), greaterThan(0));
       }
 
+      const logoKey = 'assets/images/branding/panic_at_the_dojo_logo.png';
+      final logoBundle = _bundledAssetFile(root, logoKey);
+      expect(
+        logoBundle.existsSync(),
+        isTrue,
+        reason: 'Home screen wordmark "$logoKey" missing from web bundle.',
+      );
+      expect(logoBundle.lengthSync(), greaterThan(0));
+
       final rulesBundle = _bundledAssetFile(root, 'assets/data/rules.json');
       expect(
         rulesBundle.existsSync(),
