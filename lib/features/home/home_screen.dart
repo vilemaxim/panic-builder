@@ -22,7 +22,7 @@ class _HomeLogoBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final h = maxWidth * (330 / 808);
     return Semantics(
-      label: 'Panic at the Dojo',
+      label: 'Unofficial character builder — first edition game wordmark',
       image: true,
       child: SizedBox(
         width: maxWidth,
@@ -33,6 +33,21 @@ class _HomeLogoBanner extends StatelessWidget {
           filterQuality: FilterQuality.medium,
         ),
       ),
+    );
+  }
+}
+
+class _HomeUnofficialDisclaimer extends StatelessWidget {
+  const _HomeUnofficialDisclaimer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      "Unofficial fan tool — not affiliated with the game's publisher or rights holders.",
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: const Color(0xFF5C4A38),
+          ),
     );
   }
 }
@@ -49,30 +64,16 @@ class HomeScreen extends ConsumerWidget {
         title: Builder(
           builder: (context) {
             final narrow = MediaQuery.sizeOf(context).width < 420;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Panic at the Dojo',
-                  style: TextStyle(
-                    fontFamily: 'serif',
-                    fontSize: narrow ? 20 : 24,
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFF2F2418),
-                  ),
-                ),
-                Text(
-                  'Character Builder · 1st Edition',
-                  style: TextStyle(
-                    fontSize: narrow ? 11.5 : 13,
-                    fontWeight: FontWeight.normal,
-                    color: const Color(0xFF2F2418),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+            return Text(
+              'Unofficial character builder · 1st Edition',
+              style: TextStyle(
+                fontFamily: 'serif',
+                fontSize: narrow ? 18 : 22,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFF2F2418),
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             );
           },
         ),
@@ -87,7 +88,9 @@ class HomeScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _HomeLogoBanner(maxWidth: math.min(400, MediaQuery.sizeOf(context).width - 48)),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
+                  const _HomeUnofficialDisclaimer(),
+                  const SizedBox(height: 20),
                   const AppAsyncLoading(message: 'Loading characters…'),
                 ],
               ),
@@ -100,7 +103,9 @@ class HomeScreen extends ConsumerWidget {
                     maxWidth: math.min(400, MediaQuery.sizeOf(context).width - 40),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 12),
+                const _HomeUnofficialDisclaimer(),
+                const SizedBox(height: 16),
                 AppAsyncError(
                   error: e,
                   title: 'Could not load saved characters',
@@ -116,7 +121,9 @@ class HomeScreen extends ConsumerWidget {
                       maxWidth: math.min(400, MediaQuery.sizeOf(context).width - 40),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 12),
+                  const _HomeUnofficialDisclaimer(),
+                  const SizedBox(height: 16),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(

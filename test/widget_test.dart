@@ -20,8 +20,8 @@ void main() {
       ),
     );
 
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 10));
+    // Wait for overridden [FutureProvider]s (same pattern as create_character_button_test).
+    await tester.pumpAndSettle();
     expect(find.textContaining('Create new character'), findsOneWidget);
     expect(find.textContaining('Upload character JSON'), findsOneWidget);
   });

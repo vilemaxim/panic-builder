@@ -66,21 +66,17 @@ void main() {
       );
 
       expect(find.text('Purify Action'), findsOneWidget);
-      final plainRich = tester
-          .widgetList<RichText>(find.byType(RichText))
-          .map((r) => r.text.toPlainText(includeSemanticsLabels: false))
-          .join('\n');
-      final plainText = tester
-          .widgetList<Text>(find.byType(Text))
-          .map((t) => t.data ?? '')
-          .join('\n');
-      final blob = '$plainRich\n$plainText';
-      expect(blob, contains('Range: 1-2'));
-      expect(blob, contains('purify'));
-      expect(blob, contains('Halcyon'));
-      expect(blob, contains('Blaster'));
-      expect(blob, contains('Rulebook skill body for Blaster'));
-      expect(blob, isNot(contains('Basically Magic')));
+      // Prefer stable finders over scraping every [Text]/[RichText] (tooltips / structure
+      // can add extra text on some Flutter versions).
+      expect(find.textContaining('Range: 1-2'), findsWidgets);
+      expect(find.textContaining('purify'), findsWidgets);
+      expect(find.textContaining('Halcyon'), findsWidgets);
+      expect(find.textContaining('Blaster'), findsWidgets);
+      expect(
+        find.textContaining('Rulebook skill body for Blaster'),
+        findsWidgets,
+      );
+      expect(find.textContaining('Basically Magic'), findsNothing);
     },
   );
 }

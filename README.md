@@ -1,4 +1,6 @@
-# Panic at the Dojo — Character Builder (PWA)
+# Panic at the Dojo — Character Builder (PWA) *(unofficial)*
+
+**Unofficial** fan-made tool: not affiliated with or endorsed by the game's publisher or rights holders.
 
 Flutter Web PWA for **Panic at the Dojo 1st Edition** character creation: guided wizards, offline storage for multiple characters, JSON import/export, printable sheets (PDF via `printing`), and GitHub Pages deployment.
 
