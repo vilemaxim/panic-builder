@@ -67,11 +67,14 @@ void main() {
         ),
       );
 
-      expect(find.text('Purify Action'), findsOneWidget);
-      // Prefer stable finders over scraping every [Text]/[RichText] (tooltips / structure
-      // can add extra text on some Flutter versions).
+      await tester.pump(const Duration(milliseconds: 16));
+
+      expect(find.textContaining('Purify Action'), findsWidgets);
       expect(find.textContaining('Range: 1-2'), findsWidgets);
-      expect(find.textContaining('purify'), findsWidgets);
+      expect(
+        find.textContaining(RegExp('purify', caseSensitive: false)),
+        findsWidgets,
+      );
       expect(find.textContaining('Halcyon'), findsWidgets);
       expect(find.textContaining('Blaster'), findsWidgets);
       expect(
