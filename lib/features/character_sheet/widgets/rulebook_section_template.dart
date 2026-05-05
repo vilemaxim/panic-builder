@@ -7,6 +7,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import 'rulebook_asset_sheet_decor.dart';
 import 'rulebook_ribbon_clipper.dart';
 
 // --- Terminology & evaluation (design vocabulary) ----------------------------
@@ -82,6 +83,9 @@ class RulebookTemplateSubSection {
     this.bodyPadding = const EdgeInsets.fromLTRB(14, 10, 14, 12),
     this.titleRibbonFlex = 4,
     this.upperRightFlex = 1,
+    this.backgroundAsset,
+    this.ribbonAsset,
+    this.ribbonFixedHeight,
   });
 
   final RulebookTemplateLateralBorder lateralBorder;
@@ -95,6 +99,9 @@ class RulebookTemplateSubSection {
   final EdgeInsets bodyPadding;
   final int titleRibbonFlex;
   final int upperRightFlex;
+  final String? backgroundAsset;
+  final String? ribbonAsset;
+  final double? ribbonFixedHeight;
 }
 
 /// All inputs needed to render a rulebook-style section.
@@ -113,6 +120,9 @@ class RulebookSectionTemplateModel {
     this.upperRightFlex = 1,
     this.mainRibbonWidthFactor = 0.8,
     this.subSections = const [],
+    this.mainBackgroundAsset,
+    this.mainRibbonAsset,
+    this.mainRibbonFixedHeight,
   });
 
   final RulebookTemplateLateralBorder mainLateralBorder;
@@ -127,6 +137,9 @@ class RulebookSectionTemplateModel {
   final int upperRightFlex;
   final double mainRibbonWidthFactor;
   final List<RulebookTemplateSubSection> subSections;
+  final String? mainBackgroundAsset;
+  final String? mainRibbonAsset;
+  final double? mainRibbonFixedHeight;
 }
 
 /// Renders [RulebookSectionTemplateModel] using the same structural ideas as
@@ -145,25 +158,48 @@ class RulebookSectionTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final m = model;
+    final hasAsset = m.mainBackgroundAsset != null;
+    final innerColumn = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _mainHeaderRow(context, m),
+        if (m.mainBody != null)
+          Padding(padding: m.mainBodyPadding, child: m.mainBody!),
+        if (m.mainBody != null && m.subSections.isNotEmpty)
+          const SizedBox(height: 8),
+        for (var i = 0; i < m.subSections.length; i++) ...[
+          if (i > 0) const SizedBox(height: 8),
+          _SubSectionBlock(section: m.subSections[i]),
+        ],
+      ],
+    );
     return Container(
       decoration: BoxDecoration(
         color: m.mainBackground,
-        border: m.mainLateralBorder.border,
+        image: hasAsset
+            ? DecorationImage(
+                image: AssetImage(m.mainBackgroundAsset!),
+                fit: BoxFit.fill,
+                filterQuality: FilterQuality.medium,
+              )
+            : null,
+        border: hasAsset ? null : m.mainLateralBorder.border,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _mainHeaderRow(context, m),
-          if (m.mainBody != null)
-            Padding(padding: m.mainBodyPadding, child: m.mainBody!),
-          if (m.mainBody != null && m.subSections.isNotEmpty)
-            const SizedBox(height: 8),
-          for (var i = 0; i < m.subSections.length; i++) ...[
-            if (i > 0) const SizedBox(height: 8),
-            _SubSectionBlock(section: m.subSections[i]),
-          ],
-        ],
-      ),
+      child: hasAsset
+          ? LayoutBuilder(
+              builder: (context, constraints) {
+                final w = constraints.maxWidth.isFinite
+                    ? constraints.maxWidth
+                    : MediaQuery.sizeOf(context).width;
+                final rail =
+                    RulebookSheetLayout.skillsBackgroundHorizontalRailInset(w);
+                return Padding(
+                  padding: EdgeInsets.fromLTRB(rail, 0, rail, 0),
+                  child: innerColumn,
+                );
+              },
+            )
+          : innerColumn,
     );
   }
 
@@ -177,43 +213,62 @@ class RulebookSectionTemplate extends StatelessWidget {
             ? constraints.maxWidth
             : MediaQuery.sizeOf(context).width;
         final ribbonW = maxOuterW * m.mainRibbonWidthFactor;
+        final ribbonContent = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            m.mainRibbonTitle,
+            if (m.mainRibbonSubtitle != null) ...[
+              const SizedBox(height: 6),
+              DefaultTextStyle(
+                style: _defaultSubtitleStyle,
+                child: m.mainRibbonSubtitle!,
+              ),
+            ],
+          ],
+        );
         final ribbon = Align(
           alignment: Alignment.centerLeft,
           child: SizedBox(
             width: ribbonW,
-            child: ClipPath(
-              clipper: const LeftRibbonClipper(
-                topRightRadius: kRulebookRibbonCornerRadius,
-              ),
-              child: ColoredBox(
-                color: rs.fill,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: rs.minHeight),
-                  child: Padding(
+            child: m.mainRibbonAsset == null
+                ? ClipPath(
+                    clipper: const LeftRibbonClipper(
+                      topRightRadius: kRulebookRibbonCornerRadius,
+                    ),
+                    child: ColoredBox(
+                      color: rs.fill,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: rs.minHeight),
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            rs.padding.left,
+                            rs.padding.top,
+                            rs.diagonalReserve,
+                            rs.padding.bottom,
+                          ),
+                          child: ribbonContent,
+                        ),
+                      ),
+                    ),
+                  )
+                : RulebookAssetRibbon(
+                    imageAsset: m.mainRibbonAsset!,
+                    fixedHeight: m.mainRibbonFixedHeight ?? rs.minHeight,
                     padding: EdgeInsets.fromLTRB(
-                      rs.padding.left,
+                      math.max(
+                        rs.padding.left,
+                        maxOuterW < 360 ? 12 : 16,
+                      ),
                       rs.padding.top,
-                      rs.diagonalReserve,
+                      12,
                       rs.padding.bottom,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        m.mainRibbonTitle,
-                        if (m.mainRibbonSubtitle != null) ...[
-                          const SizedBox(height: 6),
-                          DefaultTextStyle(
-                            style: _defaultSubtitleStyle,
-                            child: m.mainRibbonSubtitle!,
-                          ),
-                        ],
-                      ],
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: ClipRect(child: ribbonContent),
                     ),
                   ),
-                ),
-              ),
-            ),
           ),
         );
         if (diceRow == null) {
@@ -262,6 +317,13 @@ class _SubSectionBlock extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: s.background,
+        image: s.backgroundAsset == null
+            ? null
+            : DecorationImage(
+                image: AssetImage(s.backgroundAsset!),
+                fit: BoxFit.fill,
+                filterQuality: FilterQuality.medium,
+              ),
         border: s.lateralBorder.border,
       ),
       child: Column(
@@ -311,37 +373,45 @@ class _SubSectionBlock extends StatelessWidget {
         }
         final minRibbonH = math.max(44.0, textHeight + padT + padB);
 
-        final ribbon = ClipPath(
-          clipper: const LeftRibbonClipper(
-            topRightRadius: kRulebookRibbonCornerRadius,
-          ),
-          child: ColoredBox(
-            color: s.ribbonStyle.fill,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: minRibbonH),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(padL, padT, padR, padB),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      DefaultTextStyle(
-                        style: _actionTitleStyle,
-                        child: s.ribbonTitle,
+        final ribbonContent = Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DefaultTextStyle(style: _actionTitleStyle, child: s.ribbonTitle),
+            if (s.ribbonSubtitle != null) ...[
+              const SizedBox(height: 4),
+              s.ribbonSubtitle!,
+            ],
+          ],
+        );
+        final ribbon = s.ribbonAsset == null
+            ? ClipPath(
+                clipper: const LeftRibbonClipper(
+                  topRightRadius: kRulebookRibbonCornerRadius,
+                ),
+                child: ColoredBox(
+                  color: s.ribbonStyle.fill,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: minRibbonH),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(padL, padT, padR, padB),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: ribbonContent,
                       ),
-                      if (s.ribbonSubtitle != null) ...[
-                        const SizedBox(height: 4),
-                        s.ribbonSubtitle!,
-                      ],
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        );
+              )
+            : RulebookAssetRibbon(
+                imageAsset: s.ribbonAsset!,
+                fixedHeight: s.ribbonFixedHeight ?? minRibbonH,
+                padding: const EdgeInsets.fromLTRB(14, 8, 12, 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: ClipRect(child: ribbonContent),
+                ),
+              );
 
         final ribbonSized = Align(
           alignment: Alignment.centerLeft,

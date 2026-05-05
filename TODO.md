@@ -1,17 +1,9 @@
 # Project TODO
 
-## UI & visual
-
-- [ ] Make it look better on mobile
-- [ ] Use asset backgrounds and banners (extracted from the rules PDF) in the UI so it looks more like the game.
-
 ## Character sheet
 
-- [ ] Change archetype selection dialog to include pictures and tags from the patch. On selection, flip the card, bring it to the center at large size, and show the archetype description.
 - [ ] Add an **extended character sheet** option with skill descriptions, other calculated states, Supers, etc.
 - [ ] Allow spending XP points
-- [x] If an ability from a stance would effect things on that stance, like range or dice, incorperate that into the stance directy.
-- [ ] Pull dice images from the rule book and add them to stances and forms.
 
 ## Villains
 

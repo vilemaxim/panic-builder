@@ -7,6 +7,7 @@ import '../../../domain/hero_type_kind.dart';
 import 'form_dice_catalog.dart';
 import 'rule_violation_marker.dart';
 import 'rulebook_action_option_text.dart';
+import 'rulebook_asset_sheet_decor.dart';
 import 'rulebook_ribbon_header_typography.dart';
 import 'rulebook_section_template.dart';
 import 'rulebook_stance_chrome.dart';
@@ -154,17 +155,27 @@ class RulebookStancePanel extends StatelessWidget {
         formDm.passiveParagraphs.isNotEmpty ||
         notes.isNotEmpty;
 
+    final mainBackgroundAsset = styleOnly
+        ? RulebookSheetImageAssets.backgroundStyle
+        : RulebookSheetImageAssets.backgroundStance;
+    final mainRibbonAsset = styleOnly
+        ? RulebookSheetImageAssets.bannerStyle
+        : RulebookSheetImageAssets.bannerStance;
+
     final model = RulebookSectionTemplateModel(
       mainLateralBorder: RulebookTemplateLateralBorder(
         color: chrome.lateralRail,
       ),
       mainBackground: chrome.mainBodyBackground,
+      mainBackgroundAsset: mainBackgroundAsset,
       mainRibbonStyle: RulebookTemplateRibbonStyle(
         fill: chrome.titleRibbonFill,
         minHeight: 52,
         diagonalReserve: 66,
         padding: const EdgeInsets.fromLTRB(12, 10, 66, 10),
       ),
+      mainRibbonAsset: mainRibbonAsset,
+      mainRibbonFixedHeight: styleOnly ? 80 : 84,
       mainRibbonTitle: _mainRibbonTitle(
         styleName: styleName,
         formName: formName,
@@ -263,6 +274,7 @@ class RulebookStancePanel extends StatelessWidget {
     }
 
     return Row(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (titleRuleHint != null) ...[
@@ -270,11 +282,11 @@ class RulebookStancePanel extends StatelessWidget {
           const SizedBox(width: 4),
         ],
         if (styleOnly)
-          Expanded(child: styleCell())
+          Flexible(child: styleCell())
         else ...[
-          Expanded(flex: 5, child: styleCell()),
+          Flexible(child: styleCell()),
           SizedBox(width: gutter),
-          Expanded(flex: 4, child: formCell()),
+          Flexible(child: formCell()),
         ],
       ],
     );
@@ -614,8 +626,9 @@ class RulebookStancePanel extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(child: label),
+            Flexible(child: label),
             SizedBox(width: editIconSize >= 22 ? 6 : 4),
             Icon(
               Icons.edit_outlined,
@@ -638,6 +651,7 @@ class RulebookStancePanel extends StatelessWidget {
         color: chrome.actionSideBorderGreen,
       ),
       background: chrome.actionDescriptionBg,
+      backgroundAsset: RulebookSheetImageAssets.backgroundAction,
       ribbonStyle: RulebookTemplateRibbonStyle(
         fill: chrome.actionTitleGreen,
         minHeight: _actionTitleRibbonMinHeight,
@@ -649,6 +663,8 @@ class RulebookStancePanel extends StatelessWidget {
           8,
         ),
       ),
+      ribbonAsset: RulebookSheetImageAssets.bannerAction,
+      ribbonFixedHeight: _actionTitleRibbonMinHeight,
       ribbonTitle: Text(title, softWrap: true, style: titleStyle),
       ribbonWidthFactor: _actionRibbonWidthFactor,
       body: body,

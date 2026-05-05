@@ -249,7 +249,8 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                                 i,
                               ),
                         ),
-                        if (formRule != null &&
+                        if (!franticHero &&
+                            formRule != null &&
                             formRule.choices.isNotEmpty) ...[
                           const SizedBox(height: 8),
                           Padding(

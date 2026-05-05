@@ -5,6 +5,7 @@ import '../../../data/stance_form_display.dart';
 import 'form_dice_catalog.dart';
 import 'rule_violation_marker.dart';
 import 'rulebook_action_option_text.dart';
+import 'rulebook_asset_sheet_decor.dart';
 import 'rulebook_form_palette.dart';
 import 'rulebook_ribbon_header_typography.dart';
 import 'rulebook_section_template.dart';
@@ -98,12 +99,15 @@ class FranticFormSection extends StatelessWidget {
         color: RulebookFormPalette.lateralRail,
       ),
       mainBackground: RulebookFormPalette.bodyBackground,
+      mainBackgroundAsset: RulebookSheetImageAssets.backgroundForm,
       mainRibbonStyle: const RulebookTemplateRibbonStyle(
         fill: RulebookFormPalette.ribbon,
         minHeight: 52,
         diagonalReserve: 66,
         padding: EdgeInsets.fromLTRB(12, 10, 66, 10),
       ),
+      mainRibbonAsset: RulebookSheetImageAssets.bannerForm,
+      mainRibbonFixedHeight: 60,
       mainRibbonTitle: _ribbonTitle(titleText, ribbonTypo, layoutW),
       upperRight: diceRow,
       mainBody: mainBody,
@@ -254,7 +258,10 @@ class FranticFormSection extends StatelessWidget {
         RulebookTemplateSubSection(
           lateralBorder: lateral,
           background: chrome.actionDescriptionBg,
+          backgroundAsset: RulebookSheetImageAssets.backgroundAction,
           ribbonStyle: ribbonStyle,
+          ribbonAsset: RulebookSheetImageAssets.bannerAction,
+          ribbonFixedHeight: 44,
           ribbonTitle: Text(title, style: actionRibbonTitleStyle),
           ribbonWidthFactor: 0.8,
           body: body,
@@ -268,7 +275,10 @@ class FranticFormSection extends StatelessWidget {
         RulebookTemplateSubSection(
           lateralBorder: lateral,
           background: chrome.actionDescriptionBg,
+          backgroundAsset: RulebookSheetImageAssets.backgroundAction,
           ribbonStyle: ribbonStyle,
+          ribbonAsset: RulebookSheetImageAssets.bannerAction,
+          ribbonFixedHeight: 44,
           ribbonTitle: Text(
             _formActionHeading(f),
             style: actionRibbonTitleStyle,

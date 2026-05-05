@@ -10,9 +10,8 @@ import '../../../domain/hero_type_kind.dart';
 import '../character_sheet_presenter.dart';
 import '../character_skills_ui.dart';
 import 'rule_violation_marker.dart';
-import 'rulebook_ribbon_clipper.dart';
 import 'rulebook_ribbon_header_typography.dart';
-import 'rulebook_section_template.dart';
+import 'rulebook_asset_sheet_decor.dart';
 import 'skill_player_notes_section.dart';
 
 /// Responsive name / hero-type line sizes for the sheet banner.
@@ -77,24 +76,8 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
   final RulebookSheetIdentityHandlers? identityHandlers;
   final RulebookSheetSkillHandlers? skillHandlers;
 
-  // Character name / hero type palette.
-  static const Color _yellowBg = Color(0xFFFFFF93);
-  static const Color _orangeRail = Color(0xFFFD7E3F);
-  static const Color _bannerBrown = Color(0xFFA66500);
-
-  /// Main sheet lateral rails: same class and default width as stance/form
-  /// sections ([RulebookTemplateLateralBorder.width] == 6).
-  static const RulebookTemplateLateralBorder _sheetMainLateralBorder =
-      RulebookTemplateLateralBorder(color: _orangeRail);
-
-  // Skill “simple sub-column” palette (ribbon-only).
-  static const Color _pillOrange = Color(0xFFEC5B00);
-
   // Build / archetype “sub” palette (ribbon + well + rails).
   static const Color _purpleBand = Color(0xFF724073);
-  static const Color _purpleBg = Color(0xFFE99FFE);
-  static const Color _purpleRail = Color(0xFFB6A6FE);
-
   /// Name / hero-type banner: same scale as stance / form ribbon headers
   /// ([RulebookRibbonHeaderTypography]).
   static _BannerTypography _bannerTypography(double layoutWidth) {
@@ -111,28 +94,19 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
   /// Fits two lines of [_skillFontSize] with tight vertical padding.
   static const double _skillRibbonHeight = 38;
-
-  /// Keeps label text out of the clipped diagonal (~skew ≈ ribbon height).
-  static const double _skillRibbonDiagonalReserve = _skillRibbonHeight + 12;
+  static const double _archetypeRibbonHeight = 34;
 
   /// Vertical rhythm between stacked ribbon rows.
   static const double _ribbonGap = 5;
 
-  /// Skew-cut purple sub-ribbons (build / archetype): span ~80% of the column, like stance action ribbons.
-  static const double _subRibbonWidthFactor = 0.8;
+  /// Larger gap between distinct archetype blocks (fused entries, frantic slot
+  /// cards) so each block reads as its own unit inside the archetype panel.
+  static const double _archetypeBlockGap = 16;
 
-  /// Reserve at trailing edge so text clears the ~45° diagonal (skew ≈ ribbon height).
-  /// Single-line banner: height follows the taller of the two text lines.
-  static double _bannerTrailingReserveForDiagonal(
-    BuildContext context, {
-    required double nameFontSize,
-    required double subtitleFontSize,
-  }) {
-    final scale = MediaQuery.textScalerOf(context).scale(1.0);
-    const verticalPad = 28.0; // matches banner EdgeInsets vertical 14+14
-    final lineH = math.max(nameFontSize, subtitleFontSize) * 1.15;
-    return scale * (verticalPad + lineH);
-  }
+  static const double _archetypeRibbonWidthFactor = 0.7;
+
+  static double _bannerLikeTextInset(double approxSheetWidth) =>
+      approxSheetWidth < 360 ? 12 : 16;
 
   VoidCallback? _stanceSkillEdit(
     RulebookSheetSkillHandlers? h,
@@ -218,13 +192,8 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
           fontStyle: FontStyle.italic,
           height: 1.15,
         );
-        final trailing = _bannerTrailingReserveForDiagonal(
-          context,
-          nameFontSize: typo.nameSize,
-          subtitleFontSize: typo.subtitleSize,
-        );
         final leftPad = layoutW < 360 ? 12.0 : 16.0;
-        final rightBase = layoutW < 360 ? 12.0 : 18.0;
+        final rightPad = layoutW < 360 ? 22.0 : 30.0;
 
         Widget nameSegment() {
           final text = Text(
@@ -333,21 +302,35 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
           ],
         );
 
-        final bannerContent = Padding(
-          padding: EdgeInsets.fromLTRB(leftPad, 14, rightBase + trailing, 14),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: layoutW),
-            child: identityBlock,
-          ),
+        final ribbonW = layoutW * 0.8;
+        final prevRibbonW = math.min(
+          layoutW,
+          RulebookSheetLayout.bannerMaxDisplayWidth,
         );
+        final ribbonH = prevRibbonW * (60.0 / 400.0);
+        final innerW = math.max(80.0, ribbonW - leftPad - rightPad);
 
         return Align(
           alignment: Alignment.centerLeft,
-          child: ClipPath(
-            clipper: const LeftRibbonClipper(
-              topRightRadius: kRulebookRibbonCornerRadius,
+          child: SizedBox(
+            width: ribbonW,
+            child: RulebookAssetRibbon(
+              imageAsset: RulebookSheetImageAssets.bannerCharacterName,
+              fixedHeight: ribbonH,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(leftPad, 3, rightPad, 3),
+                  child: SizedBox(
+                    width: innerW,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.center,
+                      child: SizedBox(width: innerW, child: identityBlock),
+                    ),
+                  ),
+                ),
+              ),
             ),
-            child: ColoredBox(color: _bannerBrown, child: bannerContent),
           ),
         );
       },
@@ -470,97 +453,99 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
           );
         }
 
-        final ribbonInner = ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: _skillRibbonHeight),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: layoutW),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(child: buildSegment()),
-                  const SizedBox(width: 8),
-                  if (ht == HeroTypeKind.frantic)
-                    const Flexible(
-                      child: Text('Frantic Hero', style: subtitleStyle),
-                    )
-                  else if (ht == HeroTypeKind.fused) ...[
-                    Flexible(
-                      child: archetypeSegment(
-                        0,
-                        label: presenter.archetypeSlotBannerLabel(character, 0),
-                        ruleViolationHint: archViolations.isNotEmpty
-                            ? archViolations[0]
-                            : null,
-                      ),
+        final archetypeRow = ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: layoutW),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(child: buildSegment()),
+              const SizedBox(width: 8),
+              if (ht == HeroTypeKind.frantic)
+                const Flexible(
+                  child: Text('Frantic Hero', style: subtitleStyle),
+                )
+              else if (ht == HeroTypeKind.fused) ...[
+                Flexible(
+                  child: archetypeSegment(
+                    0,
+                    label: presenter.archetypeSlotBannerLabel(character, 0),
+                    ruleViolationHint: archViolations.isNotEmpty
+                        ? archViolations[0]
+                        : null,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: Text(
+                    '/',
+                    style: subtitleStyle.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Text(
-                        '/',
-                        style: subtitleStyle.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: archetypeSegment(
-                        1,
-                        label: presenter.archetypeSlotBannerLabel(character, 1),
-                        ruleViolationHint: archViolations.length > 1
-                            ? archViolations[1]
-                            : null,
-                      ),
-                    ),
-                  ] else
-                    Flexible(
-                      child: archetypeSegment(
-                        0,
-                        ruleViolationHint: archViolations.isNotEmpty
-                            ? archViolations[0]
-                            : null,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+                  ),
+                ),
+                Flexible(
+                  child: archetypeSegment(
+                    1,
+                    label: presenter.archetypeSlotBannerLabel(character, 1),
+                    ruleViolationHint: archViolations.length > 1
+                        ? archViolations[1]
+                        : null,
+                  ),
+                ),
+              ] else
+                Flexible(
+                  child: archetypeSegment(
+                    0,
+                    ruleViolationHint: archViolations.isNotEmpty
+                        ? archViolations[0]
+                        : null,
+                  ),
+                ),
+            ],
           ),
         );
 
-        final ribbonBar = ColoredBox(color: _purpleBand, child: ribbonInner);
-        return ColoredBox(
-          color: _purpleBg,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: ClipPath(
-              clipper: const LeftRibbonClipper(
-                topRightRadius: kRulebookRibbonCornerRadius,
-              ),
-              child: ht == HeroTypeKind.frantic
-                  ? SizedBox(
-                      width: layoutW * _subRibbonWidthFactor,
-                      child: ribbonBar,
-                    )
-                  : IntrinsicWidth(child: ribbonBar),
-            ),
-          ),
+        final leadPad = _bannerLikeTextInset(layoutW);
+        final ribbonArt = RulebookAssetRibbon(
+          imageAsset: RulebookSheetImageAssets.bannerArchetype,
+          fixedHeight: _archetypeRibbonHeight,
+          padding: EdgeInsets.fromLTRB(leadPad, 3, 10, 3),
+          child: Align(alignment: Alignment.centerLeft, child: archetypeRow),
         );
+
+        return ht == HeroTypeKind.frantic
+            ? Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: layoutW * _archetypeRibbonWidthFactor,
+                  child: ribbonArt,
+                ),
+              )
+            : Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: layoutW * _archetypeRibbonWidthFactor,
+                  child: ribbonArt,
+                ),
+              );
       },
     );
 
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: _yellowBg,
-        border: _sheetMainLateralBorder.border,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            banner,
+    return RulebookAssetPanelBackground(
+      backgroundAsset: RulebookSheetImageAssets.backgroundSkills,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final rail =
+              RulebookSheetLayout.skillsBackgroundHorizontalRailInset(
+                constraints.maxWidth,
+              );
+          final archetypeLeadPad = _bannerLikeTextInset(constraints.maxWidth);
+          return Padding(
+            padding: EdgeInsets.fromLTRB(rail, 0, rail, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                banner,
             const SizedBox(height: _ribbonGap),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -640,33 +625,39 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               ),
               const SizedBox(height: _ribbonGap),
             ],
-            archetypeRibbon,
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: _purpleBg,
-                border: Border(
-                  left: BorderSide(color: _purpleRail, width: 6),
-                  right: BorderSide(color: _purpleRail, width: 6),
-                ),
+            RulebookAssetPanelBackground(
+              backgroundAsset: RulebookSheetImageAssets.backgroundArchetype,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  archetypeRibbon,
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(archetypeLeadPad, 10, 12, 12),
+                    child: _archetypeAbilityContent(),
+                  ),
+                ],
               ),
-              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-              child: _archetypeAbilityContent(),
             ),
             if (character.heroType == HeroTypeKind.frantic) ...[
               for (var i = 0; i < 3; i++) ...[
-                const SizedBox(height: _ribbonGap),
-                _franticBuildArchetypeArea(
-                  i,
-                  presenter,
-                  ruleViolationHint: i < archViolations.length
-                      ? archViolations[i]
-                      : null,
+                const SizedBox(height: _archetypeBlockGap),
+                RulebookAssetPanelBackground(
+                  backgroundAsset:
+                      RulebookSheetImageAssets.backgroundArchetype,
+                  child: _franticBuildArchetypeArea(
+                    i,
+                    presenter,
+                    ruleViolationHint: i < archViolations.length
+                        ? archViolations[i]
+                        : null,
+                  ),
                 ),
               ],
             ],
           ],
         ),
+      );
+        },
       ),
     );
   }
@@ -688,102 +679,87 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       height: 1.2,
     );
 
-    final ribbon = ColoredBox(
-      color: _purpleBg,
-      child: LayoutBuilder(
+    final ribbon = LayoutBuilder(
         builder: (context, constraints) {
-          final ribbonW = constraints.maxWidth * _subRibbonWidthFactor;
-          return Align(
-            alignment: Alignment.centerLeft,
-            child: ClipPath(
-              clipper: const LeftRibbonClipper(
-                topRightRadius: kRulebookRibbonCornerRadius,
-              ),
-              child: SizedBox(
-                width: ribbonW,
-                child: ColoredBox(
-                  color: _purpleBand,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minHeight: _skillRibbonHeight,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (buildLabel.isNotEmpty) ...[
-                            Text(buildLabel, style: nameStyle),
-                            const SizedBox(width: 8),
-                          ],
-                          if (archRuleHint != null) ...[
-                            RuleViolationTriangle(message: archRuleHint),
-                            const SizedBox(width: 4),
-                          ],
-                          if (onArch != null)
-                            Semantics(
-                              button: true,
-                              label: 'Choose archetype',
-                              child: Tooltip(
-                                message: 'Choose archetype',
-                                preferBelow: true,
-                                child: Material(
-                                  color: Colors.transparent,
-                                  child: InkWell(
-                                    onTap: () => onArch(slotIndex),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 2,
-                                        horizontal: 2,
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(archLabel, style: nameStyle),
-                                          const SizedBox(width: 6),
-                                          Icon(
-                                            Icons.edit_outlined,
-                                            size: 24,
-                                            color: Colors.white.withValues(
-                                              alpha: 0.88,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+          final ribbonW = constraints.maxWidth * _archetypeRibbonWidthFactor;
+          final leadPad = _bannerLikeTextInset(constraints.maxWidth);
+          final row = Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (buildLabel.isNotEmpty) ...[
+                Text(buildLabel, style: nameStyle),
+                const SizedBox(width: 8),
+              ],
+              if (archRuleHint != null) ...[
+                RuleViolationTriangle(message: archRuleHint),
+                const SizedBox(width: 4),
+              ],
+              if (onArch != null)
+                Semantics(
+                  button: true,
+                  label: 'Choose archetype',
+                  child: Tooltip(
+                    message: 'Choose archetype',
+                    preferBelow: true,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => onArch(slotIndex),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 2,
+                            horizontal: 2,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(archLabel, style: nameStyle),
+                              const SizedBox(width: 6),
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 24,
+                                color: Colors.white.withValues(
+                                  alpha: 0.88,
                                 ),
                               ),
-                            )
-                          else
-                            Text(archLabel, style: nameStyle),
-                        ],
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                )
+              else
+                Text(archLabel, style: nameStyle),
+            ],
+          );
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox(
+              width: ribbonW,
+              child: RulebookAssetRibbon(
+                imageAsset: RulebookSheetImageAssets.bannerArchetype,
+                fixedHeight: _archetypeRibbonHeight,
+                padding: EdgeInsets.fromLTRB(leadPad, 3, 10, 3),
+                child: Align(alignment: Alignment.centerLeft, child: row),
               ),
             ),
           );
         },
-      ),
-    );
+      );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ribbon,
-        Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            color: _purpleBg,
-            border: Border(
-              left: BorderSide(color: _purpleRail, width: 6),
-              right: BorderSide(color: _purpleRail, width: 6),
-            ),
-          ),
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-          child: _franticSlotAbilityContent(slotIndex),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final leadPad = _bannerLikeTextInset(constraints.maxWidth);
+            return Padding(
+              padding: EdgeInsets.fromLTRB(leadPad, 10, 12, 12),
+              child: _franticSlotAbilityContent(slotIndex),
+            );
+          },
         ),
       ],
     );
@@ -896,7 +872,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (var i = 0; i < entries.length; i++) ...[
-          if (i > 0) const SizedBox(height: 8),
+          if (i > 0) const SizedBox(height: _archetypeBlockGap),
           ..._abilityParagraphsWithBadge(entries[i].ability, entries[i].name),
         ],
       ],
@@ -1001,7 +977,6 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     ];
   }
 
-  /// Full column width (like pre–intrinsic-width behavior) with trailing inset so text clears the slash.
   Widget _leftRibbonOrange(
     String label, {
     required double maxWidth,
@@ -1009,62 +984,52 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     String? ruleViolationHint,
   }) {
     final pillHint = ruleViolationHint;
+    final leadPad = _bannerLikeTextInset(maxWidth * 2 + 10);
     return SizedBox(
       width: maxWidth,
       height: _skillRibbonHeight,
-      child: ClipPath(
-        clipper: const LeftRibbonClipper(
-          topRightRadius: kRulebookRibbonCornerRadius,
-        ),
-        child: ColoredBox(
-          color: _pillOrange,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                10,
-                6,
-                _skillRibbonDiagonalReserve,
-                6,
+      child: RulebookAssetRibbon(
+        imageAsset: RulebookSheetImageAssets.bannerSkill,
+        fixedHeight: _skillRibbonHeight,
+        padding: EdgeInsets.fromLTRB(leadPad, 4, 14, 4),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              if (pillHint != null) ...[
+                RuleViolationTriangle(message: pillHint),
+                const SizedBox(width: 4),
+              ],
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: true,
+                  textAlign: TextAlign.left,
+                  style: _pillStyle(),
+                ),
               ),
-              child: Row(
-                children: [
-                  if (pillHint != null) ...[
-                    RuleViolationTriangle(message: pillHint),
-                    const SizedBox(width: 4),
-                  ],
-                  Expanded(
-                    child: Text(
-                      label,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                      textAlign: TextAlign.left,
-                      style: _pillStyle(),
-                    ),
-                  ),
-                  if (onEdit != null)
-                    Semantics(
-                      button: true,
-                      label: 'Replace stance skill',
-                      child: Tooltip(
-                        message: 'Replace skill',
-                        child: InkWell(
-                          onTap: onEdit,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: Icon(
-                              Icons.edit_outlined,
-                              size: 18,
-                              color: Colors.white.withValues(alpha: 0.92),
-                            ),
-                          ),
+              if (onEdit != null)
+                Semantics(
+                  button: true,
+                  label: 'Replace stance skill',
+                  child: Tooltip(
+                    message: 'Replace skill',
+                    child: InkWell(
+                      onTap: onEdit,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Icon(
+                          Icons.edit_outlined,
+                          size: 18,
+                          color: Colors.white.withValues(alpha: 0.92),
                         ),
                       ),
                     ),
-                ],
-              ),
-            ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
@@ -1078,63 +1043,53 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     String? ruleViolationHint,
   }) {
     final pillHint = ruleViolationHint;
+    final rightLeadPad = _bannerLikeTextInset(maxWidth * 2 + 10) * 2;
     return SizedBox(
       width: maxWidth,
       height: _skillRibbonHeight,
-      child: ClipPath(
-        clipper: const RightRibbonClipper(
-          bottomLeftRadius: kRulebookRibbonCornerRadius,
-        ),
-        child: ColoredBox(
-          color: _pillOrange,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                _skillRibbonDiagonalReserve,
-                6,
-                10,
-                6,
+      child: RulebookAssetRibbon(
+        imageAsset: RulebookSheetImageAssets.bannerSkill,
+        fixedHeight: _skillRibbonHeight,
+        rotateBackground180: true,
+        padding: EdgeInsets.fromLTRB(rightLeadPad, 4, 10, 4),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              if (pillHint != null) ...[
+                RuleViolationTriangle(message: pillHint),
+                const SizedBox(width: 4),
+              ],
+              Expanded(
+                child: Text(
+                  label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: true,
+                  textAlign: TextAlign.left,
+                  style: _pillStyle(),
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (pillHint != null) ...[
-                    RuleViolationTriangle(message: pillHint),
-                    const SizedBox(width: 4),
-                  ],
-                  Expanded(
-                    child: Text(
-                      label,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      softWrap: true,
-                      textAlign: TextAlign.right,
-                      style: _pillStyle(),
-                    ),
-                  ),
-                  if (onEdit != null)
-                    Semantics(
-                      button: true,
-                      label: 'Edit two-word skill',
-                      child: Tooltip(
-                        message: 'Two-word skill',
-                        child: InkWell(
-                          onTap: onEdit,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: Icon(
-                              Icons.edit_outlined,
-                              size: 18,
-                              color: Colors.white.withValues(alpha: 0.92),
-                            ),
-                          ),
+              if (onEdit != null)
+                Semantics(
+                  button: true,
+                  label: 'Edit two-word skill',
+                  child: Tooltip(
+                    message: 'Two-word skill',
+                    child: InkWell(
+                      onTap: onEdit,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4),
+                        child: Icon(
+                          Icons.edit_outlined,
+                          size: 18,
+                          color: Colors.white.withValues(alpha: 0.92),
                         ),
                       ),
                     ),
-                ],
-              ),
-            ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),

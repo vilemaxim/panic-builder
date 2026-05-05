@@ -39,3 +39,16 @@ flutter:
     - assets/icons/dice/d8.png
     - assets/icons/dice/d10.png
     - assets/images/branding/panic_at_the_dojo_logo.png
+    - assets/images/backgrounds/style.png
+    - assets/images/backgrounds/stance.png
+    - assets/images/backgrounds/form.png
+    - assets/images/backgrounds/skills.png
+    - assets/images/backgrounds/action.png
+    - assets/images/backgrounds/archetype.png
+    - assets/images/banners/banner-style.png
+    - assets/images/banners/banner-stance.png
+    - assets/images/banners/banner-form.png
+    - assets/images/banners/banner-character_name.png
+    - assets/images/banners/banner-skill.png
+    - assets/images/banners/banner-action.png
+    - assets/images/banners/banner-archtype.png

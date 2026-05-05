@@ -640,7 +640,8 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     if (!mounted || pickedLabel == null) return;
 
     String? choiceId;
-    if (pickedForm.choices.isNotEmpty) {
+    if (pickedForm.choices.isNotEmpty &&
+        c.heroType != HeroTypeKind.frantic) {
       choiceId = await showFormRuleChoicesDialog(
         context,
         form: pickedForm,
