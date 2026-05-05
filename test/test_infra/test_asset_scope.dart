@@ -8,7 +8,7 @@ import 'package:path/path.dart' as p;
 /// [rootBundle] may not resolve keys via the test embedder on some CI runners.
 /// `flutter test` still writes the bundle under `<project>/build/unit_test_assets/`,
 /// but the isolate [Directory.current] is not always the package root — resolve
-/// roots explicitly (including [GITHUB_WORKSPACE]).
+/// roots explicitly. CI can set [kFlutterWidgetTestProjectRootEnv] (see workflow).
 class UnitTestAssetsFallbackBundle extends CachingAssetBundle {
   @override
   Future<ByteData> load(String key) async {
@@ -41,9 +41,15 @@ ByteData? _tryLoadFromUnitTestAssetsDir(String key) {
   return null;
 }
 
+/// Prefer this in GitHub Actions so the test VM sees a stable root even when
+/// [Directory.current] or inherited CI env differs from the checkout path.
+const String kFlutterWidgetTestProjectRootEnv =
+    'FLUTTER_WIDGET_TEST_PROJECT_ROOT';
+
 /// Yields directories that contain this project's [pubspec.yaml].
 Iterable<Directory> _projectRootCandidates() sync* {
   for (final envPath in <String?>[
+    Platform.environment[kFlutterWidgetTestProjectRootEnv],
     Platform.environment['GITHUB_WORKSPACE'],
     Platform.environment['CI_PROJECT_DIR'],
   ]) {
