@@ -146,6 +146,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 20),
                   FilledButton.icon(
+                    key: const Key('home_create_character'),
                     onPressed: () {
                       ref.read(creationSessionProvider.notifier).reset();
                       context.go('/create');
@@ -155,6 +156,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   OutlinedButton.icon(
+                    key: const Key('home_upload_character_json'),
                     onPressed: () => _importJson(context, ref),
                     icon: const Icon(Icons.upload_file),
                     label: const Text('Upload character JSON'),
