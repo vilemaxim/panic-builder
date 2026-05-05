@@ -5,6 +5,7 @@ import 'package:panic_at_the_dojo/app/providers.dart';
 import 'package:panic_at_the_dojo/app/router.dart';
 import 'package:panic_at_the_dojo/domain/character.dart';
 
+import 'test_infra/test_asset_scope.dart';
 import 'test_rules.dart';
 
 void main() {
@@ -21,7 +22,7 @@ void main() {
             ),
             charactersListProvider.overrideWith((ref) => const <Character>[]),
           ],
-          child: const RoutedApp(),
+          child: const TestAssetScope(child: RoutedApp()),
         ),
       );
 

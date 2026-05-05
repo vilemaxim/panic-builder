@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:panic_at_the_dojo/data/rules_models.dart';
 import 'package:panic_at_the_dojo/features/character_sheet/widgets/rulebook_stance_panel.dart';
 
+import 'test_infra/test_asset_scope.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -66,16 +68,14 @@ void main() {
       // Bounded viewport + pumpAndSettle (matches rulebook_stance_panel_layout_test): avoids
       // unbounded-layout quirks and waits for stance dice [Image.asset] frames on CI.
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 800,
-              height: 1600,
-              child: SingleChildScrollView(
-                child: RulebookStancePanel(
-                  style: st,
-                  form: fm,
-                  rules: rules,
+        TestAssetScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: 800,
+                height: 1600,
+                child: SingleChildScrollView(
+                  child: RulebookStancePanel(style: st, form: fm, rules: rules),
                 ),
               ),
             ),
@@ -95,7 +95,9 @@ void main() {
       expect(
         layoutProblems,
         isEmpty,
-        reason: layoutProblems.map((e) => e.exceptionAsString()).join('\n---\n'),
+        reason: layoutProblems
+            .map((e) => e.exceptionAsString())
+            .join('\n---\n'),
       );
 
       expect(tester.takeException(), isNull);

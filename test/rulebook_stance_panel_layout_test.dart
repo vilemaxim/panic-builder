@@ -4,6 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:panic_at_the_dojo/data/rules_models.dart';
 import 'package:panic_at_the_dojo/features/character_sheet/widgets/rulebook_stance_panel.dart';
 
+import 'test_infra/test_asset_scope.dart';
+
 /// Minimal rules with Shadow Form (six d4 icons — widest dice row).
 MergedRules _rulesWithShadowForm() {
   return MergedRules.fromJson({
@@ -58,16 +60,18 @@ void main() {
       });
 
       await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 320,
-              height: 900,
-              child: SingleChildScrollView(
-                child: RulebookStancePanel(
-                  style: style,
-                  form: form,
-                  rules: rules,
+        TestAssetScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: SizedBox(
+                width: 320,
+                height: 900,
+                child: SingleChildScrollView(
+                  child: RulebookStancePanel(
+                    style: style,
+                    form: form,
+                    rules: rules,
+                  ),
                 ),
               ),
             ),
