@@ -7,6 +7,7 @@ import '../../../domain/hero_type_kind.dart';
 import 'form_dice_catalog.dart';
 import 'rule_violation_marker.dart';
 import 'rulebook_action_option_text.dart';
+import 'rulebook_archetype_palette.dart';
 import 'rulebook_asset_sheet_decor.dart';
 import 'rulebook_ribbon_header_typography.dart';
 import 'rulebook_section_template.dart';
@@ -27,6 +28,7 @@ class RulebookStancePanel extends StatelessWidget {
     this.chrome = RulebookStanceChrome.stance,
     this.styleOnly = false,
     this.ruleViolationHint,
+    this.archetypeLabel,
   });
 
   final RuleStyle? style;
@@ -56,6 +58,11 @@ class RulebookStancePanel extends StatelessWidget {
   /// Hover tooltip when the current stance row breaks printed rules.
   final String? ruleViolationHint;
 
+  /// Frantic style cards: archetype name shown as a purple badge to the right
+  /// of the title text on the main ribbon. Ignored when null/empty or when the
+  /// panel is not [styleOnly].
+  final String? archetypeLabel;
+
   /// Action title ribbon width as a fraction of the stance panel content width.
   static const double _actionRibbonWidthFactor = 0.8;
 
@@ -75,6 +82,8 @@ class RulebookStancePanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final styleName = style == null
         ? '(Pick a Style)'
+        : heroType == HeroTypeKind.frantic
+        ? '${_trimStyleSuffix(style!.name)} Style'
         : _trimStyleSuffix(style!.name);
     final effectiveForm = styleOnly ? null : form;
     final rawFormLabel = effectiveForm == null
@@ -84,6 +93,8 @@ class RulebookStancePanel extends StatelessWidget {
         : effectiveForm.name;
     final formName = effectiveForm == null
         ? '(Pick a Form)'
+        : heroType == HeroTypeKind.frantic
+        ? '${_trimFormSuffix(rawFormLabel)} Form'
         : _trimFormSuffix(rawFormLabel);
     final styleCitationBadge = style == null
         ? 'Style'
@@ -279,6 +290,7 @@ class RulebookStancePanel extends StatelessWidget {
       );
     }
 
+    final archLabel = archetypeLabel?.trim() ?? '';
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -287,14 +299,38 @@ class RulebookStancePanel extends StatelessWidget {
           RuleViolationTriangle(message: titleRuleHint),
           const SizedBox(width: 4),
         ],
-        if (styleOnly)
-          Flexible(child: styleCell())
-        else ...[
+        if (styleOnly) ...[
+          Flexible(child: styleCell()),
+          if (archLabel.isNotEmpty) ...[
+            SizedBox(width: gutter),
+            _archetypeNameBadge(archLabel),
+          ],
+        ] else ...[
           Flexible(child: styleCell()),
           SizedBox(width: gutter),
           Flexible(child: formCell()),
         ],
       ],
+    );
+  }
+
+  /// Purple banner-style label that names the archetype a frantic style came
+  /// from (matches [_stanceSourceBadge] sizing; archetype banner color).
+  Widget _archetypeNameBadge(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: RulebookArchetypePalette.band,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 
@@ -440,6 +476,7 @@ class RulebookStancePanel extends StatelessWidget {
   }) {
     if (st == null) return const [];
     final badge = _trimStyleSuffix(st.name);
+    final hideBadge = styleOnly;
     final sections = <RulebookTemplateSubSection>[];
     for (final a in dm.actions) {
       final title = a.heading.trim().isNotEmpty
@@ -452,6 +489,7 @@ class RulebookStancePanel extends StatelessWidget {
               paras,
               badge,
               singleCitation: true,
+              hideSourceBadge: hideBadge,
               wellBodyStyle: wellBodyStyle,
             );
       sections.add(
@@ -471,6 +509,7 @@ class RulebookStancePanel extends StatelessWidget {
             splitRuleParagraphs(fb),
             badge,
             singleCitation: true,
+            hideSourceBadge: hideBadge,
             wellBodyStyle: wellBodyStyle,
           ),
           titleStyle: actionRibbonTitleStyle,
@@ -577,6 +616,9 @@ class RulebookStancePanel extends StatelessWidget {
             stylePass,
             styleCitationBadge,
             wellBodyStyle: wellBodyStyle,
+            // Frantic style cards advertise the archetype on the banner instead
+            // of repeating the style name here.
+            hideSourceBadge: styleOnly,
           ),
           if (formPass.isNotEmpty || notes.isNotEmpty)
             const SizedBox(height: 12),
@@ -700,12 +742,13 @@ class RulebookStancePanel extends StatelessWidget {
     List<String> paragraphs,
     String source, {
     bool singleCitation = false,
+    bool hideSourceBadge = false,
     required TextStyle wellBodyStyle,
   }) {
     if (paragraphs.isEmpty) {
       return const SizedBox.shrink();
     }
-    if (singleCitation) {
+    if (singleCitation || hideSourceBadge) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -713,8 +756,10 @@ class RulebookStancePanel extends StatelessWidget {
             rulebookActionOptionParagraph(paragraphs[i], wellBodyStyle),
             if (i < paragraphs.length - 1) const SizedBox(height: 8),
           ],
-          const SizedBox(height: 10),
-          _stanceSourceBadge(source),
+          if (!hideSourceBadge) ...[
+            const SizedBox(height: 10),
+            _stanceSourceBadge(source),
+          ],
         ],
       );
     }

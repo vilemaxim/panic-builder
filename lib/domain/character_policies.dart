@@ -294,7 +294,7 @@ class CharacterPolicies {
       if (rules.styleById(st.styleId) == null) return 'Invalid style.';
       final form = rules.formById(st.formId);
       if (form == null) return 'Invalid form.';
-      if (form.choices.isNotEmpty) {
+      if (hero != HeroTypeKind.frantic && form.choices.isNotEmpty) {
         final cid = st.formChoiceId?.trim() ?? '';
         if (!form.choices.any((c) => c.id == cid)) {
           return 'For ${form.name}, pick the rule option for each stance that uses it.';

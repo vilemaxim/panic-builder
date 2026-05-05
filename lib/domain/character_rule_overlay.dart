@@ -1,5 +1,6 @@
 import 'character.dart';
 import 'character_policies.dart';
+import 'hero_type_kind.dart';
 import 'stance.dart';
 
 /// UI-oriented breakdown of where a character deviates from [CharacterPolicies]
@@ -54,7 +55,7 @@ class CharacterRuleOverlay {
         parts.add('Each stance must use a different form.');
       }
       final f = p.rules.formById(row.formId);
-      if (f != null && f.choices.isNotEmpty) {
+      if (hero != HeroTypeKind.frantic && f != null && f.choices.isNotEmpty) {
         final cid = row.formChoiceId?.trim() ?? '';
         if (!f.choices.any((c) => c.id == cid)) {
           parts.add('Pick the ${f.name} rule option for this stance.');

@@ -711,16 +711,42 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       return archetypeHintPdf('Pick a Hero Type to view archetype abilities.');
     }
     if (heroType == HeroTypeKind.frantic) {
-      final intro = normalizePdfTextForHelvetica(
-        rules.sheetPresentation.franticAbilityIntroLine(c.characterName),
-      );
-      final introWidget = pw.Padding(
-        padding: const pw.EdgeInsets.only(bottom: 6),
-        child: pw.Text(
-          intro,
-          style: style(size: 11.1, bold: true, height: 1.22),
-        ),
-      );
+      final rawRules = rules.sheetPresentation.franticHeroStanceRules.trim();
+      final rulesWidget = rawRules.isEmpty
+          ? null
+          : pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 7),
+              child: pw.RichText(
+                text: pw.TextSpan(
+                  style: style(size: 10.2, height: 1.28),
+                  children: [
+                    pw.TextSpan(text: normalizePdfTextForHelvetica(rawRules)),
+                    const pw.TextSpan(text: ' '),
+                    pw.WidgetSpan(
+                      child: pw.Container(
+                        padding: const pw.EdgeInsets.symmetric(
+                          horizontal: 5,
+                          vertical: 2,
+                        ),
+                        decoration: pw.BoxDecoration(
+                          color: _PdfPalette.purpleBand,
+                          borderRadius: pw.BorderRadius.circular(3),
+                        ),
+                        child: pw.Text(
+                          'Frantic',
+                          style: style(
+                            size: 9.0,
+                            bold: true,
+                            color: PdfColors.white,
+                            height: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
       final build = rules.buildById(c.buildId);
       final buildDescription = (build?.description ?? '').trim();
       if (build != null && buildDescription.isNotEmpty) {
@@ -734,7 +760,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            introWidget,
+            if (rulesWidget != null) rulesWidget,
             ...abilityParagraphsWithBadgePdf(
               _normalizeAbilityTextPdf(buildDescription),
               build.name,
@@ -747,7 +773,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
       return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          introWidget,
+          if (rulesWidget != null) rulesWidget,
           archetypeHintPdf('Pick a build to view its ability.'),
         ],
       );
@@ -931,19 +957,6 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
         ],
       ),
       pw.SizedBox(height: 5),
-      if (c.heroType == HeroTypeKind.frantic &&
-          rules.sheetPresentation.franticHeroStanceRules.trim().isNotEmpty) ...[
-        pw.Padding(
-          padding: const pw.EdgeInsets.symmetric(horizontal: 4),
-          child: pw.Text(
-            normalizePdfTextForHelvetica(
-              rules.sheetPresentation.franticHeroStanceRules.trim(),
-            ),
-            style: style(size: 10.4, height: 1.28),
-          ),
-        ),
-        pw.SizedBox(height: 5),
-      ],
       pdfInnerBoardedBody(
         backgroundColor: _PdfPalette.purpleBg,
         boardColor: _PdfPalette.purpleBorder,
@@ -1442,7 +1455,7 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
     }
 
     if (passives.isEmpty && actions.isEmpty) {
-      passives.add((text: 'Pick a style on the Style tab.', badge: 'Style'));
+      passives.add((text: 'Pick a style on the Styles tab.', badge: 'Style'));
     }
 
     return (

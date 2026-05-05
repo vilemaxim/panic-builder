@@ -10,6 +10,7 @@ import '../../../domain/hero_type_kind.dart';
 import '../character_sheet_presenter.dart';
 import '../character_skills_ui.dart';
 import 'rule_violation_marker.dart';
+import 'rulebook_archetype_palette.dart';
 import 'rulebook_ribbon_header_typography.dart';
 import 'rulebook_asset_sheet_decor.dart';
 import 'skill_player_notes_section.dart';
@@ -69,15 +70,15 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     required this.rules,
     this.identityHandlers,
     this.skillHandlers,
+    this.showFranticArchetypeSlots = true,
   });
 
   final Character character;
   final MergedRules rules;
   final RulebookSheetIdentityHandlers? identityHandlers;
   final RulebookSheetSkillHandlers? skillHandlers;
+  final bool showFranticArchetypeSlots;
 
-  // Build / archetype “sub” palette (ribbon + well + rails).
-  static const Color _purpleBand = Color(0xFF724073);
   /// Name / hero-type banner: same scale as stance / form ribbon headers
   /// ([RulebookRibbonHeaderTypography]).
   static _BannerTypography _bannerTypography(double layoutWidth) {
@@ -94,7 +95,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
   /// Fits two lines of [_skillFontSize] with tight vertical padding.
   static const double _skillRibbonHeight = 38;
-  static const double _archetypeRibbonHeight = 34;
+  static const double _archetypeRibbonHeight = _skillRibbonHeight;
 
   /// Vertical rhythm between stacked ribbon rows.
   static const double _ribbonGap = 5;
@@ -107,6 +108,25 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
 
   static double _bannerLikeTextInset(double approxSheetWidth) =>
       approxSheetWidth < 360 ? 12 : 16;
+
+  Widget _franticBadge(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: RulebookArchetypePalette.band,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 12.5,
+          fontWeight: FontWeight.w700,
+          height: 1.0,
+        ),
+      ),
+    );
+  }
 
   VoidCallback? _stanceSkillEdit(
     RulebookSheetSkillHandlers? h,
@@ -632,23 +652,6 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
               onSkillPlayerNote: skillH?.onSkillPlayerNote,
             ),
             const SizedBox(height: _ribbonGap),
-            if (character.heroType == HeroTypeKind.frantic &&
-                rules.sheetPresentation.franticHeroStanceRules
-                    .trim()
-                    .isNotEmpty) ...[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
-                child: Text(
-                  rules.sheetPresentation.franticHeroStanceRules.trim(),
-                  style: const TextStyle(
-                    color: Color(0xFF2F2418),
-                    fontSize: 13.5,
-                    height: 1.35,
-                  ),
-                ),
-              ),
-              const SizedBox(height: _ribbonGap),
-            ],
             RulebookAssetPanelBackground(
               backgroundAsset: RulebookSheetImageAssets.backgroundArchetype,
               child: Column(
@@ -662,22 +665,13 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                 ],
               ),
             ),
-            if (character.heroType == HeroTypeKind.frantic) ...[
-              for (var i = 0; i < 3; i++) ...[
-                const SizedBox(height: _archetypeBlockGap),
-                RulebookAssetPanelBackground(
-                  backgroundAsset:
-                      RulebookSheetImageAssets.backgroundArchetype,
-                  child: _franticBuildArchetypeArea(
-                    i,
-                    presenter,
-                    ruleViolationHint: i < archViolations.length
-                        ? archViolations[i]
-                        : null,
-                  ),
-                ),
-              ],
-            ],
+            if (character.heroType == HeroTypeKind.frantic &&
+                showFranticArchetypeSlots)
+              FranticArchetypeSlotsSection(
+                character: character,
+                rules: rules,
+                identityHandlers: identityHandlers,
+              ),
           ],
         ),
       );
@@ -686,141 +680,8 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
     );
   }
 
-  Widget _franticBuildArchetypeArea(
-    int slotIndex,
-    CharacterSheetPresenter presenter, {
-    String? ruleViolationHint,
-  }) {
-    final archRuleHint = ruleViolationHint;
-    final build = rules.buildById(character.buildId);
-    final buildLabel = build?.name ?? '';
-    final archLabel = presenter.archetypeSlotBannerLabel(character, slotIndex);
-    final onArch = identityHandlers?.onPickArchetype;
-    const nameStyle = TextStyle(
-      color: Colors.white,
-      fontSize: _skillFontSize,
-      fontWeight: FontWeight.w700,
-      height: 1.2,
-    );
-
-    final ribbon = LayoutBuilder(
-        builder: (context, constraints) {
-          final ribbonW = constraints.maxWidth * _archetypeRibbonWidthFactor;
-          final leadPad = _bannerLikeTextInset(constraints.maxWidth);
-          final row = Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (buildLabel.isNotEmpty) ...[
-                Text(buildLabel, style: nameStyle),
-                const SizedBox(width: 8),
-              ],
-              if (archRuleHint != null) ...[
-                RuleViolationTriangle(message: archRuleHint),
-                const SizedBox(width: 4),
-              ],
-              if (onArch != null)
-                Semantics(
-                  button: true,
-                  label: 'Choose archetype',
-                  child: Tooltip(
-                    message: 'Choose archetype',
-                    preferBelow: true,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () => onArch(slotIndex),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 2,
-                            horizontal: 2,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(archLabel, style: nameStyle),
-                              const SizedBox(width: 6),
-                              Icon(
-                                Icons.edit_outlined,
-                                size: 24,
-                                color: Colors.white.withValues(
-                                  alpha: 0.88,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              else
-                Text(archLabel, style: nameStyle),
-            ],
-          );
-          return Align(
-            alignment: Alignment.centerLeft,
-            child: SizedBox(
-              width: ribbonW,
-              child: RulebookAssetRibbon(
-                imageAsset: RulebookSheetImageAssets.bannerArchetype,
-                fixedHeight: _archetypeRibbonHeight,
-                padding: EdgeInsets.fromLTRB(leadPad, 3, 10, 3),
-                child: Align(alignment: Alignment.centerLeft, child: row),
-              ),
-            ),
-          );
-        },
-      );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ribbon,
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final leadPad = _bannerLikeTextInset(constraints.maxWidth);
-            return Padding(
-              padding: EdgeInsets.fromLTRB(leadPad, 10, 12, 12),
-              child: _franticSlotAbilityContent(slotIndex),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _franticSlotAbilityContent(int slotIndex) {
-    final entries = <({String name, String ability})>[];
-    final slotId = character.archetypeIds.length > slotIndex
-        ? character.archetypeIds[slotIndex]
-        : '';
-    if (slotId.isNotEmpty) {
-      final arch = rules.archetypeById(slotId);
-      if (arch != null) {
-        final rawAbility =
-            (arch.abilitiesByHeroType[HeroTypeKind.frantic.name] ?? '').trim();
-        final ability = _normalizeAbilityText(rawAbility);
-        entries.add((
-          name: arch.name,
-          ability: ability.isEmpty ? 'No frantic ability text found.' : ability,
-        ));
-      }
-    }
-    if (entries.isEmpty) {
-      return _archetypeHint(
-        'Pick an archetype for this stance to view its ability.',
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (var i = 0; i < entries.length; i++) ...[
-          if (i > 0) const SizedBox(height: 8),
-          ..._abilityParagraphsWithBadge(entries[i].ability, entries[i].name),
-        ],
-      ],
-    );
-  }
+  // Frantic slot archetype blocks are implemented by [FranticArchetypeSlotsSection]
+  // so they can be reused on the dedicated Archetypes tab in the builder.
 
   Widget _archetypeAbilityContent() {
     final heroType = character.heroType;
@@ -828,27 +689,36 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       return _archetypeHint('Pick a Hero Type to view archetype abilities.');
     }
     if (heroType == HeroTypeKind.frantic) {
-      final introLine = rules.sheetPresentation.franticAbilityIntroLine(
-        character.characterName,
-      );
-      final intro = Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Text(
-          introLine,
-          style: const TextStyle(
-            color: Color(0xFF2F2418),
-            fontSize: 13.5,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      );
+      final franticRules = rules.sheetPresentation.franticHeroStanceRules.trim();
+      final rulesWidget = franticRules.isEmpty
+          ? null
+          : RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  color: Color(0xFF2F2418),
+                  fontSize: 13.5,
+                  height: 1.35,
+                ),
+                children: [
+                  TextSpan(text: franticRules),
+                  const TextSpan(text: ' '),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: _franticBadge('Frantic'),
+                  ),
+                ],
+              ),
+            );
       final build = rules.buildById(character.buildId);
       final buildDescription = (build?.description ?? '').trim();
       if (build != null && buildDescription.isNotEmpty) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            intro,
+            if (rulesWidget != null) ...[
+              rulesWidget,
+              const SizedBox(height: 10),
+            ],
             ..._abilityParagraphsWithBadge(
               _normalizeAbilityText(buildDescription),
               build.name,
@@ -858,7 +728,13 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       }
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [intro, _archetypeHint('Pick a build to view its ability.')],
+        children: [
+          if (rulesWidget != null) ...[
+            rulesWidget,
+            const SizedBox(height: 10),
+          ],
+          _archetypeHint('Pick a build to view its ability.'),
+        ],
       );
     }
     final entries = <({String name, String ability})>[];
@@ -979,7 +855,7 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: _purpleBand,
+                    color: RulebookArchetypePalette.band,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -1129,4 +1005,323 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
       Shadow(color: Colors.black.withValues(alpha: 0.22), blurRadius: 1.5),
     ],
   );
+}
+
+class FranticArchetypeSlotsSection extends StatelessWidget {
+  const FranticArchetypeSlotsSection({
+    super.key,
+    required this.character,
+    required this.rules,
+    this.identityHandlers,
+    this.showAbilityBadges = true,
+  });
+
+  final Character character;
+  final MergedRules rules;
+  final RulebookSheetIdentityHandlers? identityHandlers;
+  final bool showAbilityBadges;
+
+  @override
+  Widget build(BuildContext context) {
+    if (character.heroType != HeroTypeKind.frantic) {
+      return const SizedBox.shrink();
+    }
+    final presenter = CharacterSheetPresenter(rules);
+    final policies = CharacterPolicies(rules);
+    final archViolations = CharacterRuleOverlay.archetypeSlotViolations(
+      policies,
+      character,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < 3; i++) ...[
+          const SizedBox(height: RulebookCharacterSheetPanel._archetypeBlockGap),
+          RulebookAssetPanelBackground(
+            backgroundAsset: RulebookSheetImageAssets.backgroundArchetype,
+            child: _FranticBuildArchetypeArea(
+              character: character,
+              rules: rules,
+              presenter: presenter,
+              identityHandlers: identityHandlers,
+              slotIndex: i,
+              ruleViolationHint: i < archViolations.length ? archViolations[i] : null,
+              showAbilityBadges: showAbilityBadges,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _FranticBuildArchetypeArea extends StatelessWidget {
+  const _FranticBuildArchetypeArea({
+    required this.character,
+    required this.rules,
+    required this.presenter,
+    required this.identityHandlers,
+    required this.slotIndex,
+    this.ruleViolationHint,
+    required this.showAbilityBadges,
+  });
+
+  final Character character;
+  final MergedRules rules;
+  final CharacterSheetPresenter presenter;
+  final RulebookSheetIdentityHandlers? identityHandlers;
+  final int slotIndex;
+  final String? ruleViolationHint;
+  final bool showAbilityBadges;
+
+  static const double _archetypeRibbonWidthFactor =
+      RulebookCharacterSheetPanel._archetypeRibbonWidthFactor;
+  static const double _archetypeRibbonHeight = 34;
+  static const double _skillFontSize = RulebookCharacterSheetPanel._skillFontSize;
+
+  static double _bannerLikeTextInset(double approxSheetWidth) =>
+      approxSheetWidth < 360 ? 12 : 16;
+
+  @override
+  Widget build(BuildContext context) {
+    final archRuleHint = ruleViolationHint;
+    final build = rules.buildById(character.buildId);
+    final buildLabel = build?.name ?? '';
+    final archLabel = presenter.archetypeSlotBannerLabel(character, slotIndex);
+    final onArch = identityHandlers?.onPickArchetype;
+    const nameStyle = TextStyle(
+      color: Colors.white,
+      fontSize: _skillFontSize,
+      fontWeight: FontWeight.w700,
+      height: 1.2,
+    );
+
+    final ribbon = LayoutBuilder(
+      builder: (context, constraints) {
+        final ribbonW = constraints.maxWidth * _archetypeRibbonWidthFactor;
+        final leadPad = _bannerLikeTextInset(constraints.maxWidth);
+        final row = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (buildLabel.isNotEmpty) ...[
+              Text(buildLabel, style: nameStyle),
+              const SizedBox(width: 8),
+            ],
+            if (archRuleHint != null) ...[
+              RuleViolationTriangle(message: archRuleHint),
+              const SizedBox(width: 4),
+            ],
+            if (onArch != null)
+              Semantics(
+                button: true,
+                label: 'Choose archetype',
+                child: Tooltip(
+                  message: 'Choose archetype',
+                  preferBelow: true,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => onArch(slotIndex),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 2,
+                          horizontal: 2,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(archLabel, style: nameStyle),
+                            const SizedBox(width: 6),
+                            Icon(
+                              Icons.edit_outlined,
+                              size: 24,
+                              color: Colors.white.withValues(alpha: 0.88),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            else
+              Text(archLabel, style: nameStyle),
+          ],
+        );
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: ribbonW,
+            child: RulebookAssetRibbon(
+              imageAsset: RulebookSheetImageAssets.bannerArchetype,
+              fixedHeight: _archetypeRibbonHeight,
+              padding: EdgeInsets.fromLTRB(leadPad, 3, 10, 3),
+              child: Align(alignment: Alignment.centerLeft, child: row),
+            ),
+          ),
+        );
+      },
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ribbon,
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final leadPad = _bannerLikeTextInset(constraints.maxWidth);
+            return Padding(
+              padding: EdgeInsets.fromLTRB(leadPad, 10, 12, 12),
+              child: _FranticSlotAbilityContent(
+                character: character,
+                rules: rules,
+                slotIndex: slotIndex,
+                showAbilityBadges: showAbilityBadges,
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _FranticSlotAbilityContent extends StatelessWidget {
+  const _FranticSlotAbilityContent({
+    required this.character,
+    required this.rules,
+    required this.slotIndex,
+    required this.showAbilityBadges,
+  });
+
+  final Character character;
+  final MergedRules rules;
+  final int slotIndex;
+  final bool showAbilityBadges;
+
+  @override
+  Widget build(BuildContext context) {
+    final slotId = character.archetypeIds.length > slotIndex
+        ? character.archetypeIds[slotIndex]
+        : '';
+    if (slotId.isEmpty) {
+      return const Text(
+        'Pick an archetype for this stance to view its ability.',
+        style: TextStyle(
+          color: Color(0xFF2F2418),
+          fontSize: 13.5,
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
+    final arch = rules.archetypeById(slotId);
+    if (arch == null) {
+      return const Text(
+        'Pick an archetype for this stance to view its ability.',
+        style: TextStyle(
+          color: Color(0xFF2F2418),
+          fontSize: 13.5,
+          fontStyle: FontStyle.italic,
+        ),
+      );
+    }
+    final rawAbility =
+        (arch.abilitiesByHeroType[HeroTypeKind.frantic.name] ?? '').trim();
+    final ability = _normalizeAbilityText(rawAbility);
+    final body = ability.isEmpty ? 'No frantic ability text found.' : ability;
+    final parts = body
+        .split(RegExp(r'\n\s*\n+'))
+        .map((p) => p.trim())
+        .where((p) => p.isNotEmpty)
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < parts.length; i++) ...[
+          showAbilityBadges
+              ? RichText(
+                  text: TextSpan(
+                    style: const TextStyle(
+                      color: Color(0xFF2F2418),
+                      fontSize: 15,
+                      height: 1.3,
+                    ),
+                    children: [
+                      TextSpan(text: parts[i]),
+                      const TextSpan(text: ' '),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.middle,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: RulebookArchetypePalette.band,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            arch.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w700,
+                              height: 1.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Text(
+                  parts[i],
+                  style: const TextStyle(
+                    color: Color(0xFF2F2418),
+                    fontSize: 15,
+                    height: 1.3,
+                  ),
+                ),
+          if (i < parts.length - 1) const SizedBox(height: 8),
+        ],
+      ],
+    );
+  }
+
+  String _normalizeAbilityText(String text) {
+    if (text.isEmpty) return '';
+    final normalized = text.replaceAll('\r\n', '\n');
+    final blocks = <String>[];
+    final lines = normalized.split('\n');
+    final current = StringBuffer();
+
+    for (var i = 0; i < lines.length; i++) {
+      final line = lines[i].trim();
+      if (line.isEmpty) {
+        final chunk = current.toString().trim();
+        if (chunk.isNotEmpty) blocks.add(chunk);
+        current.clear();
+        continue;
+      }
+
+      if (current.isNotEmpty) {
+        final prev = current.toString().trimRight();
+        final startsNewThought =
+            RegExp(r'[.!?]"?$').hasMatch(prev) && RegExp(r'^[A-Z(]').hasMatch(line);
+        if (startsNewThought) {
+          blocks.add(prev);
+          current.clear();
+        } else {
+          current.write(' ');
+        }
+      }
+      current.write(line.replaceAll(RegExp(r'\s+'), ' '));
+    }
+
+    final trailing = current.toString().trim();
+    if (trailing.isNotEmpty) blocks.add(trailing);
+    return blocks.join('\n\n');
+  }
 }

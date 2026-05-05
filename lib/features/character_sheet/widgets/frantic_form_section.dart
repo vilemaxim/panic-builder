@@ -41,6 +41,13 @@ class FranticFormSection extends StatelessWidget {
   static const double _diceChipSize = 66;
   static const double _diceSpacing = 8;
 
+  static String _withSuffix(String base, String suffix) {
+    final t = base.trim();
+    if (t.isEmpty) return t;
+    if (RegExp('\\s+${RegExp.escape(suffix)}\$').hasMatch(t)) return t;
+    return '$t $suffix';
+  }
+
   @override
   Widget build(BuildContext context) {
     final layoutW = MediaQuery.sizeOf(context).width;
@@ -70,12 +77,15 @@ class FranticFormSection extends StatelessWidget {
 
     final titleText = switch (form) {
       null => '(Pick a Form)',
-      final f => _trimFormSuffix(_rawFormLabel(f, formDisplayLabel)),
+      final f => _withSuffix(
+        _trimFormSuffix(_rawFormLabel(f, formDisplayLabel)),
+        'Form',
+      ),
     };
 
     final diceRow = _diceUpperRight(form);
 
-    final passiveWidgets = _buildPassiveWidgets(dm, badge, wellBodyStyle);
+    final passiveWidgets = _buildPassiveWidgets(dm, wellBodyStyle);
     final mainBody =
         passiveWidgets ??
         (form == null
@@ -196,7 +206,6 @@ class FranticFormSection extends StatelessWidget {
       List<({String text, String badge})>? fallbackAttributed,
     })
     dm,
-    String badge,
     TextStyle wellBodyStyle,
   ) {
     final paras = dm.passiveParagraphs;
@@ -208,8 +217,6 @@ class FranticFormSection extends StatelessWidget {
           Text(paras[i], style: wellBodyStyle),
           if (i < paras.length - 1) const SizedBox(height: 8),
         ],
-        const SizedBox(height: 10),
-        _sourceBadge(badge),
       ],
     );
   }
@@ -252,6 +259,7 @@ class FranticFormSection extends StatelessWidget {
               paras,
               badge,
               singleCitation: true,
+              hideSourceBadge: true,
               wellBodyStyle: wellBodyStyle,
             );
       out.add(
@@ -287,6 +295,7 @@ class FranticFormSection extends StatelessWidget {
           body: _attributedParagraphBadges(
             fb,
             singleCitation: true,
+            hideSourceBadge: true,
             wellBodyStyle: wellBodyStyle,
           ),
         ),
@@ -319,10 +328,11 @@ class FranticFormSection extends StatelessWidget {
     List<String> paragraphs,
     String source, {
     required bool singleCitation,
+    bool hideSourceBadge = false,
     required TextStyle wellBodyStyle,
   }) {
     if (paragraphs.isEmpty) return const SizedBox.shrink();
-    if (singleCitation) {
+    if (singleCitation || hideSourceBadge) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -330,8 +340,10 @@ class FranticFormSection extends StatelessWidget {
             rulebookActionOptionParagraph(paragraphs[i], wellBodyStyle),
             if (i < paragraphs.length - 1) const SizedBox(height: 8),
           ],
-          const SizedBox(height: 10),
-          _sourceBadge(source),
+          if (!hideSourceBadge) ...[
+            const SizedBox(height: 10),
+            _sourceBadge(source),
+          ],
         ],
       );
     }
@@ -361,11 +373,12 @@ class FranticFormSection extends StatelessWidget {
   Widget _attributedParagraphBadges(
     List<({String text, String badge})> items, {
     required bool singleCitation,
+    bool hideSourceBadge = false,
     required TextStyle wellBodyStyle,
   }) {
     if (items.isEmpty) return const SizedBox.shrink();
     final badgeLabel = items.first.badge;
-    if (singleCitation) {
+    if (singleCitation || hideSourceBadge) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -373,8 +386,10 @@ class FranticFormSection extends StatelessWidget {
             rulebookActionOptionParagraph(items[i].text, wellBodyStyle),
             if (i < items.length - 1) const SizedBox(height: 8),
           ],
-          const SizedBox(height: 10),
-          _sourceBadge(badgeLabel),
+          if (!hideSourceBadge) ...[
+            const SizedBox(height: 10),
+            _sourceBadge(badgeLabel),
+          ],
         ],
       );
     }

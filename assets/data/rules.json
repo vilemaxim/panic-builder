@@ -2457,6 +2457,7 @@
     }
   ],
   "sheetPresentation": {
+    "franticHeroStanceRules": "When you would choose your Stance, instead choose one Frantic Ability, one Style, and one Form you know to create your Stance for the turn. You cannot choose an Ability, Style, or Form you used on your previous turn.",
     "franticAbilityIntroTemplate": "{name}'s Frantic Abilities are:"
   }
 }

@@ -18,6 +18,7 @@
 ## Editing characters after creation
 
 - [ ] Fix post-creation character editing so opening or changing a saved sheet does not throw or show a broken state.
+- [ ] Remove all edit icons on the saved character.
 
 ## Fillable PDFs
 

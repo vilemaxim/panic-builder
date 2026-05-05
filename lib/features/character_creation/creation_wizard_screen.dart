@@ -155,6 +155,40 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     );
   }
 
+  Widget _franticArchetypesTab(
+    Character c,
+    MergedRules rules,
+    CharacterPolicies policies,
+  ) {
+    final hint = c.heroType == null
+        ? 'Choose a hero type on the Character tab before picking archetypes.'
+        : null;
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
+      children: [
+        if (hint != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _infoBanner(icon: Icons.info_outline, message: hint),
+          ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: FranticArchetypeSlotsSection(
+            character: c,
+            rules: rules,
+            identityHandlers: RulebookSheetIdentityHandlers(
+              onPickArchetype: (slot) {
+                _openArchetypeWizard(rules, policies, slot);
+              },
+            ),
+            showAbilityBadges: false,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final rulesAsync = ref.watch(mergedRulesProvider);
@@ -183,7 +217,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
         final policies = CharacterPolicies(rules);
         final completionHint = policies.validateCreationComplete(c);
         final frantic = c.heroType == HeroTypeKind.frantic;
-        final tabCount = frantic ? 3 : 4;
+        final tabCount = frantic ? 4 : 4;
         return DefaultTabController(
           key: ValueKey<int>(tabCount),
           length: tabCount,
@@ -196,7 +230,8 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
                 tabs: frantic
                     ? const [
                         Tab(text: 'Character'),
-                        Tab(text: 'Style'),
+                        Tab(text: 'Archetypes'),
+                        Tab(text: 'Styles'),
                         Tab(text: 'Forms'),
                       ]
                     : const [
@@ -229,6 +264,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
                     children: frantic
                         ? [
                             _characterTab(c, rules, policies),
+                            _franticArchetypesTab(c, rules, policies),
                             _franticStylesTab(c, rules, policies),
                             _franticFormsTab(c, rules, policies),
                           ]
@@ -254,6 +290,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     CharacterPolicies policies,
   ) {
     final session = ref.read(creationSessionProvider.notifier);
+    final frantic = c.heroType == HeroTypeKind.frantic;
     return ListView(
       padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
       children: [
@@ -268,9 +305,11 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
             onPickBuild: () {
               _openBuildWizard(rules);
             },
-            onPickArchetype: (slot) {
-              _openArchetypeWizard(rules, policies, slot);
-            },
+            onPickArchetype: frantic
+                ? null
+                : (slot) {
+                    _openArchetypeWizard(rules, policies, slot);
+                  },
           ),
           skillHandlers: RulebookSheetSkillHandlers(
             onReplaceStanceSkill: (stanceIndex) =>
@@ -291,6 +330,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
                   .setSkills(base.copyWith(skillPlayerNotes: m));
             },
           ),
+          showFranticArchetypeSlots: !frantic,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -603,7 +643,7 @@ class _CreationWizardScreenState extends ConsumerState<CreationWizardScreen> {
     if (cur == null || cur.styleId.isEmpty) {
       _snack(
         c.heroType == HeroTypeKind.frantic
-            ? 'Pick a style on the Style tab first.'
+            ? 'Pick a style on the Styles tab first.'
             : 'Pick a style first.',
       );
       return;

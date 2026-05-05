@@ -122,6 +122,10 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
               final style = rules.styleById(st.styleId);
               final form = rules.formById(st.formId);
               if (franticHero && style != null) {
+                final archName = rules
+                    .archetypeById(style.archetypeId)
+                    ?.name
+                    .trim();
                 stanceRowWidgets.add(
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
@@ -132,6 +136,7 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                       form: null,
                       rules: rules,
                       heroType: c.heroType,
+                      archetypeLabel: archName,
                       ruleViolationHint:
                           CharacterRuleOverlay.stanceRowViolation(pol, c, i),
                     ),
