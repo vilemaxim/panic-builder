@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:panic_at_the_dojo/app/providers.dart';
 import 'package:panic_at_the_dojo/app/router.dart';
+import 'package:panic_at_the_dojo/domain/character.dart';
 
 import 'test_rules.dart';
 
@@ -16,9 +17,9 @@ void main() {
         ProviderScope(
           overrides: [
             mergedRulesProvider.overrideWith(
-              (ref) async => minimalMergedRulesForTests(),
+              (ref) => minimalMergedRulesForTests(),
             ),
-            charactersListProvider.overrideWith((ref) async => const []),
+            charactersListProvider.overrideWith((ref) => const <Character>[]),
           ],
           child: const RoutedApp(),
         ),

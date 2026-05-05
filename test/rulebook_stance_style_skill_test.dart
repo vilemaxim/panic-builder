@@ -5,6 +5,8 @@ import 'package:panic_at_the_dojo/data/rules_models.dart';
 import 'package:panic_at_the_dojo/features/character_sheet/widgets/rulebook_stance_panel.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   testWidgets(
     'RulebookStancePanel uses style skill for action heading and style name on citation badge',
     (WidgetTester tester) async {
@@ -76,7 +78,18 @@ void main() {
         find.textContaining('Rulebook skill body for Blaster'),
         findsWidgets,
       );
-      expect(find.textContaining('Basically Magic'), findsNothing);
+      // Do not use find.textContaining for the negative check: some platforms attach
+      // tooltip copy to semantics/findables even when the form skill name must not
+      // appear as on-screen body text. Only plain Text / RichText paragraph content.
+      final onScreen = StringBuffer();
+      for (final t in tester.widgetList<Text>(find.byType(Text))) {
+        final d = t.data;
+        if (d != null && d.isNotEmpty) onScreen.writeln(d);
+      }
+      for (final r in tester.widgetList<RichText>(find.byType(RichText))) {
+        onScreen.writeln(r.text.toPlainText(includeSemanticsLabels: false));
+      }
+      expect(onScreen.toString(), isNot(contains('Basically Magic')));
     },
   );
 }
