@@ -1,8 +1,14 @@
 # Project TODO
 
+## UI & visual
+
+- [ ] Make all blocks standard (the edit button is currently not in a standard location).
+- [ ] Remove extra spaces on the banner text.
+
 ## Character sheet
 
 - [ ] Add an **extended character sheet** option with skill descriptions, other calculated states, Supers, etc.
+- [ ] Show extra skill text on the skill line (not on a separate line/block).
 - [ ] Allow spending XP points
 
 ## Villains
@@ -19,6 +25,6 @@
 
 ## Print
 
-- [ ] Add the logo on the first page.
+- [x] Add the logo on the first page.
 - [ ] Add the basic actions from rule book page 29 to printed character output
 - [ ] Maybe auto detect a way to see if more than 1 stance can fit on a page. Save for style/forms for frantic heros.

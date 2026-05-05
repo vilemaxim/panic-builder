@@ -379,7 +379,15 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(buildLabel, style: nameStyle),
+                          Flexible(
+                            child: Text(
+                              buildLabel,
+                              style: nameStyle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                            ),
+                          ),
                           const SizedBox(width: 6),
                           Icon(
                             Icons.edit_outlined,
@@ -426,7 +434,15 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                             RuleViolationTriangle(message: ruleViolationHint),
                             const SizedBox(width: 4),
                           ],
-                          Text(text, style: subtitleStyle),
+                          Flexible(
+                            child: Text(
+                              text,
+                              style: subtitleStyle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: false,
+                            ),
+                          ),
                           const SizedBox(width: 6),
                           Icon(
                             Icons.edit_outlined,
@@ -448,7 +464,15 @@ class RulebookCharacterSheetPanel extends StatelessWidget {
                 RuleViolationTriangle(message: ruleViolationHint),
                 const SizedBox(width: 4),
               ],
-              Text(text, style: subtitleStyle),
+              Flexible(
+                child: Text(
+                  text,
+                  style: subtitleStyle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                ),
+              ),
             ],
           );
         }

@@ -186,7 +186,13 @@ class RulebookStancePanel extends StatelessWidget {
         editIconSize: ribbonTypo.editIconSize,
         layoutWidth: layoutW,
       ),
-      mainRibbonSubtitle: Text(rangeText, style: rangeStyle),
+      mainRibbonSubtitle: Text(
+        rangeText,
+        style: rangeStyle,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        softWrap: false,
+      ),
       upperRight: styleOnly
           ? null
           : Row(
