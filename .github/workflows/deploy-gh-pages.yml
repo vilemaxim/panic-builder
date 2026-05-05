@@ -26,7 +26,12 @@ jobs:
           channel: stable
           # Pin SDK so widget tests see a consistent asset pipeline (AssetManifest.bin).
           flutter-version: '3.38.2'
-          cache: true
+          # No cache: avoid stale-SDK restores that don't match flutter-version
+          # (https://github.com/subosito/flutter-action/issues/230). Re-enable only
+          # with a version-scoped cache-key once CI is green.
+
+      - name: Flutter version
+        run: flutter --version
 
       - name: Install dependencies
         run: flutter pub get
@@ -34,9 +39,22 @@ jobs:
       - name: Test
         working-directory: ${{ github.workspace }}
         env:
-          # Explicit path for widget-test asset fallback (see test/test_infra/test_asset_scope.dart).
+          # Asset-channel mock in test/flutter_test_config.dart resolves keys
+          # from this root when flutter_tester doesn't wire up flutter/assets.
           FLUTTER_WIDGET_TEST_PROJECT_ROOT: ${{ github.workspace }}
-        run: flutter test
+        run: flutter test --reporter expanded
+
+      - name: Diagnose unit_test_assets (only on test failure)
+        if: failure()
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "PWD: $(pwd)"
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          ls -la
+          echo "--- build/ ---"
+          ls -laR build/ 2>&1 | head -200 || echo "no build dir"
+          echo "--- assets/ ---"
+          ls -laR assets/ 2>&1 | head -50 || echo "no assets dir"
 
       - name: Build web
         run: flutter build web --release --base-href "/${GITHUB_REPOSITORY##*/}/"
