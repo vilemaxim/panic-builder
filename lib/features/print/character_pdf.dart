@@ -963,16 +963,6 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
         header: archetypeRibbonPdf(presenter),
         body: archetypeAbilityBodyPdf(presenter),
       ),
-      if (c.heroType == HeroTypeKind.frantic)
-        for (var slot = 0; slot < 3; slot++) ...[
-          pw.SizedBox(height: 5),
-          pdfInnerBoardedBody(
-            backgroundColor: _PdfPalette.purpleBg,
-            boardColor: _PdfPalette.purpleBorder,
-            header: franticRibbonForSlotPdf(presenter, slot),
-            body: franticSlotAbilityPdf(presenter, slot),
-          ),
-        ],
       if (c.description.trim().isNotEmpty) ...[
         pw.SizedBox(height: 10),
         pw.Padding(
@@ -1756,76 +1746,115 @@ Future<Uint8List> buildCharacterPdfBytes(Character c, MergedRules rules) async {
 
   final franticPdf = c.heroType == HeroTypeKind.frantic;
 
+  pw.Widget twoUpRow({
+    required pw.Widget left,
+    required pw.Widget right,
+    required double colW,
+  }) {
+    return pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(width: colW, child: left),
+        pw.SizedBox(width: _halfGap),
+        pw.SizedBox(width: colW, child: right),
+      ],
+    );
+  }
+
   if (franticPdf) {
+    // Page 1: Character on the left; start Archetypes on the right.
     doc.addPage(
       pw.Page(
         pageFormat: halfLetterLandscape,
-        build: (ctx) => pw.Container(
-          color: _PdfPalette.paper,
-          padding: const pw.EdgeInsets.all(_kOuterMargin),
-          child: pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-            children: [
-              pw.Expanded(child: characterHalfPage()),
-              pw.SizedBox(width: _halfGap),
-              pw.Expanded(child: franticStylePdfHalfPage(0)),
-            ],
-          ),
-        ),
+        build: (ctx) {
+          final presenter = CharacterSheetPresenter(rules);
+          pw.Widget slot(int i) => pdfInnerBoardedBody(
+                backgroundColor: _PdfPalette.purpleBg,
+                boardColor: _PdfPalette.purpleBorder,
+                header: franticRibbonForSlotPdf(presenter, i),
+                body: franticSlotAbilityPdf(presenter, i),
+              );
+
+          final colW = _stanceOrCharacterHalfWidth();
+          return pw.Container(
+            color: _PdfPalette.paper,
+            padding: const pw.EdgeInsets.all(_kOuterMargin),
+            child: twoUpRow(
+              colW: colW,
+              left: characterHalfPage(),
+              right: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                children: [
+                  slot(0),
+                  pw.SizedBox(height: _halfGap),
+                  slot(1),
+                  pw.SizedBox(height: _halfGap),
+                  slot(2),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
 
+    // Page 2: Styles (all three on one page if they fit).
     doc.addPage(
       pw.Page(
         pageFormat: halfLetterLandscape,
-        build: (ctx) => pw.Container(
-          color: _PdfPalette.paper,
-          padding: const pw.EdgeInsets.all(_kOuterMargin),
-          child: pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-            children: [
-              pw.Expanded(child: franticStylePdfHalfPage(1)),
-              pw.SizedBox(width: _halfGap),
-              pw.Expanded(child: franticStylePdfHalfPage(2)),
-            ],
-          ),
-        ),
+        build: (ctx) {
+          final colW = _stanceOrCharacterHalfWidth();
+          return pw.Container(
+            color: _PdfPalette.paper,
+            padding: const pw.EdgeInsets.all(_kOuterMargin),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                twoUpRow(
+                  colW: colW,
+                  left: franticStylePdfHalfPage(0),
+                  right: franticStylePdfHalfPage(1),
+                ),
+                pw.SizedBox(height: _halfGap),
+                twoUpRow(
+                  colW: colW,
+                  left: franticStylePdfHalfPage(2),
+                  right: pw.SizedBox.shrink(),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
 
+    // Page 3: Forms (all three on one page if they fit).
     doc.addPage(
       pw.Page(
         pageFormat: halfLetterLandscape,
-        build: (ctx) => pw.Container(
-          color: _PdfPalette.paper,
-          padding: const pw.EdgeInsets.all(_kOuterMargin),
-          child: pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-            children: [
-              pw.Expanded(child: franticFormPdfHalfPage(0)),
-              pw.SizedBox(width: _halfGap),
-              pw.Expanded(child: franticFormPdfHalfPage(1)),
-            ],
-          ),
-        ),
-      ),
-    );
-
-    doc.addPage(
-      pw.Page(
-        pageFormat: halfLetterLandscape,
-        build: (ctx) => pw.Container(
-          color: _PdfPalette.paper,
-          padding: const pw.EdgeInsets.all(_kOuterMargin),
-          child: pw.Row(
-            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-            children: [
-              pw.Expanded(child: franticFormPdfHalfPage(2)),
-              pw.SizedBox(width: _halfGap),
-              pw.Expanded(child: pw.Container(color: _PdfPalette.paper)),
-            ],
-          ),
-        ),
+        build: (ctx) {
+          final colW = _stanceOrCharacterHalfWidth();
+          return pw.Container(
+            color: _PdfPalette.paper,
+            padding: const pw.EdgeInsets.all(_kOuterMargin),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                twoUpRow(
+                  colW: colW,
+                  left: franticFormPdfHalfPage(0),
+                  right: franticFormPdfHalfPage(1),
+                ),
+                pw.SizedBox(height: _halfGap),
+                twoUpRow(
+                  colW: colW,
+                  left: franticFormPdfHalfPage(2),
+                  right: pw.SizedBox.shrink(),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   } else {

@@ -463,13 +463,13 @@ class _CharacterDetailScreenState extends ConsumerState<CharacterDetailScreen> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
-                                        'Could not share PDF. Try Preview PDF in the toolbar. (${e.toString()})',
+                                        'Could not save PDF. Try Preview PDF in the toolbar. (${e.toString()})',
                                       ),
                                     ),
                                   );
                                 }
                               },
-                              child: const Text('Share PDF'),
+                              child: const Text('Save PDF'),
                             ),
                             OutlinedButton(
                               onPressed: () => _exportJson(c),

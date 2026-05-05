@@ -27,5 +27,6 @@
 ## Print
 
 - [x] Add the logo on the first page.
+- [ ] PDF should use the same assets as the web app.
 - [ ] Add the basic actions from rule book page 29 to printed character output
 - [ ] Maybe auto detect a way to see if more than 1 stance can fit on a page. Save for style/forms for frantic heros.
