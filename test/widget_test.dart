@@ -1,32 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:panic_at_the_dojo/app/providers.dart';
 import 'package:panic_at_the_dojo/app/router.dart';
 import 'package:panic_at_the_dojo/domain/character.dart';
-import 'package:panic_at_the_dojo/features/home/home_screen.dart';
 
 import 'test_rules.dart';
-
-/// Avoids [GoRouter] + [MaterialApp.router]: router-driven frames can prevent
-/// [pumpAndSettle] from completing on headless Linux CI.
-class _HomeTestHarness extends ConsumerWidget {
-  const _HomeTestHarness();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      theme: ref.watch(appThemeProvider),
-      home: const HomeScreen(),
-    );
-  }
-}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  /// No assets, no router, no layout: if this fails on CI, overrides are wrong.
+  /// No widgets: validates overrides alone (rules + empty character list).
   test('Home dependencies: merged rules + character list providers resolve', () {
     final container = ProviderContainer(
       overrides: [
@@ -43,6 +27,8 @@ void main() {
     expect(list.requireValue, isEmpty);
   });
 
+  /// Same shell + overrides + [pumpAndSettle] as [create_character_button_test] before the tap.
+  /// CI already proves that path works; do not use a separate MaterialApp/home harness.
   testWidgets('Home shows entry actions', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
@@ -50,33 +36,13 @@ void main() {
           mergedRulesProvider.overrideWith((ref) => minimalMergedRulesForTests()),
           charactersListProvider.overrideWith((ref) => const <Character>[]),
         ],
-        child: const _HomeTestHarness(),
+        child: const RoutedApp(),
       ),
     );
 
-    // FutureProvider may emit loading then data across frames; image decode can schedule
-    // extra frames. Avoid pumpAndSettle (never completes on some headless CI setups).
-    for (var i = 0; i < 40; i++) {
-      await tester.pump(const Duration(milliseconds: 50));
-      if (find.byKey(const Key('home_create_character')).evaluate().isNotEmpty &&
-          find.byKey(const Key('home_upload_character_json')).evaluate().isNotEmpty) {
-        break;
-      }
-    }
-    expect(tester.takeException(), isNull);
+    await tester.pumpAndSettle();
 
-    expect(
-      find.byKey(const Key('home_create_character')),
-      findsOneWidget,
-      reason: 'Home data branch not shown (still loading?) or Key missing from '
-          'lib/features/home/home_screen.dart on this commit.',
-    );
-    expect(
-      find.byKey(const Key('home_upload_character_json')),
-      findsOneWidget,
-      reason: 'Home data branch not shown (still loading?) or Key missing from '
-          'lib/features/home/home_screen.dart on this commit.',
-    );
+    expect(tester.takeException(), isNull);
     expect(find.textContaining('Create new character'), findsWidgets);
     expect(find.textContaining('Upload character JSON'), findsWidgets);
   });

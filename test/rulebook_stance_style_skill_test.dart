@@ -53,36 +53,62 @@ void main() {
       final st = rules.styleById('test_style_1')!;
       final fm = rules.formById('form_blaster')!;
 
+      final caught = <FlutterErrorDetails>[];
+      final prior = FlutterError.onError;
+      FlutterError.onError = (details) {
+        caught.add(details);
+        prior?.call(details);
+      };
+      addTearDown(() {
+        FlutterError.onError = prior;
+      });
+
+      // Bounded viewport + pumpAndSettle (matches rulebook_stance_panel_layout_test): avoids
+      // unbounded-layout quirks and waits for stance dice [Image.asset] frames on CI.
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: SingleChildScrollView(
-              child: RulebookStancePanel(
-                style: st,
-                form: fm,
-                rules: rules,
+            body: SizedBox(
+              width: 800,
+              height: 1600,
+              child: SingleChildScrollView(
+                child: RulebookStancePanel(
+                  style: st,
+                  form: fm,
+                  rules: rules,
+                ),
               ),
             ),
           ),
         ),
       );
 
-      await tester.pump(const Duration(milliseconds: 16));
+      await tester.pumpAndSettle();
+
+      final layoutProblems = caught.where((d) {
+        final o = d.exceptionAsString();
+        return o.contains('RenderFlex overflowed') ||
+            o.contains('overflowed') ||
+            o.contains('Unable to load asset');
+      }).toList();
+
+      expect(
+        layoutProblems,
+        isEmpty,
+        reason: layoutProblems.map((e) => e.exceptionAsString()).join('\n---\n'),
+      );
+
+      expect(tester.takeException(), isNull);
 
       expect(find.textContaining('Purify Action'), findsWidgets);
       expect(find.textContaining('Range: 1-2'), findsWidgets);
-      expect(
-        find.textContaining(RegExp('purify', caseSensitive: false)),
-        findsWidgets,
-      );
+      expect(find.textContaining('purify'), findsWidgets);
       expect(find.textContaining('Halcyon'), findsWidgets);
       expect(find.textContaining('Blaster'), findsWidgets);
       expect(
         find.textContaining('Rulebook skill body for Blaster'),
         findsWidgets,
       );
-      // Positive assertions above cover using the style skill + form body; a negative
-      // check on "Basically Magic" was flaky on CI (tooltip / semantics differ by platform).
     },
   );
 }
